@@ -19,3 +19,9 @@ export type Basket = {
   catagory?: string;
   sizes: Size[];
 };
+
+export type CartItem = {
+  basketId: string;
+  item: Size;
+  qty: number;
+};
