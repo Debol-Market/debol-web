@@ -6,6 +6,39 @@
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
+  --main-gradient: linear-gradient(
+    301deg,
+    #f45f0b 0%,
+    #f49e0b 47.23%,
+    #f49e0b 100%
+  );
+}
+
+.bg-gradient {
+  background-image: var(--main-gradient);
+}
+
+.spinner {
+  -webkit-animation: spinnerAnimation 1.2s steps(32) infinite;
+  animation: spinnerAnimation 700ms steps(32) infinite;
+}
+
+@-webkit-keyframes spinnerAnimation {
+  0% {
+    transform: rotate(180deg);
+  }
+  100% {
+    transform: rotate(540deg);
+  }
+}
+
+@keyframes spinnerAnimation {
+  0% {
+    transform: rotate(180deg);
+  }
+  100% {
+    transform: rotate(540deg);
+  }
 }
 
 @media (prefers-color-scheme: dark) {
