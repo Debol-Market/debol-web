@@ -21,6 +21,7 @@ export type Basket = {
 };
 
 export type CartItem = {
+  basket: Basket;
   basketId: string;
   item: Size;
   qty: number;

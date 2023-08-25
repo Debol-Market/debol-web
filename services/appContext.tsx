@@ -1,4 +1,4 @@
-import { CartItem, Size } from "@/utils/types";
+import { Basket, CartItem, Size } from "@/utils/types";
 import useLocalStorage from "@/utils/useLocalStorage";
 import { createContext, useContext, useEffect } from "react";
 import { getBasket } from "./database";
@@ -7,7 +7,12 @@ type ContextType = {
   cart: CartItem[];
   removeFromCart: (sizeId: string) => void;
   setCartItemQty: (sizeId: string, qty: number) => void;
-  addToCart: (size: Size, qty: number, basketId: string) => void;
+  addToCart: (
+    size: Size,
+    qty: number,
+    basketId: string,
+    basket: Basket
+  ) => void;
 };
 
 type props = {
@@ -24,9 +29,14 @@ export const appContext = createContext<ContextType>({
 export const AppContext = ({ children }: props) => {
   const [cart, updateCart, clearCart] = useLocalStorage<CartItem[]>("cart", []);
 
-  const addToCart = (size: Size, qty: number, basketId: string) => {
+  const addToCart = (
+    size: Size,
+    qty: number,
+    basketId: string,
+    basket: Basket
+  ) => {
     if (cart.some((item: CartItem) => item.item.id == size.id)) return;
-    updateCart([...cart, { item: size, basketId, qty }]);
+    updateCart([...cart, { item: size, basketId, qty, basket }]);
   };
 
   const removeFromCart = (sizeId: string) => {
@@ -49,14 +59,17 @@ export const AppContext = ({ children }: props) => {
         console.log(baskets, 123454);
         baskets.forEach((basket) => {
           if (!basket) return;
+          console.log({ basket });
           basket.sizes.forEach((size) => {
             const dbSize = cart.find((cartItem) => cartItem.item.id == size.id);
             console.log({ dbSize });
             if (!dbSize) return;
-            newCart.push({ ...dbSize, item: size });
+            if (newCart.find((item) => item.item.id == dbSize.item.id)) return;
+            newCart.push({ ...dbSize, item: size, basket });
           });
         });
         console.log({ newCart });
+        clearCart();
         updateCart(newCart);
       }
     );
