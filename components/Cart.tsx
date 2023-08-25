@@ -1,0 +1,138 @@
+import useApp from "@/services/appContext";
+import { useRouter } from "next/router";
+import { useState } from "react";
+import { AiFillMinusCircle } from "react-icons/ai";
+import { BiSolidTrashAlt } from "react-icons/bi";
+import { GrClose } from "react-icons/gr";
+import { IoAddCircle, IoCloseCircleOutline } from "react-icons/io5";
+import { CartItem } from "../utils/types";
+import Btn from "./Btn";
+type props = {
+  onClose: () => void;
+};
+
+const Cart = ({ onClose }: props) => {
+  const router = useRouter();
+  const { cart, removeFromCart, setCartItemQty } = useApp();
+  const total = cart.reduce(
+    (prev, item) => prev + item.item.price * item.qty,
+    0
+  );
+
+  return (
+    <div
+      className="z-50 fixed top-0 left-0 h-screen w-screen bg-neutral-300/20 backdrop-blur-sm"
+      onClick={onClose}
+    >
+      <div
+        className="w-full max-w-sm bg-white h-full shadow absolute right-0 flex flex-col"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex h-16 gap-2 items-center border-b-neutral-300 border-b">
+          <button
+            onClick={onClose}
+            className="p-2 m-2 hover:bg-slate-200/70 rounded-full shrink-0"
+          >
+            <GrClose className="h-6 w-6" />
+          </button>
+          <h2 className="text-2xl font-semibold">Your Cart</h2>
+        </div>
+        <div className="flex flex-col grow">
+          {cart.length ? (
+            cart.map((item) => (
+              <CartItem
+                cartItem={item}
+                key={item.item.id}
+                onChange={(qty) => setCartItemQty(item.item.id, qty)}
+                onDel={() => removeFromCart(item.item.id)}
+              />
+            ))
+          ) : (
+            <p>Your cart is empty</p>
+          )}
+        </div>
+        <div className="flex justify-between p-2 px-4">
+          <h2 className="text-lg">Total:</h2>
+          <p className="font-bold text-2xl">${total / 100}</p>
+        </div>
+        <Btn
+          label="Checkout"
+          disabled={cart.length == 0}
+          className="m-2"
+          onClick={() => router.push("/checkout")}
+        />
+      </div>
+    </div>
+  );
+};
+
+function CartItem({
+  cartItem,
+  onDel,
+  onChange,
+}: {
+  cartItem: CartItem;
+  onDel: () => void;
+  onChange: (qty: number) => void;
+}) {
+  const [isExpanded, setisExpanded] = useState(false);
+
+  return (
+    <div
+      className={`flex flex-col px-4 ${
+        isExpanded && "border-b border-neutral-300 bg-neutral-50"
+      }`}
+      onClick={() => setisExpanded(!isExpanded)}
+    >
+      <div className="flex py-4 gap-3 items-start">
+        <div className="h-24 w-24 border border-neutral-300 rounded-md bg-neutral-200">
+          image
+        </div>
+        <div className=" grow">
+          <h3 className="text-xl">{cartItem.basket.name}</h3>
+          <p className="font-bold text-lg">${cartItem.item.price / 100}</p>
+          <p className="text-sm">{cartItem.item.name}</p>
+          <div
+            className="flex gap-2 text-neutral-800"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button className="" onClick={() => onChange(cartItem.qty - 1)}>
+              {cartItem.qty == 1 ? (
+                <BiSolidTrashAlt className="h-6 w-6" />
+              ) : (
+                <AiFillMinusCircle className="h-6 w-6" />
+              )}
+            </button>
+            <span>{cartItem.qty}</span>
+            <button onClick={() => onChange(cartItem.qty + 1)}>
+              <IoAddCircle className="h-6 w-6" />
+            </button>
+          </div>
+        </div>
+        <button onClick={onDel}>
+          <IoCloseCircleOutline className="h-6 w-6" />
+        </button>
+      </div>
+      {isExpanded && (
+        <div className="pb-3 px-2">
+          {cartItem.item.items.map((item) => (
+            <div className="flex gap-2 justify-between" key={item.name}>
+              <div className="flex gap-3 justify-between flex-1 max-w-[50%]">
+                <div className="">{item.name}</div>
+                <div className="">
+                  {item.quantity}
+                  {item.unit} x {item.pricePerUnit / 100}$
+                </div>
+              </div>
+              <div className="ml-auto">
+                {(item.pricePerUnit / 100) * item.quantity}$
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default Cart;
