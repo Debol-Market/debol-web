@@ -26,3 +26,9 @@ export type CartItem = {
   item: Size;
   qty: number;
 };
+
+export type PaymentData = {
+  qty: number;
+  basketId: string;
+  sizeId: string;
+};
