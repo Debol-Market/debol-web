@@ -8,10 +8,12 @@ import SearchBar, { SearchSvg } from "./SearchBar";
 
 const Navbar = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [windowWidth, setWindowWidth] = useState(window?.innerWidth);
+  const [windowWidth, setWindowWidth] = useState(() =>
+    typeof window == "undefined" ? 1080 : window?.innerWidth
+  );
 
   useEffect(() => {
-    if (!window) return;
+    if (typeof window == "undefined") return;
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
     };
@@ -23,7 +25,7 @@ const Navbar = () => {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, []); // Only run this effect once during component mount
+  }, []);
 
   return (
     <>
