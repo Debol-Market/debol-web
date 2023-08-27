@@ -14,6 +14,11 @@
   );
 }
 
+input,
+button {
+  outline: none;
+}
+
 .bg-gradient {
   background-image: var(--main-gradient);
 }
