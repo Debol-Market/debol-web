@@ -32,7 +32,7 @@ const BasketCard: FC<props> = ({ basket }) => {
           <rect x="0" y="0" rx="3" ry="3" width="200" height="180" />
         </ContentLoader>
       )}
-      <p className="text-xl mt-3">{basket.name}</p>
+      <p className="text-xl mt-3 max-w-[200px]">{basket.name}</p>
     </div>
   );
 };
