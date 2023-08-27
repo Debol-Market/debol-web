@@ -14,6 +14,7 @@ export type Size = {
 };
 
 export type Basket = {
+  image: string;
   name: string;
   description: string;
   catagory?: string;
