@@ -1,6 +1,9 @@
 import useApp from "@/services/appContext";
+import { getUrl } from "@/services/storage";
+import Image from "next/image";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import ContentLoader from "react-content-loader";
 import { AiFillMinusCircle } from "react-icons/ai";
 import { BiSolidTrashAlt } from "react-icons/bi";
 import { GrClose } from "react-icons/gr";
@@ -66,7 +69,7 @@ const Cart = ({ onClose }: props) => {
   );
 };
 
-function CartItem({
+export function CartItem({
   cartItem,
   onDel,
   onChange,
@@ -76,6 +79,11 @@ function CartItem({
   onChange: (qty: number) => void;
 }) {
   const [isExpanded, setisExpanded] = useState(false);
+  const [image, setImage] = useState("");
+  console.log(cartItem);
+  useEffect(() => {
+    getUrl(cartItem.basket.image).then(setImage);
+  }, []);
 
   return (
     <div
@@ -85,8 +93,14 @@ function CartItem({
       onClick={() => setisExpanded(!isExpanded)}
     >
       <div className="flex py-4 gap-3 items-start">
-        <div className="h-24 w-24 border border-neutral-300 rounded-md bg-neutral-200">
-          image
+        <div className="h-24 w-24 border border-neutral-300 rounded-md">
+          {image ? (
+            <Image src={image} alt="" height={96} width={96} />
+          ) : (
+            <ContentLoader viewBox="0 0 96 96">
+              <rect x="0" y="0" rx="3" ry="3" width="96" height="96" />
+            </ContentLoader>
+          )}
         </div>
         <div className=" grow">
           <h3 className="text-xl">{cartItem.basket.name}</h3>
