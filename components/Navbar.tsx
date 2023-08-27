@@ -27,7 +27,7 @@ const Navbar = () => {
 
   return (
     <>
-      <div className="flex justify-center h-16 shadow-md sticky top-0">
+      <div className="flex justify-center h-16 sticky top-0 border-b border-neutral-300">
         <div className="max-w-screen-lg flex w-full mx-5 items-center">
           <Logo />
           <div className={`sm:grow flex justify-center ml-auto `}>
