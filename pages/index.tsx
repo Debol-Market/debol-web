@@ -32,7 +32,7 @@ const Page = () => {
             autoplay={{
               delay: 1000,
             }}
-            className="flex"
+            className="flex w-full"
           >
             <SwiperSlide>
               <div className="relative h-[30vh] grow z-20">
