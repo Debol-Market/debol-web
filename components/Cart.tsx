@@ -52,7 +52,9 @@ const Cart = ({ onClose }: props) => {
               />
             ))
           ) : (
-            <p>Your cart is empty</p>
+            <p className="p-4 text-2xl m-auto text-neutral-800">
+              Your cart is empty
+            </p>
           )}
         </div>
         <div className="flex justify-between p-2 px-4">
