@@ -24,7 +24,7 @@ const Page = () => {
     <>
       <div className="fixed top-1/4 h-[50vh] -z-50 bg-mint w-full"></div>
       <Navbar />
-      <div className="flex gap-8 sm:p-8 pb-8">
+      <div className="flex gap-8 sm:p-8 pb-8 relative -z-10">
         <div className="sm:rounded-3xl overflow-hidden flex">
           <Swiper
             slidesPerView={1}
@@ -35,24 +35,24 @@ const Page = () => {
             className="flex"
           >
             <SwiperSlide>
-              <div className="relative h-[30vh] grow">
-                <Image src={ad1} fill alt="" className="object-cover" />
+              <div className="relative h-[30vh] grow z-20">
+                <Image src={ad1} fill alt="" className="object-cover z-30" />
               </div>
             </SwiperSlide>
             <SwiperSlide>
-              <div className="relative h-[30vh] grow">
-                <Image src={ad2} fill alt="" className="object-cover" />
+              <div className="relative h-[30vh] grow z-20">
+                <Image src={ad2} fill alt="" className="object-cover z-30" />
               </div>
             </SwiperSlide>
             <SwiperSlide>
-              <div className="relative h-[30vh] grow">
-                <Image src={ad3} fill alt="" className="object-cover" />
+              <div className="relative h-[30vh] grow z-20">
+                <Image src={ad3} fill alt="" className="object-cover z-30" />
               </div>
             </SwiperSlide>
           </Swiper>
         </div>
         <div className="rounded-3xl overflow-hidden hidden md:block relative min-w-[240px]">
-          <Image src={add4} fill alt="" className="object-cover" />
+          <Image src={add4} fill alt="" className="object-cover z-30" />
         </div>
       </div>
       <div className="px-6">
