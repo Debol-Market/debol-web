@@ -17,6 +17,7 @@ const config: Config = {
         primary: "#075F47",
         accent: "#F49E0B",
         grey: "#f7f7f7",
+        mint: "#e4f9f0",
       },
     },
   },
