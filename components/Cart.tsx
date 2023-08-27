@@ -10,6 +10,7 @@ import { GrClose } from "react-icons/gr";
 import { IoAddCircle, IoCloseCircleOutline } from "react-icons/io5";
 import { CartItem } from "../utils/types";
 import Btn from "./Btn";
+
 type props = {
   onClose: () => void;
 };
@@ -95,7 +96,13 @@ export function CartItem({
       <div className="flex py-4 gap-3 items-start">
         <div className="h-24 w-24 border border-neutral-300 rounded-md">
           {image ? (
-            <Image src={image} alt="" height={96} width={96} />
+            <Image
+              src={image}
+              alt=""
+              height={96}
+              width={96}
+              className="h-full object-cover"
+            />
           ) : (
             <ContentLoader viewBox="0 0 96 96">
               <rect x="0" y="0" rx="3" ry="3" width="96" height="96" />
