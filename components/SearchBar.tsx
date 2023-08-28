@@ -2,7 +2,9 @@ import { useRouter } from "next/router";
 import { FC, useState } from "react";
 const SearchBar = () => {
   const router = useRouter();
-  const [keyword, setKeyword] = useState("");
+  const [keyword, setKeyword] = useState(
+    (router.query?.q as string | undefined) ?? ""
+  );
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
@@ -16,6 +18,7 @@ const SearchBar = () => {
     >
       <input
         type="text"
+        value={keyword}
         placeholder="Search"
         onChange={(e) => setKeyword(e.target.value)}
         className="border-none p-2 px-4 w-full bg-grey placeholder:text-neutral-300"
