@@ -16,7 +16,7 @@ const BasketCard: FC<props> = ({ basket }) => {
   }, []);
 
   return (
-    <div className="border border-neutral-300 rounded-2xl px-4 py-5 bg-white">
+    <div className="border shadow-lg rounded-2xl px-4 py-5 bg-white">
       {image ? (
         <div className="rounded-lg overflow-hidden">
           <Image
