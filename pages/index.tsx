@@ -57,7 +57,7 @@ const Page = () => {
       <div className="flex justify-center w-full">
         <div className="px-4 max-w-6xl w-full min-[480px]:mx-4">
           <h2 className="text-2xl font-semibold">Baskets</h2>
-          <div className="flex gap-4 flex-col min-[480px]:flex-row min-[480px]:items-strech p-4">
+          <div className="flex gap-6 flex-col min-[480px]:flex-row min-[480px]:items-strech p-4">
             {baskets.map((item) => (
               <BasketCard basket={item} key={item.id} id={item.id} />
             ))}
