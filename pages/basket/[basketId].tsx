@@ -22,18 +22,18 @@ const Page = ({ basket, basketId, imageUrl }: props) => {
   return (
     <>
       <Navbar />
-      <div className="h-[80vh] sm:p-8">
+      <div className="h-[90vh] p-3 sm:p-8">
         <div className="flex flex-col md:flex-row gap-4 h-full">
-          <div className="md:rounded-2xl overflow-hidden h-[30vh] md:h-auto shrink-0">
+          <div className="rounded-2xl overflow-hidden h-[30vh] md:max-w-[40vw] md:h-auto shrink-0">
             <img
               src={imageUrl}
               alt=""
-              className="md:h-full object-cover md:max-w-[40vw]"
+              className="object-cover  h-full w-full"
             />
           </div>
           <div className="grow px-3 flex flex-col items-stretch">
-            <h1 className="text-3xl font-bold ">{basket.name}</h1>
-            <p className="text-xl my-4 md:max-w-md">
+            <h1 className="text-2xl sm:text-3xl font-bold ">{basket.name}</h1>
+            <p className="text-lg sm:text-xl my-4 md:max-w-md">
               {basket.description ||
                 "This particular basket has everything to cater  8-10 people including Traditional beverages and bread"}
             </p>
