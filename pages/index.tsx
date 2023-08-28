@@ -7,7 +7,6 @@ import Navbar from "@/components/Navbar";
 import { getBaskets } from "@/services/database";
 import { Basket } from "@/utils/types";
 import Image from "next/image";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import "swiper/css";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -24,8 +23,8 @@ const Page = () => {
     <>
       <div className="fixed top-1/4 h-[50vh] -z-50 bg-mint w-full"></div>
       <Navbar />
-      <div className="flex gap-8 sm:p-8 pb-8 relative -z-10">
-        <div className="sm:rounded-3xl overflow-hidden flex grow">
+      <div className="flex gap-8 sm:p-8 pb-8 relative -z-10 justify-center">
+        <div className="sm:rounded-3xl overflow-hidden flex grow max-w-4xl">
           <Swiper
             slidesPerView={1}
             slidesPerGroup={3}
@@ -55,14 +54,14 @@ const Page = () => {
           <Image src={add4} fill alt="" className="object-cover z-30" />
         </div>
       </div>
-      <div className="px-6">
-        <h2 className="text-2xl font-semibold">Baskets</h2>
-        <div className="flex gap-4 flex-wrap p-4">
-          {baskets.map((item) => (
-            <Link href={`basket/${item.id}`} key={item.id}>
-              <BasketCard basket={item} />
-            </Link>
-          ))}
+      <div className="flex justify-center w-full">
+        <div className="px-4 max-w-6xl w-full min-[480px]:mx-4">
+          <h2 className="text-2xl font-semibold">Baskets</h2>
+          <div className="flex gap-4 flex-col min-[480px]:flex-row min-[480px]:items-strech p-4">
+            {baskets.map((item) => (
+              <BasketCard basket={item} key={item.id} id={item.id} />
+            ))}
+          </div>
         </div>
       </div>
     </>
