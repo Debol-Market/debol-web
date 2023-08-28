@@ -46,14 +46,15 @@ const Page = () => {
         window.location = url;
       })
       .catch((e) => {
+        setIsLoading(false);
         console.error(e.error);
       });
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen">
-      <div className="max-w-xl flex flex-wrap items-center gap-4">
-        <div className="">
+    <div className="flex items-center justify-center min-h-screen h-full bg-slate-100">
+      <div className="w-full max-w-2xl flex md:flex-row flex-col items-center gap-6">
+        <div className="grow">
           {cart.length ? (
             cart.map((item) => (
               <CartItem
@@ -67,7 +68,11 @@ const Page = () => {
             <p>Your cart is empty</p>
           )}
         </div>
-        <form action="" onSubmit={onSubmit}>
+        <form
+          action=""
+          onSubmit={onSubmit}
+          className="grow bg-white rounded-xl shadow-lg px-6 py-5 flex flex-col"
+        >
           <input
             placeholder="Name of the Recipent"
             value={name}
@@ -82,7 +87,12 @@ const Page = () => {
             label="Phone Number 2"
             onChange={(value) => setPhone2(value)}
           />
-          <Btn label="Next" type="submit" isLoading={isLoading} />
+          <Btn
+            label="Next"
+            type="submit"
+            isLoading={isLoading}
+            disabled={!phone1 || !phone2 || !name}
+          />
         </form>
       </div>
     </div>
