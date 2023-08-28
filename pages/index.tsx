@@ -24,7 +24,7 @@ const Page = () => {
       <div className="fixed top-1/4 h-[50vh] -z-50 bg-mint w-full"></div>
       <Navbar />
       <div className="flex gap-8 sm:p-8 pb-8 relative -z-10 justify-center">
-        <div className="sm:rounded-3xl overflow-hidden flex grow max-w-4xl">
+        <div className="sm:rounded-3xl overflow-hidden flex grow max-w-3xl">
           <Swiper
             slidesPerView={1}
             slidesPerGroup={3}
