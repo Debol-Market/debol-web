@@ -10,7 +10,7 @@ type props = {
 const PhoneField = ({ value, onChange, label }: props) => {
   return (
     <PhoneInput
-      style={{ width: "100%" }}
+      className="phone-input"
       defaultCountry="us"
       {...{ value, onChange, placeholder: label }}
     />

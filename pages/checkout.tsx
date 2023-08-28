@@ -53,8 +53,8 @@ const Page = () => {
 
   return (
     <div className="flex items-center justify-center min-h-screen h-full bg-slate-100">
-      <div className="w-full max-w-3xl flex md:flex-row flex-col items-center gap-6">
-        <div className="grow">
+      <div className="w-full max-w-3xl flex md:flex-row flex-col items-center gap-7">
+        <div className="grow h-[60vh]">
           <p className="ml-3 text-neutral-600 font-bold">Total:</p>
           <h1 className="ml-3 text-4xl sm:text-3xl font-semibold">
             ${total / 100}
@@ -80,7 +80,7 @@ const Page = () => {
           <h1 className="text-2xl font-semibold">Enter Shipping Information</h1>
           <label
             htmlFor="name"
-            className="text-xs font-bold text-neutral-700 mt-3"
+            className="text-xs font-bold text-neutral-600 mt-4 mb-0.5"
           >
             Name of Receiver
           </label>
@@ -88,17 +88,17 @@ const Page = () => {
             placeholder="John Doe"
             value={name}
             name="name"
-            className="border border-neutral-300 rounded-md p-2 px-4 w-full focus:border-blue-500"
+            className="border border-neutral-300 rounded-md p-2 px-4 w-full focus:border-blue-500 shadow-sm placeholder:text-neutral-400"
             onChange={(e) => setName(e.target.value)}
           />
-          <label className="text-xs font-bold text-neutral-700 mt-3">
+          <label className="text-xs font-bold text-neutral-600 mt-4 mb-0.5">
             Phone Number
           </label>
           <PhoneField
             label="Phone Number"
             onChange={(value) => setPhone1(value)}
           />
-          <label className="text-xs font-bold text-neutral-700 mt-3">
+          <label className="text-xs font-bold text-neutral-600 mt-4 mb-0.5">
             Phone Number 2(Optional)
           </label>
           <PhoneField
@@ -110,7 +110,7 @@ const Page = () => {
             type="submit"
             className="mt-6"
             isLoading={isLoading}
-            disabled={!phone1 || !phone2 || !name}
+            disabled={!phone1 || !name}
           />
         </form>
       </div>

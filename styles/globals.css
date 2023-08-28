@@ -53,3 +53,23 @@ button {
     --background-end-rgb: 0, 0, 0;
   }
 }
+
+.phone-input {
+  @apply w-full flex border border-neutral-300 rounded-md focus-within:border-blue-500 shadow-sm;
+}
+
+.phone-input .react-international-phone-country-selector-button {
+  border: none;
+  height: 100% !important;
+  padding: 8px;
+  @apply bg-slate-200;
+}
+
+.phone-input input {
+  border: none !important;
+  flex-grow: 1;
+  font-size: 16px !important;
+  height: auto !important;
+  padding: 8px !important;
+  /* @apply py-2 !important px-1; */
+}
