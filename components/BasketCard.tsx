@@ -28,7 +28,7 @@ const BasketCard: FC<props> = ({ basket }) => {
           />
         </div>
       ) : (
-        <ContentLoader viewBox="0 0 200 180">
+        <ContentLoader viewBox="0 0 200 180" height={180} width={200}>
           <rect x="0" y="0" rx="3" ry="3" width="200" height="180" />
         </ContentLoader>
       )}
