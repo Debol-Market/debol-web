@@ -53,8 +53,12 @@ const Page = () => {
 
   return (
     <div className="flex items-center justify-center min-h-screen h-full bg-slate-100">
-      <div className="w-full max-w-2xl flex md:flex-row flex-col items-center gap-6">
+      <div className="w-full max-w-3xl flex md:flex-row flex-col items-center gap-6">
         <div className="grow">
+          <p className="ml-3 text-neutral-600 font-bold">Total:</p>
+          <h1 className="ml-3 text-4xl sm:text-3xl font-semibold">
+            ${total / 100}
+          </h1>
           {cart.length ? (
             cart.map((item) => (
               <CartItem
@@ -73,16 +77,30 @@ const Page = () => {
           onSubmit={onSubmit}
           className="grow bg-white rounded-xl shadow-lg px-6 py-5 flex flex-col"
         >
+          <h1 className="text-2xl font-semibold">Enter Shipping Information</h1>
+          <label
+            htmlFor="name"
+            className="text-xs font-bold text-neutral-700 mt-3"
+          >
+            Name of Receiver
+          </label>
           <input
-            placeholder="Name of the Recipent"
+            placeholder="John Doe"
             value={name}
+            name="name"
             className="border border-neutral-300 rounded-md p-2 px-4 w-full focus:border-blue-500"
             onChange={(e) => setName(e.target.value)}
           />
+          <label className="text-xs font-bold text-neutral-700 mt-3">
+            Phone Number
+          </label>
           <PhoneField
             label="Phone Number"
             onChange={(value) => setPhone1(value)}
           />
+          <label className="text-xs font-bold text-neutral-700 mt-3">
+            Phone Number 2(Optional)
+          </label>
           <PhoneField
             label="Phone Number 2"
             onChange={(value) => setPhone2(value)}
@@ -90,6 +108,7 @@ const Page = () => {
           <Btn
             label="Next"
             type="submit"
+            className="mt-6"
             isLoading={isLoading}
             disabled={!phone1 || !phone2 || !name}
           />
