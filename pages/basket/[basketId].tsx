@@ -24,7 +24,7 @@ const Page = ({ basket, basketId, imageUrl }: props) => {
       <Navbar />
       <div className="h-[80vh] sm:p-8">
         <div className="flex flex-col md:flex-row gap-4 h-full">
-          <div className="md:rounded-2xl overflow-hidden">
+          <div className="md:rounded-2xl overflow-hidden h-[30vh] md:h-auto shrink-0">
             <img
               src={imageUrl}
               alt=""
