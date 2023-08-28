@@ -1,10 +1,11 @@
 import pic from "@/assets/logo_with_name.jpg";
+import Link from "next/link";
 
 const Logo = () => {
   return (
-    <div>
+    <Link href="/">
       <img src={pic.src} className="h-10" />
-    </div>
+    </Link>
   );
 };
 
