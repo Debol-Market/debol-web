@@ -10,6 +10,7 @@ import { GrClose } from "react-icons/gr";
 import { IoAddCircle, IoCloseCircleOutline } from "react-icons/io5";
 import { CartItem } from "../utils/types";
 import Btn from "./Btn";
+import CheckoutModal from "./CheckoutModal";
 
 type props = {
   onClose: () => void;
@@ -17,6 +18,7 @@ type props = {
 
 const Cart = ({ onClose }: props) => {
   const router = useRouter();
+  const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
   const { cart, removeFromCart, setCartItemQty } = useApp();
   const total = cart.reduce(
     (prev, item) => prev + item.item.price * item.qty,
@@ -65,9 +67,12 @@ const Cart = ({ onClose }: props) => {
           label="Checkout"
           disabled={cart.length == 0}
           className="m-2"
-          onClick={() => router.push("/checkout")}
+          onClick={() => setIsCheckoutModalOpen(true)}
         />
       </div>
+      {isCheckoutModalOpen && (
+        <CheckoutModal onClose={() => setIsCheckoutModalOpen(false)} />
+      )}
     </div>
   );
 };
