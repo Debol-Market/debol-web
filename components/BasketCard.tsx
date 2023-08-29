@@ -17,7 +17,7 @@ const BasketCard: FC<props> = ({ id, basket }) => {
   }, []);
 
   return (
-    <Link href={`basket/${id}`} className="w-full">
+    <Link href={`basket/${id}`} className="w-full max-w-md">
       <div className="border shadow-lg rounded-2xl px-4 py-5 bg-white">
         {image ? (
           <div className="rounded-lg overflow-hidden w-full aspect-[3/2]">
