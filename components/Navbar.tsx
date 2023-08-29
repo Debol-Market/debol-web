@@ -1,4 +1,5 @@
 import useApp from "@/services/appContext";
+import { motion } from "framer-motion";
 import { FC, useEffect, useState } from "react";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import { GrClose } from "react-icons/gr";
@@ -68,17 +69,25 @@ const CartBtn: FC = () => {
 
   return (
     <>
-      <button
+      <motion.button
+        key={cart.toString()}
+        animate={{
+          x: [0, -2, 2, 0],
+          rotate: [0, 10, -10, 0],
+        }}
         onClick={() => setIsCart(!isCart)}
         className="p-2 m-2 relative rounded-full hover:bg-slate-100 "
       >
         <AiOutlineShoppingCart className="h-8 w-8" />
         {cart.length > 0 ? (
-          <div className="h-2.5 w-2.5 rounded-full bg-red-500 absolute top-2.5 right-2"></div>
+          <motion.div
+            animate={{ scale: [1, 2, 1] }}
+            className="h-2.5 w-2.5 rounded-full bg-red-500 absolute top-2.5 right-2"
+          ></motion.div>
         ) : (
           <></>
         )}
-      </button>
+      </motion.button>
       {isCart && <Cart onClose={() => setIsCart(false)} />}
     </>
   );
