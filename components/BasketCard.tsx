@@ -17,12 +17,9 @@ const BasketCard: FC<props> = ({ id, basket }) => {
   }, []);
 
   return (
-    <Link
-      href={`basket/${id}`}
-      className="w-full min-[480px]:max-w-[300px] min-w-[200px]"
-    >
+    <Link href={`basket/${id}`} className="w-full">
       <div className="border shadow-lg rounded-2xl px-4 py-5 bg-white">
-        {image ? (
+        {0 ? (
           <div className="rounded-lg overflow-hidden w-full aspect-[3/2]">
             <img
               src={image}
@@ -31,8 +28,11 @@ const BasketCard: FC<props> = ({ id, basket }) => {
             />
           </div>
         ) : (
-          <ContentLoader viewBox="0 0 200 200" className="w-full h-full">
-            <rect x="0" y="0" rx="3" ry="3" className="w-full h-full" />
+          <ContentLoader
+            viewBox="0 0 300 200"
+            className="w-full h-full aspect-[3/2]"
+          >
+            <rect x="0" y="0" rx="3" ry="3" />
           </ContentLoader>
         )}
         <p className="text-lg md:text-xl mt-3 max-w-[200px]">{basket.name}</p>
