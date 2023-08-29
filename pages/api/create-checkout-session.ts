@@ -7,8 +7,8 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (req.method !== "POST")
-    return res.status(405).send({ error: "Method not allowed" });
+  // if (req.method !== "POST")
+  //   return res.status(405).send({ error: "Method not allowed" });
 
   const { items, name, phone1, phone2 } = req.body as {
     items?: PaymentData[];
