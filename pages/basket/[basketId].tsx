@@ -17,7 +17,15 @@ const Page = ({ basket, basketId, imageUrl }: props) => {
   const [sizeIndex, setSizeIndex] = useState(0);
   const { cart, addToCart, removeFromCart, setCartItemQty } = useApp();
 
-  if (!basketId || !basket) return <p>error</p>;
+  if (!basketId || !basket)
+    return (
+      <div className="h-screen flex flex-col">
+        <Navbar />
+        <div className="flex w-full grow items-center justify-center text-xl sm:text-2xl">
+          Sorry, Basket not found
+        </div>
+      </div>
+    );
 
   return (
     <>
@@ -91,6 +99,7 @@ export async function getServerSideProps({
   params,
 }: GetServerSidePropsContext) {
   const basket = await getBasket(params?.basketId as string);
+  if (!basket) return { props: { basket: null, basketId: null, imageUrl: "" } };
   let imageUrl;
   if (basket) imageUrl = await getUrl(basket.image);
 
