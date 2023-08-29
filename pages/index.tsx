@@ -4,6 +4,7 @@ import Carousel from "@/components/Carousel";
 import Navbar from "@/components/Navbar";
 import { getBaskets } from "@/services/database";
 import { Basket } from "@/utils/types";
+import Head from "next/head";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import "swiper/css";
@@ -18,6 +19,10 @@ const Page = () => {
   if (!baskets.length) return <></>;
   return (
     <>
+      <Head>
+        <title>Debol Market</title>
+        <meta name="description" content="Show your love to your family." />
+      </Head>
       <div className="fixed top-1/4 h-[50vh] -z-50 bg-mint w-full"></div>
       <Navbar />
       <div className="flex gap-8 sm:p-8 p-5 sm:pb-8 pb-4 justify-center">
