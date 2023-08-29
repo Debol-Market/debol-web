@@ -27,11 +27,11 @@ const Cart = ({ onClose }: props) => {
 
   return (
     <div
-      className="z-50 fixed top-0 left-0 h-screen w-screen bg-neutral-300/20 backdrop-blur-sm"
+      className="z-50 fixed top-0 left-0 h-full w-screen bg-neutral-300/20 backdrop-blur-sm"
       onClick={onClose}
     >
       <div
-        className="w-full max-w-sm bg-white h-full shadow absolute right-0 flex flex-col"
+        className="z-50 w-full max-w-sm bg-white h-full shadow absolute right-0 flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex h-16 gap-2 items-center border-b-neutral-300 border-b">
@@ -41,7 +41,7 @@ const Cart = ({ onClose }: props) => {
           >
             <GrClose className="h-6 w-6" />
           </button>
-          <h2 className="text-2xl font-semibold">Your Cart</h2>
+          <h2 className="text-xl sm:text-2xl font-semibold">Your Cart</h2>
         </div>
         <div className="flex flex-col grow">
           {cart.length ? (
@@ -54,19 +54,21 @@ const Cart = ({ onClose }: props) => {
               />
             ))
           ) : (
-            <p className="p-4 text-2xl m-auto text-neutral-800">
+            <p className="p-4 text-xl sm:text-2xl m-auto text-neutral-800/60">
               Your cart is empty
             </p>
           )}
         </div>
-        <div className="flex justify-between p-2 px-4">
-          <h2 className="text-lg">Total:</h2>
-          <p className="font-bold text-2xl">${total / 100}</p>
-        </div>
+        {cart.length > 0 && (
+          <div className="flex justify-between p-2 px-4">
+            <h2 className="text-lg">Total:</h2>
+            <p className="font-bold text-2xl">${total / 100}</p>
+          </div>
+        )}
         <Btn
           label="Checkout"
           disabled={cart.length == 0}
-          className="m-2"
+          className="m-4 mt-2"
           onClick={() => setIsCheckoutModalOpen(true)}
         />
       </div>
