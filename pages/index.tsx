@@ -1,15 +1,12 @@
-import ad1 from "@/assets/ad1.png";
-import ad2 from "@/assets/ad2.png";
-import ad3 from "@/assets/ad3.png";
 import add4 from "@/assets/add4.png";
 import BasketCard from "@/components/BasketCard";
+import Carousel from "@/components/Carousel";
 import Navbar from "@/components/Navbar";
 import { getBaskets } from "@/services/database";
 import { Basket } from "@/utils/types";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import "swiper/css";
-import { Swiper, SwiperSlide } from "swiper/react";
 
 const Page = () => {
   const [baskets, setBaskets] = useState<(Basket & { id: string })[]>([]);
@@ -23,7 +20,8 @@ const Page = () => {
     <>
       <div className="fixed top-1/4 h-[50vh] -z-50 bg-mint w-full"></div>
       <Navbar />
-      <div className="flex gap-8 sm:p-8 p-5 sm:pb-8 pb-4 relative -z-10 justify-center">
+      <div className="flex gap-8 sm:p-8 p-5 sm:pb-8 pb-4 justify-center">
+        {/* 
         <div className="sm:rounded-3xl rounded-2xl shadow-md overflow-hidden flex grow max-w-3xl">
           <Swiper slidesPerView={1} slidesPerGroup={3} className="flex w-full">
             <SwiperSlide>
@@ -43,8 +41,10 @@ const Page = () => {
             </SwiperSlide>
           </Swiper>
         </div>
+           */}
+        <Carousel />
         <div className="rounded-3xl overflow-hidden hidden md:block relative min-w-[240px]">
-          <Image src={add4} fill alt="" className="object-cover z-30" />
+          <Image src={add4} fill alt="" className="object-cover -z-10" />
         </div>
       </div>
       <div className="flex justify-center w-full">
@@ -56,42 +56,6 @@ const Page = () => {
               gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
             }}
           >
-            {baskets.map((item) => (
-              <BasketCard basket={item} key={item.id} id={item.id} />
-            ))}
-            {baskets.map((item) => (
-              <BasketCard basket={item} key={item.id} id={item.id} />
-            ))}
-            {baskets.map((item) => (
-              <BasketCard basket={item} key={item.id} id={item.id} />
-            ))}
-            {baskets.map((item) => (
-              <BasketCard basket={item} key={item.id} id={item.id} />
-            ))}
-            {baskets.map((item) => (
-              <BasketCard basket={item} key={item.id} id={item.id} />
-            ))}
-            {baskets.map((item) => (
-              <BasketCard basket={item} key={item.id} id={item.id} />
-            ))}
-            {baskets.map((item) => (
-              <BasketCard basket={item} key={item.id} id={item.id} />
-            ))}
-            {baskets.map((item) => (
-              <BasketCard basket={item} key={item.id} id={item.id} />
-            ))}
-            {baskets.map((item) => (
-              <BasketCard basket={item} key={item.id} id={item.id} />
-            ))}
-            {baskets.map((item) => (
-              <BasketCard basket={item} key={item.id} id={item.id} />
-            ))}
-            {baskets.map((item) => (
-              <BasketCard basket={item} key={item.id} id={item.id} />
-            ))}
-            {baskets.map((item) => (
-              <BasketCard basket={item} key={item.id} id={item.id} />
-            ))}
             {baskets.map((item) => (
               <BasketCard basket={item} key={item.id} id={item.id} />
             ))}
