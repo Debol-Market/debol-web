@@ -58,7 +58,7 @@ const Page = () => {
           <div
             className="grid gap-6 w-full p-4"
             style={{
-              gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+              gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
             }}
           >
             {baskets.map((item) => (
