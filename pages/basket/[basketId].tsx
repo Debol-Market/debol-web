@@ -5,6 +5,7 @@ import { getBasket } from "@/services/database";
 import { getUrl } from "@/services/storage";
 import { Basket } from "@/utils/types";
 import { GetServerSidePropsContext } from "next";
+import Head from "next/head";
 import { useState } from "react";
 
 type props = {
@@ -29,10 +30,17 @@ const Page = ({ basket, basketId, imageUrl }: props) => {
 
   return (
     <>
+      <Head>
+        <title>{basket.name} - Debol Market</title>
+        <meta
+          name="description"
+          content={`${basket.name} - ${basket.description}`}
+        />
+      </Head>
       <Navbar />
-      <div className="h-[90vh] p-3 sm:p-8">
-        <div className="flex flex-col md:flex-row gap-4 h-full">
-          <div className="rounded-2xl overflow-hidden h-[30vh] md:max-w-[40vw] md:h-auto shrink-0">
+      <div className="p-3 sm:p-8 mb-10">
+        <div className="flex flex-col md:flex-row gap-8 h-full">
+          <div className="rounded-2xl overflow-hidden md:h-[80vh] md:max-w-[40vw] shrink-0">
             <img
               src={imageUrl}
               alt=""
@@ -46,13 +54,13 @@ const Page = ({ basket, basketId, imageUrl }: props) => {
                 "This particular basket has everything to cater  8-10 people including Traditional beverages and bread"}
             </p>
             <div className="font-bold text-lg my-2">Basket Sizes</div>
-            <div className="bg-mint rounded-xl px-3 md:max-w-sm my-4 mb-8 pb-3 flex flex-col">
-              <div className="flex justify-center gap-2 mb-4">
+            <div className="bg-mint rounded-xl md:max-w-sm my-4 mb-8 pb-3 flex flex-col items-center">
+              <div className="flex gap-2 mb-4 overflow-auto no-scrollbar px-8 shrink-0">
                 {basket.sizes.map((size, index) => (
                   <button
                     key={index}
                     onClick={() => setSizeIndex(index)}
-                    className={`rounded-full px-4 py-2 text-lg ${
+                    className={`rounded-full px-4 py-2 text-lg shrink-0 ${
                       sizeIndex === index
                         ? "bg-primary text-white"
                         : "text-black hover:bg-primary/30"
@@ -62,7 +70,7 @@ const Page = ({ basket, basketId, imageUrl }: props) => {
                   </button>
                 ))}
               </div>
-              <div className="flex justify-between">
+              <div className="flex justify-between px-3 w-full">
                 <div className="w-1/2">
                   {basket.sizes[sizeIndex].items.map((item, index) => {
                     return (
@@ -98,9 +106,16 @@ const Page = ({ basket, basketId, imageUrl }: props) => {
 export async function getServerSideProps({
   params,
 }: GetServerSidePropsContext) {
-  const basket = await getBasket(params?.basketId as string);
+  let basket;
+  try {
+    basket = await getBasket(params?.basketId as string);
+  } catch (error) {
+    console.log(error);
+  }
+  console.log(basket, params);
   if (!basket) return { props: { basket: null, basketId: null, imageUrl: "" } };
   let imageUrl;
+
   if (basket) imageUrl = await getUrl(basket.image);
 
   return {
