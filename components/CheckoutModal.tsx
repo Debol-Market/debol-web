@@ -2,6 +2,7 @@ import useApp from "@/services/appContext";
 import { PaymentData } from "@/utils/types";
 import { FC, FormEventHandler, useState } from "react";
 import Btn from "./Btn";
+import Overlay from "./Overlay";
 import PhoneField from "./PhoneField";
 
 type props = {
@@ -55,10 +56,7 @@ const CheckoutModal: FC<props> = ({ onClose }) => {
   };
 
   return (
-    <div
-      className="z-50 fixed flex items-center justify-center top-0 left-0 h-screen w-screen bg-neutral-300/20 backdrop-blur-sm"
-      onClick={onClose}
-    >
+    <Overlay onClick={onClose}>
       <div
         className="bg-white shadow flex flex-col rounded-lg overflow-hidden"
         onClick={(e) => e.stopPropagation()}
@@ -103,7 +101,7 @@ const CheckoutModal: FC<props> = ({ onClose }) => {
           />
         </form>
       </div>
-    </div>
+    </Overlay>
   );
 };
 

@@ -1,8 +1,9 @@
 import useApp from "@/services/appContext";
 import { getUrl } from "@/services/storage";
+import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ContentLoader from "react-content-loader";
 import { AiFillMinusCircle } from "react-icons/ai";
 import { BiSolidTrashAlt } from "react-icons/bi";
@@ -11,7 +12,7 @@ import { IoAddCircle, IoCloseCircleOutline } from "react-icons/io5";
 import { CartItem } from "../utils/types";
 import Btn from "./Btn";
 import CheckoutModal from "./CheckoutModal";
-import { useQuery } from "@tanstack/react-query";
+import Overlay from "./Overlay";
 
 type props = {
   onClose: () => void;
@@ -27,12 +28,9 @@ const Cart = ({ onClose }: props) => {
   );
 
   return (
-    <div
-      className="z-50 fixed top-0 left-0 h-full w-screen bg-neutral-300/20 backdrop-blur-sm"
-      onClick={onClose}
-    >
+    <Overlay onClick={onClose}>
       <div
-        className="z-50 w-full max-w-sm bg-white h-full shadow absolute right-0 flex flex-col"
+        className="z-50 w-full max-w-md bg-white h-full shadow absolute right-0 flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex h-16 gap-2 items-center border-b-neutral-300 border-b">
@@ -76,7 +74,7 @@ const Cart = ({ onClose }: props) => {
       {isCheckoutModalOpen && (
         <CheckoutModal onClose={() => setIsCheckoutModalOpen(false)} />
       )}
-    </div>
+    </Overlay>
   );
 };
 
@@ -90,12 +88,16 @@ export function CartItem({
   onChange: (qty: number) => void;
 }) {
   const [isExpanded, setisExpanded] = useState(false);
-  const { data, status } = useQuery({ queryKey: ['getBasketImage', id], queryFn: () => getUrl(basket.image) })
+  const { data, status } = useQuery({
+    queryKey: ["getBasketImage", cartItem.basketId],
+    queryFn: () => getUrl(cartItem.basket.image),
+  });
 
   return (
     <div
-      className={`flex flex-col px-4 ${isExpanded && "border-b border-neutral-300 bg-neutral-50"
-        }`}
+      className={`flex flex-col px-4 ${
+        isExpanded && "border-b border-neutral-300 bg-neutral-50"
+      }`}
       onClick={() => setisExpanded(!isExpanded)}
     >
       <div className="flex py-4 gap-3 items-start">
