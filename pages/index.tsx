@@ -23,33 +23,11 @@ const Page = () => {
         <title>Debol Market</title>
         <meta name="description" content="Show your love to your family." />
       </Head>
-      <div className="fixed top-1/4 h-[50vh] -z-50 bg-mint w-full"></div>
       <Navbar />
       <div className="flex gap-8 sm:p-8 p-5 sm:pb-8 pb-4 justify-center">
-        {/* 
-        <div className="sm:rounded-3xl rounded-2xl shadow-md overflow-hidden flex grow max-w-3xl">
-          <Swiper slidesPerView={1} slidesPerGroup={3} className="flex w-full">
-            <SwiperSlide>
-              <div className="relative sm:h-[30vh] h-[15vh] grow z-20">
-                <Image src={ad1} fill alt="" className="object-cover z-30" />
-              </div>
-            </SwiperSlide>
-            <SwiperSlide>
-              <div className="relative sm:h-[30vh] h-[15vh] grow z-20">
-                <Image src={ad2} fill alt="" className="object-cover z-30" />
-              </div>
-            </SwiperSlide>
-            <SwiperSlide>
-              <div className="relative sm:h-[30vh] h-[15vh] grow z-20">
-                <Image src={ad3} fill alt="" className="object-cover z-30" />
-              </div>
-            </SwiperSlide>
-          </Swiper>
-        </div>
-           */}
         <Carousel />
-        <div className="rounded-3xl overflow-hidden hidden md:block relative min-w-[240px]">
-          <Image src={add4} fill alt="" className="object-cover -z-10" />
+        <div className="rounded-3xl overflow-hidden hidden md:block relative min-w-[240px] -z-10">
+          <Image src={add4} fill alt="" className="-z-10" />
         </div>
       </div>
       <div className="flex justify-center w-full">

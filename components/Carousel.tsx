@@ -58,48 +58,31 @@ const Carousel = () => {
 
   return (
     <div className="overflow-hidden relative h-[18vh] sm:h-[30vh] max-w-3xl w-full sm:rounded-3xl rounded-2xl">
-      <div className="relative w-full overflow-hidden h-full">
-        <div
-          ref={container}
-          onScroll={handleScroll}
-          className="flex overflow-scroll h-full snap-mandatory snap-x no-scrollbar"
-        >
-          <div className="grow shrink-0 relative h-full flex w-full snap-start">
-            <Image
-              src={ad1}
-              fill
-              alt=""
-              className="-z-10 object-cover w-full h-full"
-            />
-          </div>
-          <div className="grow shrink-0 relative h-full flex w-full snap-start">
-            <Image
-              src={ad2}
-              fill
-              alt=""
-              className="-z-10 object-cover w-full h-full"
-            />
-          </div>
-          <div className="grow shrink-0 relative h-full flex w-full snap-start">
-            <Image
-              src={ad3}
-              fill
-              alt=""
-              className="-z-10 object-cover w-full h-full"
-            />
-          </div>
+      <div
+        ref={container}
+        onScroll={handleScroll}
+        className="flex overflow-scroll h-full snap-mandatory snap-x no-scrollbar"
+      >
+        <div className="grow shrink-0 relative -z-10 h-full flex w-full snap-start">
+          <Image src={ad1} fill alt="" className="-z-10 object-cover" />
         </div>
+        <div className="grow shrink-0 relative -z-10 h-full flex w-full snap-start">
+          <Image src={ad2} fill alt="" className="-z-10 object-cover" />
+        </div>
+        <div className="grow shrink-0 relative -z-10 h-full flex w-full snap-start">
+          <Image src={ad3} fill alt="" className="-z-10 object-cover" />
+        </div>
+      </div>
 
-        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1 -z-10">
-          {[1, 2, 3].map((_, i) => (
-            <div
-              className={`rounded-full h-1.5 ${i == index ? "w-4" : "w-1.5"} ${
-                index == 1 ? "bg-primary" : "bg-accent"
-              }`}
-              key={i}
-            ></div>
-          ))}
-        </div>
+      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1 -z-10">
+        {[1, 2, 3].map((_, i) => (
+          <div
+            className={`rounded-full h-1.5 ${i == index ? "w-4" : "w-1.5"} ${
+              index == 1 ? "bg-primary" : "bg-accent"
+            }`}
+            key={i}
+          ></div>
+        ))}
       </div>
     </div>
   );

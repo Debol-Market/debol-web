@@ -30,7 +30,7 @@ const Navbar = () => {
 
   return (
     <>
-      <div className="flex justify-center h-16 sticky top-0 border-b border-neutral-300 bg-white">
+      <div className="flex justify-center h-16 sticky top-0 border-b border-neutral-300 bg-white z-20">
         <div className="flex w-full ml-4 sm:mr-4 items-center">
           <Logo />
           <div className={`sm:grow flex justify-center ml-auto `}>
