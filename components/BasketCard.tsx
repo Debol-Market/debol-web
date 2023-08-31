@@ -1,5 +1,6 @@
 import { getUrl } from "@/services/storage";
 import { Basket } from "@/utils/types";
+import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { FC, useEffect, useState } from "react";
 import ContentLoader from "react-content-loader";
@@ -10,19 +11,15 @@ type props = {
 };
 
 const BasketCard: FC<props> = ({ id, basket }) => {
-  const [image, setImage] = useState("");
-
-  useEffect(() => {
-    getUrl(basket.image).then(setImage);
-  }, []);
+  const { data, status } = useQuery({ queryKey: ['getBasketImage', id], queryFn: () => getUrl(basket.image) })
 
   return (
     <Link href={`basket/${id}`} className="w-full max-w-md">
       <div className="border shadow-lg rounded-2xl px-4 py-5 bg-white">
-        {image ? (
+        {status == 'success' ? (
           <div className="rounded-lg overflow-hidden w-full aspect-[3/2]">
             <img
-              src={image}
+              src={data}
               alt=""
               className="object-cover aspect-square w-full"
             />

@@ -11,6 +11,7 @@ import { IoAddCircle, IoCloseCircleOutline } from "react-icons/io5";
 import { CartItem } from "../utils/types";
 import Btn from "./Btn";
 import CheckoutModal from "./CheckoutModal";
+import { useQuery } from "@tanstack/react-query";
 
 type props = {
   onClose: () => void;
@@ -89,24 +90,19 @@ export function CartItem({
   onChange: (qty: number) => void;
 }) {
   const [isExpanded, setisExpanded] = useState(false);
-  const [image, setImage] = useState("");
-  console.log(cartItem);
-  useEffect(() => {
-    getUrl(cartItem.basket.image).then(setImage);
-  }, []);
+  const { data, status } = useQuery({ queryKey: ['getBasketImage', id], queryFn: () => getUrl(basket.image) })
 
   return (
     <div
-      className={`flex flex-col px-4 ${
-        isExpanded && "border-b border-neutral-300 bg-neutral-50"
-      }`}
+      className={`flex flex-col px-4 ${isExpanded && "border-b border-neutral-300 bg-neutral-50"
+        }`}
       onClick={() => setisExpanded(!isExpanded)}
     >
       <div className="flex py-4 gap-3 items-start">
         <div className="h-24 w-24 border border-neutral-300 rounded-md">
-          {image ? (
+          {status == "success" ? (
             <Image
-              src={image}
+              src={data}
               alt=""
               height={96}
               width={96}
