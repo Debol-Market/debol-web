@@ -58,7 +58,7 @@ const CheckoutModal: FC<props> = ({ onClose }) => {
   return (
     <Overlay onClick={onClose}>
       <div
-        className="bg-white shadow flex flex-col rounded-lg overflow-hidden"
+        className="bg-white max-w-md w-full shadow flex flex-col rounded-lg overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         <form action="" onSubmit={onSubmit} className="px-8 py-8 flex flex-col">
