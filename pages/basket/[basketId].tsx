@@ -1,4 +1,3 @@
-import Btn from "@/components/Btn";
 import Navbar from "@/components/Navbar";
 import useApp from "@/services/appContext";
 import { getBasket } from "@/services/database";
@@ -6,7 +5,7 @@ import { getUrl } from "@/services/storage";
 import { Basket } from "@/utils/types";
 import { GetServerSidePropsContext } from "next";
 import Head from "next/head";
-import { useState } from "react";
+import { FC, useState } from "react";
 
 type props = {
   basket?: Basket;
@@ -60,11 +59,10 @@ const Page = ({ basket, basketId, imageUrl }: props) => {
                   <button
                     key={index}
                     onClick={() => setSizeIndex(index)}
-                    className={`rounded-full px-4 py-2 text-lg shrink-0 ${
-                      sizeIndex === index
+                    className={`rounded-full px-4 py-2 text-lg shrink-0 ${sizeIndex === index
                         ? "bg-primary text-white"
                         : "text-black hover:bg-primary/30"
-                    }`}
+                      }`}
                   >
                     {size.name}
                   </button>
@@ -89,17 +87,44 @@ const Page = ({ basket, basketId, imageUrl }: props) => {
                 </div>
               </div>
             </div>
-            <Btn
+            <AddToCartBtn
               onClick={() =>
                 addToCart(basket.sizes[sizeIndex], 1, basketId, basket)
               }
-              label={"Add To Cart"}
-              className="w-full md:max-w-sm mt-auto"
+              isInCart={
+                cart.find(
+                  (item) =>
+                    item.basketId == basketId &&
+                    item.item.id == basket.sizes[sizeIndex].id,
+                ) != undefined
+              }
             />
           </div>
         </div>
       </div>
     </>
+  );
+};
+
+const AddToCartBtn: FC<{ onClick: VoidFunction; isInCart: boolean }> = ({
+  onClick,
+  isInCart,
+}) => {
+  if (isInCart)
+    return (
+      <div className="max-w-md mt-auto rounded-xl text-white font-semibold disabled:opacity-75 shadow-md disabled:shadow-none text-xl px-6 py-2 flex items-center justify-center bg-primary">
+        Added
+      </div>
+    );
+  return (
+    <button
+      onClick={onClick}
+      className={`max-w-md mt-auto mounded-xl text-white font-semibold disabled:opacity-75 shadow-md disabled:shadow-none text-xl px-6 py-2 flex items-center justify-center hover:brightness-110 ${isInCart ? "bg-primary" : "bg-gradient"
+        }`}
+      disabled={isInCart}
+    >
+      Add ToCart
+    </button>
   );
 };
 
