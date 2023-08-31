@@ -1,10 +1,18 @@
+import Navbar from "@/components/Navbar";
 import { useRouter } from "next/router";
 
 const Page = () => {
   const router = useRouter();
   const { orderId } = router.query;
 
-  return <div>{orderId}</div>;
+  return (
+    <>
+      <Navbar />
+      <div className="my-8 text-lg flex items-center justify-center">
+        Your Order was a Success
+      </div>
+    </>
+  );
 };
 
 // export async function getServerSideProps({
