@@ -11,12 +11,15 @@ type props = {
 };
 
 const BasketCard: FC<props> = ({ id, basket }) => {
-  const { data, status } = useQuery({ queryKey: ['getBasketImage', id], queryFn: () => getUrl(basket.image) })
+  const { data, status } = useQuery({
+    queryKey: ["getBasketImage", id],
+    queryFn: () => getUrl(basket.image),
+  });
 
   return (
-    <Link href={`basket/${id}`} className="w-full max-w-md">
-      <div className="border shadow-lg rounded-2xl px-4 py-5 bg-white">
-        {status == 'success' ? (
+    <Link href={`basket/${id}`} className="w-full max-w-md h-full">
+      <div className="border shadow-lg rounded-2xl px-4 py-5 bg-white h-full">
+        {status == "success" ? (
           <div className="rounded-lg overflow-hidden w-full aspect-[3/2]">
             <img
               src={data}
