@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 const Page = () => {
   const router = useRouter();
   const { orderId } = router.query;
-
+ 
   return (
     <>
       <Navbar />

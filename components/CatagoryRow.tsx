@@ -15,7 +15,7 @@ export default function CatagoryRow({ name }: props) {
 
   return (
     <div className="">
-      <h2>{name}</h2>
+      <h2 className="text-lg">{name}</h2>
       <div
         className="grid gap-6 w-full p-4"
         style={{
