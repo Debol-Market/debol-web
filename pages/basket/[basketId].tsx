@@ -60,16 +60,25 @@ const Page = ({ basket, basketId, imageUrl }: props) => {
                     key={index}
                     onClick={() => setSizeIndex(index)}
                     className={`rounded-full px-4 py-2 text-lg shrink-0 ${sizeIndex === index
-                      ? "bg-primary text-white"
-                      : "text-black hover:bg-primary/30"
+                        ? "bg-primary text-white"
+                        : "text-black hover:bg-primary/30"
                       }`}
                   >
                     {size.name}
                   </button>
                 ))}
               </div>
-              <div className="flex justify-between px-3 w-full">
-                <div className="w-3/4 sm:w-1/2">
+              <div className="justify-between px-6 w-full">
+                <div className="flex gap-3 mb-2 justify-between">
+                  <div className="text-lg font-semibold text-neutral-600">
+                    Price:
+                  </div>
+                  <div className="my-auto font-bold text-2xl text-primary">
+                    ${basket.sizes[sizeIndex].price / 100}
+                  </div>
+                </div>
+
+                <div className="">
                   {basket.sizes[sizeIndex].items.map((item, index) => {
                     return (
                       <div key={index} className="flex justify-between">
@@ -81,9 +90,6 @@ const Page = ({ basket, basketId, imageUrl }: props) => {
                       </div>
                     );
                   })}
-                </div>
-                <div className="my-auto font-bold text-2xl text-primary">
-                  ${basket.sizes[sizeIndex].price / 100}
                 </div>
               </div>
             </div>
