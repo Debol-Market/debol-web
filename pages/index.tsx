@@ -26,9 +26,9 @@ const Page = () => {
       <Navbar />
       <div className="flex gap-8 sm:p-8 p-5 sm:pb-8 pb-4 justify-center">
         <Carousel />
-        <div className="rounded-3xl overflow-hidden hidden md:block relative min-w-[240px] -z-10">
-          <Image src={add4} fill alt="" className="-z-10" />
-        </div>
+        {/*   <div className="rounded-3xl overflow-hidden hidden md:block relative min-w-[240px] -z-10"> */}
+        {/*     <Image src={add4} fill alt="" className="-z-10" /> */}
+        {/*   </div> */}
       </div>
       <div className="flex justify-center w-full">
         <div className="px-4 max-w-5xl w-full min-[480px]:mx-4">

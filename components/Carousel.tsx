@@ -57,7 +57,7 @@ const Carousel = () => {
   };
 
   return (
-    <div className="overflow-hidden relative h-[18vh] sm:h-[30vh] max-w-3xl w-full sm:rounded-3xl rounded-2xl">
+    <div className="overflow-hidden relative h-[18vh] sm:h-[30vh] max-w-4xl w-full sm:rounded-3xl rounded-2xl">
       <div
         ref={container}
         onScroll={handleScroll}
@@ -77,9 +77,8 @@ const Carousel = () => {
       <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1 -z-10">
         {[1, 2, 3].map((_, i) => (
           <div
-            className={`rounded-full h-1.5 ${i == index ? "w-4" : "w-1.5"} ${
-              index == 1 ? "bg-primary" : "bg-accent"
-            }`}
+            className={`rounded-full h-1.5 ${i == index ? "w-4" : "w-1.5"} ${index == 1 ? "bg-primary" : "bg-accent"
+              }`}
             key={i}
           ></div>
         ))}
