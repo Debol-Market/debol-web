@@ -38,7 +38,7 @@ const Page = ({ basket, basketId, imageUrl }: props) => {
       </Head>
       <Navbar />
       <div className="p-3 sm:p-8 mb-10">
-        <div className="flex flex-col md:flex-row gap-8 h-full">
+        <div className="flex flex-col md:flex-row gap-10 h-full">
           <div className="rounded-2xl overflow-hidden md:h-[80vh] md:max-w-[40vw] shrink-0">
             <img
               src={imageUrl}
@@ -46,14 +46,14 @@ const Page = ({ basket, basketId, imageUrl }: props) => {
               className="object-cover  h-full w-full"
             />
           </div>
-          <div className="grow px-3 flex flex-col items-stretch">
+          <div className="grow px-3 flex flex-col items-stretch md:max-w-md">
             <h1 className="text-2xl sm:text-3xl font-bold ">{basket.name}</h1>
-            <p className="text-lg sm:text-xl my-4 md:max-w-md">
+            <p className="text-lg sm:text-xl my-4">
               {basket.description ||
-                "This particular basket has everything to cater  8-10 people including Traditional beverages and bread"}
+                "This particular basket has everything to cater 8-10 people including Traditional beverages and bread"}
             </p>
             <div className="font-bold text-lg my-2">Basket Sizes</div>
-            <div className="bg-mint rounded-xl md:max-w-sm my-4 mb-8 pb-3 flex flex-col items-center">
+            <div className="bg-mint rounded-xl md:max-w-md my-4 mb-8 pb-5 flex flex-col items-center">
               <div className="flex gap-2 mb-4 overflow-auto no-scrollbar px-8 shrink-0">
                 {basket.sizes.map((size, index) => (
                   <button
@@ -125,7 +125,7 @@ const AddToCartBtn: FC<{ onClick: VoidFunction; isInCart: boolean }> = ({
   return (
     <button
       onClick={onClick}
-      className={`max-w-md mt-auto mounded-xl text-white font-semibold disabled:opacity-75 shadow-md disabled:shadow-none text-xl px-6 py-2 flex items-center justify-center hover:brightness-110 ${isInCart ? "bg-primary" : "bg-gradient"
+      className={`mt-auto rounded-xl text-white font-semibold disabled:opacity-75 shadow-md disabled:shadow-none text-xl px-6 py-2 flex items-center justify-center hover:brightness-110 ${isInCart ? "bg-primary" : "bg-gradient"
         }`}
       disabled={isInCart}
     >
