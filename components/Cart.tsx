@@ -30,7 +30,7 @@ const Cart = ({ onClose }: props) => {
   return (
     <Overlay onClick={onClose}>
       <div
-        className="z-50 w-full max-w-md bg-white h-full shadow absolute right-0 flex flex-col"
+        className="z-50 w-full max-w-md bg-white h-full pb-4 shadow absolute right-0 flex flex-col h-[100dvh]"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex h-16 gap-2 items-center border-b-neutral-300 border-b">
@@ -95,9 +95,8 @@ export function CartItem({
 
   return (
     <div
-      className={`flex flex-col px-4 ${
-        isExpanded && "border-b border-neutral-300 bg-neutral-50"
-      }`}
+      className={`flex flex-col px-4 ${isExpanded && "border-b border-neutral-300 bg-neutral-50"
+        }`}
       onClick={() => setisExpanded(!isExpanded)}
     >
       <div className="flex py-4 gap-3 items-start">
