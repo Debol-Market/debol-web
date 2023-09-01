@@ -8,7 +8,7 @@ type props = {
 const Overlay: FC<props> = ({ onClick, children }) => {
   return (
     <div
-      className="z-50 fixed flex items-center justify-center top-0 left-0 h-screen w-screen bg-neutral-700/30 backdrop-blur-sm"
+      className="z-50 fixed flex items-center justify-center top-0 bottom-0 left-0 h-screen w-screen bg-neutral-700/30 backdrop-blur-sm"
       onClick={onClick}
     >
       {children}
