@@ -1,5 +1,11 @@
 import { Basket } from "@/utils/types";
-import { get, ref } from "firebase/database";
+import {
+  query as dbQuery,
+  equalTo,
+  get,
+  orderByChild,
+  ref,
+} from "firebase/database";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { firestore, rtdb } from "./firebase";
 
@@ -30,4 +36,30 @@ export async function getBasketsByKeyword(keyword: string[]) {
     ...(doc.data() as Basket & { keyword: string[] }),
   }));
   return basketsData;
+}
+
+export async function getCatagories() {
+  const catRef = await get(ref(rtdb, "catagories"));
+
+  if (!catRef.exists() || !catRef.val()) return [];
+  return Object.entries(catRef.val())
+    .map(([k, v]) => ({
+      id: k,
+      name: (v as { name: string; count?: number }).name,
+      count: (v as { name: string; count?: number }).count,
+    }))
+    .filter((item) => (item?.count ?? 0) > 0);
+}
+
+export async function getBasketsByCatagory(name: string) {
+  const baskets = await get(
+    dbQuery(ref(rtdb, "baskets"), orderByChild("catagory"), equalTo(name))
+  );
+
+  if (!baskets.exists() || !baskets.val()) return [];
+
+  return Object.entries(baskets.val()).map(([k, v]) => ({
+    id: k,
+    ...(v as Basket),
+  }));
 }
