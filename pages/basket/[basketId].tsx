@@ -60,8 +60,8 @@ const Page = ({ basket, basketId, imageUrl }: props) => {
                     key={index}
                     onClick={() => setSizeIndex(index)}
                     className={`rounded-full px-4 py-2 text-lg shrink-0 ${sizeIndex === index
-                        ? "bg-primary text-white"
-                        : "text-black hover:bg-primary/30"
+                      ? "bg-primary text-white"
+                      : "text-black hover:bg-primary/30"
                       }`}
                   >
                     {size.name}
@@ -69,7 +69,7 @@ const Page = ({ basket, basketId, imageUrl }: props) => {
                 ))}
               </div>
               <div className="flex justify-between px-3 w-full">
-                <div className="w-1/2">
+                <div className="w-3/4 sm:w-1/2">
                   {basket.sizes[sizeIndex].items.map((item, index) => {
                     return (
                       <div key={index} className="flex justify-between">
