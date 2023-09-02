@@ -1,4 +1,5 @@
 import { initializeApp } from "firebase/app";
+import { connectAuthEmulator, getAuth } from "firebase/auth";
 import { connectDatabaseEmulator, getDatabase } from "firebase/database";
 import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
 import { connectStorageEmulator, getStorage } from "firebase/storage";
@@ -20,6 +21,7 @@ const isBrowser =
 export const app = initializeApp(firebaseConfig);
 // const analytics = getAnalytics(app);
 
+export const auth = getAuth(app);
 export const rtdb = getDatabase(app);
 export const firestore = getFirestore(app);
 export const storage = getStorage(app);
@@ -28,6 +30,7 @@ const EMULATORS_STARTED = "EMULATORS_STARTED";
 function startEmulators() {
   if (!(global as any)[EMULATORS_STARTED]) {
     (global as any)[EMULATORS_STARTED] = true;
+    connectAuthEmulator(auth, "http://localhost:9099");
     connectStorageEmulator(storage, "0.0.0.0", 9199);
     connectFirestoreEmulator(firestore, "0.0.0.0", 8080);
     connectDatabaseEmulator(rtdb, "0.0.0.0", 9000);
