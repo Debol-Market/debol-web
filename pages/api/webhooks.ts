@@ -1,12 +1,13 @@
 import admin from "@/services/firebase-admin";
+import stripe from "@/services/stripe";
 import { buffer } from "micro";
 import Cors from "micro-cors";
 import { NextApiRequest, NextApiResponse } from "next";
 import Stripe from "stripe";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? "", {
-  apiVersion: "2023-08-16",
-});
+// const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? "", {
+// apiVersion: "2023-08-16",
+// });
 const webhookSecret = process.env.STRIPE_WEBHOOK_KEY;
 
 export const config = {
@@ -15,7 +16,10 @@ export const config = {
   },
 };
 
-export async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   if (req.method !== "POST")
     return res.status(405).send({ error: "Method not allowed" });
 
@@ -52,8 +56,8 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
   res.status(200).json({ received: true });
 }
 
-const cors = Cors({
-  allowMethods: ["POST", "HEAD"],
-});
+// const cors = Cors({
+// allowMethods: ["POST", "HEAD"],
+// });
 
-export default cors(handler as any);
+// export default cors(handler as any);
