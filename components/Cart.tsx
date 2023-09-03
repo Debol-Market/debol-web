@@ -144,14 +144,12 @@ export function CartItem({
         <div className="pb-3 px-2">
           {cartItem.item.items.map((item) => (
             <div className="flex gap-2 justify-between" key={item.name}>
-              <div className="flex gap-3 justify-between flex-1 max-w-[50%]">
-                <div className="">{item.name}</div>
-                <div className="">
-                  {item.quantity}
-                  {item.unit} x {item.pricePerUnit / 100}$
-                </div>
+              <div className="max-w-[120px]">{item.name}</div>
+              <div className="">
+                {item.quantity}
+                {item.unit} x {item.pricePerUnit / 100}$
               </div>
-              <div className="ml-auto">
+              <div className="">
                 {(item.pricePerUnit / 100) * item.quantity}$
               </div>
             </div>
