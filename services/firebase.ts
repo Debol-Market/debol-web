@@ -22,6 +22,7 @@ export const app = initializeApp(firebaseConfig);
 // const analytics = getAnalytics(app);
 
 export const auth = getAuth(app);
+auth.languageCode = "en";
 export const rtdb = getDatabase(app);
 export const firestore = getFirestore(app);
 export const storage = getStorage(app);
@@ -30,7 +31,7 @@ const EMULATORS_STARTED = "EMULATORS_STARTED";
 function startEmulators() {
   if (!(global as any)[EMULATORS_STARTED]) {
     (global as any)[EMULATORS_STARTED] = true;
-    connectAuthEmulator(auth, "http://localhost:9099");
+    connectAuthEmulator(auth, "http://127.0.0.1:9099");
     connectStorageEmulator(storage, "0.0.0.0", 9199);
     connectFirestoreEmulator(firestore, "0.0.0.0", 8080);
     connectDatabaseEmulator(rtdb, "0.0.0.0", 9000);
