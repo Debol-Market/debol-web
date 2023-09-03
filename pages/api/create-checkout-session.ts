@@ -2,11 +2,11 @@ import admin from "@/services/firebase-admin";
 import { Basket, PaymentData } from "@/utils/types";
 import type { NextApiRequest, NextApiResponse } from "next";
 
-import Stripe from "stripe";
+// import Stripe from "stripe";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? "", {
-  apiVersion: "2023-08-16",
-});
+// const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? "", {
+//   apiVersion: "2023-08-16",
+// });
 
 export default async function handler(
   req: NextApiRequest,
@@ -80,16 +80,18 @@ export default async function handler(
     items,
   });
 
-  try {
-    const session = await stripe.checkout.sessions.create({
-      mode: "payment",
-      line_items,
-      payment_intent_data: { metadata: { orderId: orderRef.key } },
-      success_url: `${process.env.HOST}/order/${orderRef.key}`,
-    });
+  // try {
+  //   const session = await stripe.checkout.sessions.create({
+  //     mode: "payment",
+  //     line_items,
+  //     payment_intent_data: { metadata: { orderId: orderRef.key } },
+  //     success_url: `${process.env.HOST}/order/${orderRef.key}`,
+  //   });
 
-    res.status(200).json({ url: session.url });
-  } catch (e) {
-    res.status(500).json({ error: (e as Error).message });
-  }
+  //   res.status(200).json({ url: session.url });
+  // } catch (e) {
+  //   res.status(500).json({ error: (e as Error).message });
+  // }
+
+  res.status(200).json({ url: "jhsdkf" });
 }
