@@ -1,6 +1,6 @@
 import admin from "@/services/firebase-admin";
 import stripe from "@/services/stripe";
-import { Basket, PaymentData } from "@/utils/types";
+// import { Basket, PaymentData } from "@/utils/types";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
@@ -11,12 +11,14 @@ export default async function handler(
   // if (req.method !== "POST")
   //   return res.status(405).send({ error: "Method not allowed" });
 
-  const { items, name, phone1, phone2 } = req.body as {
-    items?: PaymentData[];
+  const { name, phone1, phone2 } = req.body as {
+    // items?: PaymentData[];
     name?: string;
     phone1?: string;
     phone2?: string;
   };
+
+  const items = [];
 
   if (!items) return res.status(400).send({ error: "Cart is empty" });
   if (!name || !phone1 || !phone2)
@@ -33,7 +35,7 @@ export default async function handler(
       .get();
     if (!basketRef.exists || !basketRef.val()) continue;
 
-    const basket = basketRef.val() as Basket;
+    const basket = basketRef.val();
     const size = basket.sizes.find((size) => size.id == item.sizeId);
 
     if (!size) continue;
