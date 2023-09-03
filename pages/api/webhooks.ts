@@ -11,7 +11,7 @@ const webhookSecret = process.env.STRIPE_WEBHOOK_KEY;
 
 export const config = {
   api: {
-    bodyParser: false,
+    bodyParser: true,
   },
 };
 

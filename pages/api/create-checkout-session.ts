@@ -7,6 +7,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  console.log(req);
   // if (req.method !== "POST")
   //   return res.status(405).send({ error: "Method not allowed" });
 
@@ -79,7 +80,7 @@ export default async function handler(
       mode: "payment",
       line_items,
       payment_intent_data: { metadata: { orderId: orderRef.key } },
-      success_url: `http://localhost:3000/order/${orderRef.key}`,
+      success_url: `${process.env.HOST}/order/${orderRef.key}`,
     });
 
     res.status(200).json({ url: session.url });
