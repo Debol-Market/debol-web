@@ -143,8 +143,8 @@ export function CartItem({
       {isExpanded && (
         <div className="pb-3 px-2">
           {cartItem.item.items.map((item) => (
-            <div className="flex gap-2 justify-between" key={item.name}>
-              <div className="max-w-[120px]">{item.name}</div>
+            <div className="flex gap-2 justify-between mb-1" key={item.name}>
+              <div className="w-[120px]">{item.name}</div>
               <div className="">
                 {item.quantity}
                 {item.unit} x {item.pricePerUnit / 100}$
