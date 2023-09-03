@@ -1,7 +1,7 @@
 import admin from "@/services/firebase-admin";
 import stripe from "@/services/stripe";
 import { Basket, PaymentData } from "@/utils/types";
-import { NextApiRequest, NextApiResponse } from "next";
+import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
   req: NextApiRequest,
