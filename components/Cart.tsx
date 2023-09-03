@@ -24,13 +24,13 @@ const Cart = ({ onClose }: props) => {
   const { cart, removeFromCart, setCartItemQty } = useApp();
   const total = cart.reduce(
     (prev, item) => prev + item.item.price * item.qty,
-    0
+    0,
   );
 
   return (
     <Overlay onClick={onClose}>
       <div
-        className="z-50 w-full max-w-md bg-white h-full pb-4 shadow absolute right-0 flex flex-col h-[100dvh]"
+        className="z-50 w-full max-w-md bg-white h-full shadow absolute right-0 flex flex-col h-[100dvh]"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex h-16 gap-2 items-center border-b-neutral-300 border-b">
