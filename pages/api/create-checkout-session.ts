@@ -3,10 +3,6 @@ import stripe from "@/services/stripe";
 import { Basket, PaymentData } from "@/utils/types";
 import type { NextApiRequest, NextApiResponse } from "next";
 
-export const config = {
-  runtime: "edge",
-};
-
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
