@@ -49,7 +49,7 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
       break;
   }
 
-  res.json({ received: true });
+  res.status(200).json({ received: true });
 }
 
 const cors = Cors({
