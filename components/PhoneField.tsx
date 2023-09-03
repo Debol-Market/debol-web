@@ -11,7 +11,7 @@ const PhoneField = ({ value, onChange, label }: props) => {
   return (
     <PhoneInput
       className="phone-input"
-      defaultCountry="us"
+      defaultCountry="et"
       {...{ value, onChange, placeholder: label }}
     />
   );
