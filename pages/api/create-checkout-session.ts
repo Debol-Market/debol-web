@@ -1,15 +1,15 @@
 import admin from "@/services/firebase-admin";
 import stripe from "@/services/stripe";
 import { Basket, PaymentData } from "@/utils/types";
-import { NextApiRequest, NextApiResponse } from "next";
+import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   console.log(req);
-  // if (req.method !== "POST")
-  //   return res.status(405).send({ error: "Method not allowed" });
+  if (req.method !== "POST")
+    return res.status(405).send({ error: "Method not allowed" });
 
   const { items, name, phone1, phone2 } = req.body as {
     items?: PaymentData[];

@@ -10,6 +10,7 @@ const nextConfig = {
       "0.0.0.0",
     ],
   },
+  webpack5: false,
 };
 
 module.exports = nextConfig;
