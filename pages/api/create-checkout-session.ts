@@ -78,6 +78,9 @@ export default async function handler(
   try {
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
+      invoice_creation: {
+        enabled: true,
+      },
       line_items,
       payment_intent_data: { metadata: { orderId: orderRef.key } },
       success_url: `${process.env.HOST}/order/${orderRef.key}`,
