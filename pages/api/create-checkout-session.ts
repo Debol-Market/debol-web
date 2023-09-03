@@ -22,6 +22,8 @@ export default async function handler(
     return res.status(400).send({ error: "No Shipping info is provided" });
 
   const line_items = [];
+  let total = 0;
+
   for (let item of items) {
     if (item.qty == 0) continue;
     const basketRef = await admin
@@ -47,9 +49,24 @@ export default async function handler(
         enabled: false,
       },
     });
+    total += size.price * item.qty;
   }
 
-  const orderRef = await await admin.database().ref("orders/").push({
+  line_items.push({
+    price_data: {
+      currency: "usd",
+      product_data: {
+        name: "Service Charge(30%)",
+      },
+      unit_amount: total * 0.3,
+    },
+    quantity: 1,
+    adjustable_quantity: {
+      enabled: false,
+    },
+  });
+
+  const orderRef = await admin.database().ref("orders/").push({
     name,
     phone1,
     phone2,
