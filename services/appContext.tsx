@@ -1,12 +1,22 @@
 import { Basket, CartItem, Size } from "@/utils/types";
 import useLocalStorage from "@/utils/useLocalStorage";
-import { createContext, useContext, useEffect } from "react";
+import { User, onAuthStateChanged } from "firebase/auth";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { getBasket } from "./database";
+import { auth } from "./firebase";
 
 type ContextType = {
+  user?: User;
   cart: CartItem[];
   removeFromCart: (sizeId: string) => void;
   setCartItemQty: (sizeId: string, qty: number) => void;
+  onAuthChange: (user: User | null) => Promise<void>;
   addToCart: (
     size: Size,
     qty: number,
@@ -24,15 +34,26 @@ export const appContext = createContext<ContextType>({
   addToCart: () => {},
   setCartItemQty: () => {},
   removeFromCart: () => {},
+  onAuthChange: async (user) => {},
 });
 
 export const AppContext = ({ children }: props) => {
+  const [user, setUser] = useState<User>();
   const [cart, updateCart, clearCart] = useLocalStorage<CartItem[]>("cart", []);
+
+  const onAuthChange = useCallback(async (user: User | null) => {
+    if (!user) {
+      setUser(undefined);
+      return;
+    }
+    setUser(user);
+  }, []);
 
   const addToCart = (
     size: Size,
     qty: number,
     basketId: string,
+
     basket: Basket
   ) => {
     if (cart.some((item: CartItem) => item.item.id == size.id)) return;
@@ -73,11 +94,21 @@ export const AppContext = ({ children }: props) => {
         updateCart(newCart);
       }
     );
+    const sub = onAuthStateChanged(auth, onAuthChange);
+
+    return sub();
   }, []);
 
   return (
     <appContext.Provider
-      value={{ cart, addToCart, removeFromCart, setCartItemQty }}
+      value={{
+        user,
+        cart,
+        addToCart,
+        removeFromCart,
+        setCartItemQty,
+        onAuthChange,
+      }}
     >
       {children}
     </appContext.Provider>
