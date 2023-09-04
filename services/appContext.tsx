@@ -15,6 +15,7 @@ type ContextType = {
   user?: User;
   cart: CartItem[];
   removeFromCart: (sizeId: string) => void;
+  clearCart: () => void;
   setCartItemQty: (sizeId: string, qty: number) => void;
   onAuthChange: (user: User | null) => Promise<void>;
   addToCart: (
@@ -32,6 +33,7 @@ type props = {
 export const appContext = createContext<ContextType>({
   cart: [],
   addToCart: () => {},
+  clearCart: () => {},
   setCartItemQty: () => {},
   removeFromCart: () => {},
   onAuthChange: async (user) => {},
@@ -103,6 +105,7 @@ export const AppContext = ({ children }: props) => {
     <appContext.Provider
       value={{
         user,
+        clearCart,
         cart,
         addToCart,
         removeFromCart,
