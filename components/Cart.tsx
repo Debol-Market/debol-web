@@ -3,7 +3,7 @@ import { getUrl } from "@/services/storage";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { FC, useState } from "react";
 import ContentLoader from "react-content-loader";
 import { AiFillMinusCircle } from "react-icons/ai";
 import { BiSolidTrashAlt } from "react-icons/bi";
@@ -19,7 +19,7 @@ type props = {
 };
 
 const Cart = ({ onClose }: props) => {
-  const router = useRouter();
+  const { user } = useApp();
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
   const { cart, removeFromCart, setCartItemQty } = useApp();
   const total = cart.reduce(
@@ -71,9 +71,12 @@ const Cart = ({ onClose }: props) => {
           onClick={() => setIsCheckoutModalOpen(true)}
         />
       </div>
-      {isCheckoutModalOpen && (
-        <CheckoutModal onClose={() => setIsCheckoutModalOpen(false)} />
-      )}
+      {isCheckoutModalOpen &&
+        (user ? (
+          <CheckoutModal onClose={() => setIsCheckoutModalOpen(false)} />
+        ) : (
+          <LoginModal onClose={() => setIsCheckoutModalOpen(false)} />
+        ))}
     </Overlay>
   );
 };
@@ -159,5 +162,31 @@ export function CartItem({
     </div>
   );
 }
+
+const LoginModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
+  const router = useRouter();
+  console.log(router)
+  return (
+    <Overlay onClick={onClose}>
+      <div
+        className="bg-white p-6 rounded-md flex flex-col"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <h2 className="text-2xl">Register</h2>
+        <p className="my-3 text-neutral-800 mb-7">
+          You need to Register inorder to Checkout
+        </p>
+        <Btn
+          label="Register"
+          onClick={() =>
+            router.push(
+              `/register?redirect=${encodeURIComponent(router.pathname)}`,
+            )
+          }
+        />
+      </div>
+    </Overlay>
+  );
+};
 
 export default Cart;

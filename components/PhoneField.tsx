@@ -5,13 +5,14 @@ type props = {
   value?: string;
   label: string;
   onChange?: (phone: string, country: CountryIso2) => void;
-};
+} & React.InputHTMLAttributes<HTMLInputElement>;
 
-const PhoneField = ({ value, onChange, label }: props) => {
+const PhoneField = ({ value, onChange, label, ...rest }: props) => {
   return (
     <PhoneInput
       className="phone-input"
       defaultCountry="et"
+      inputProps={rest}
       {...{ value, onChange, placeholder: label }}
     />
   );

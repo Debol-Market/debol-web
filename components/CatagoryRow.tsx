@@ -24,17 +24,17 @@ export default function CatagoryRow({ name }: props) {
       >
         {status == "success"
           ? data.map((item) => (
-              <BasketCard basket={item} id={item.id} key={item.id} />
-            ))
+            <BasketCard basket={item} id={item.id} key={item.id} />
+          ))
           : [1, 2, 3, 4].map((item) => (
-              <ContentLoader
-                viewBox="0 0 200 300"
-                className="w-full h-full rounded-2xl"
-                key={item}
-              >
-                <rect x="0" y="0" rx="3" ry="3" height={300} width={200} />
-              </ContentLoader>
-            ))}
+            <ContentLoader
+              viewBox="0 0 200 300"
+              className="w-full h-full rounded-2xl"
+              key={item}
+            >
+              <rect x="0" y="0" rx="3" ry="3" height={300} width={200} />
+            </ContentLoader>
+          ))}
       </div>
     </div>
   );

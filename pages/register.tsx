@@ -32,7 +32,7 @@ function Page() {
   const redirectUrl = useRedirect();
   const [phone, setPhone] = useState("");
   const isValid = isPhoneValid(phone);
-  console.log(isValid);
+  const [isFocused, setIsFocused] = useState(false);
   const [loading, setLoading] = useState(false);
   const [confirmation, setConfirmation] = useState<ConfirmationResult>();
   const [openModal, setOpenModal] = useState(false);
@@ -47,7 +47,7 @@ function Page() {
       "recaptcha-container",
       {
         size: "invisible",
-      }
+      },
     );
 
     signInWithPhoneNumber(auth, phone.replace(" ", ""), recaptchaVerifier)
@@ -87,10 +87,14 @@ function Page() {
           </p>
           <PhoneField
             label="Phone Number"
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
             onChange={(value) => setPhone(value)}
           />
           <p className="text-red-600 text-sm mb-2 mt-1">
-            {!isValid && "Phone Number is not valid."}
+            {!isValid && !isFocused && phone != "+251 "
+              ? "Phone Number is not valid."
+              : null}
           </p>
 
           <Btn
