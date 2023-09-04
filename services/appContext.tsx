@@ -44,11 +44,7 @@ export const AppContext = ({ children }: props) => {
   const [cart, updateCart, clearCart] = useLocalStorage<CartItem[]>("cart", []);
 
   const onAuthChange = useCallback(async (user: User | null) => {
-    if (!user) {
-      setUser(undefined);
-      return;
-    }
-    setUser(user);
+    setUser(user ?? undefined);
   }, []);
 
   const addToCart = (
@@ -79,26 +75,22 @@ export const AppContext = ({ children }: props) => {
     Promise.all(cart.map((item) => getBasket(item.basketId))).then(
       (baskets) => {
         const newCart: CartItem[] = [];
-        console.log(baskets, 123454);
         baskets.forEach((basket) => {
           if (!basket) return;
-          console.log({ basket });
           basket.sizes.forEach((size) => {
             const dbSize = cart.find((cartItem) => cartItem.item.id == size.id);
-            console.log({ dbSize });
             if (!dbSize) return;
             if (newCart.find((item) => item.item.id == dbSize.item.id)) return;
             newCart.push({ ...dbSize, item: size, basket });
           });
         });
-        console.log({ newCart });
         clearCart();
         updateCart(newCart);
       }
     );
     const sub = onAuthStateChanged(auth, onAuthChange);
 
-    return sub();
+    return sub;
   }, []);
 
   return (
