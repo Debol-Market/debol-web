@@ -7,7 +7,6 @@ import { useEffect, useState } from "react";
 
 const Page = () => {
   const router = useRouter();
-  console.log(router.query);
   const { orderId } = router.query;
   const { user } = useApp();
   const [isLoading, setIsLoading] = useState(true);
@@ -32,11 +31,7 @@ const Page = () => {
           setIsLoading(false);
         });
     });
-  }, [orderId]);
-
-  if (error) {
-    return <div>{error.toString()}</div>;
-  }
+  }, [orderId, user]);
 
   return (
     <>
@@ -54,7 +49,7 @@ const Page = () => {
                 Your Order was a Success!!!
               </div>
               <div className=""></div>
-              <p>Show this Qr Code to deliver person only.</p>
+              <p>Show this Qr Code to the person delivering the order only.</p>
             </div>
           </>
         )}
