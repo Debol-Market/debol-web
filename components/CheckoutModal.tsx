@@ -1,10 +1,10 @@
+import { isPhoneValid } from "@/pages/register";
 import useApp from "@/services/appContext";
 import { PaymentData } from "@/utils/types";
 import { FC, FormEventHandler, useState } from "react";
 import Btn from "./Btn";
 import Overlay from "./Overlay";
 import PhoneField from "./PhoneField";
-import { isPhoneValid } from "@/pages/register";
 
 type props = {
   onClose: VoidFunction;
@@ -25,7 +25,7 @@ const CheckoutModal: FC<props> = ({ onClose }) => {
   const { cart, removeFromCart, setCartItemQty } = useApp();
   const total = cart.reduce(
     (prev, item) => prev + item.item.price * item.qty,
-    0,
+    0
   );
 
   const onSubmit: FormEventHandler = async (e) => {
@@ -111,7 +111,7 @@ const CheckoutModal: FC<props> = ({ onClose }) => {
             type="submit"
             className="mt-6"
             isLoading={isLoading}
-            disabled={phone1 != "+251 " || !name}
+            disabled={phone1 == "+251 " || !name}
           />
         </form>
       </div>
