@@ -33,3 +33,9 @@ export type PaymentData = {
   basketId: string;
   sizeId: string;
 };
+
+export type Contacts ={
+  name: string;
+  email: string;
+  message: string;
+}
