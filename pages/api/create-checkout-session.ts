@@ -7,10 +7,14 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  console.log(req);
   if (req.method !== "POST")
     return res.status(405).send({ error: "Method not allowed" });
 
+  const token = req.headers.authorization?.split(' ')[1];
+
+  if (!token) return res.status(403).json({ error: 'No token is provided' });
+  const uid = (await admin.auth().verifyIdToken(token)).uid;
+  
   const { items, name, phone1, phone2 } = req.body as {
     items?: PaymentData[];
     name?: string;
@@ -71,6 +75,7 @@ export default async function handler(
     name,
     phone1,
     phone2,
+    uid,
     status: "payment pending",
     items,
   });

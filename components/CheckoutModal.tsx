@@ -11,6 +11,7 @@ type props = {
 };
 
 const CheckoutModal: FC<props> = ({ onClose }) => {
+  const { user } = useApp();
   const [name, setName] = useState("");
   const [phone1, setPhone1] = useState("");
   const [phone2, setPhone2] = useState("");
@@ -27,37 +28,36 @@ const CheckoutModal: FC<props> = ({ onClose }) => {
     0,
   );
 
-  const onSubmit: FormEventHandler = (e) => {
+  const onSubmit: FormEventHandler = async (e) => {
     e.preventDefault();
+    if (!user) return;
     setIsLoading(true);
-    fetch("/api/create-checkout-session", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        items: cart.map((item) => ({
-          basketId: item.basketId,
-          sizeId: item.item.id,
-          qty: item.qty,
-        })) as PaymentData[],
-        name,
-        phone1,
-        phone2,
-      }),
-    })
-      .then((res) => {
-        if (res.ok) return res.json();
-        return res.json().then((json) => Promise.reject(json));
-      })
-      .then(({ url }) => {
-        setIsLoading(false);
-        window.location = url;
-      })
-      .catch((e) => {
-        setIsLoading(false);
-        console.error(e.error);
+    const token = await user.getIdToken();
+    try {
+      const res = await fetch("/api/create-checkout-session", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `bearer ${token}`,
+        },
+        body: JSON.stringify({
+          items: cart.map((item) => ({
+            basketId: item.basketId,
+            sizeId: item.item.id,
+            qty: item.qty,
+          })) as PaymentData[],
+          name,
+          phone1,
+          phone2,
+        }),
       });
+      const { url } = await res.json();
+      setIsLoading(false);
+      window.location = url;
+    } catch (error) {
+      console.error(error);
+    }
+    setIsLoading(false);
   };
 
   return (
@@ -106,17 +106,12 @@ const CheckoutModal: FC<props> = ({ onClose }) => {
             onBlur={() => setIsFocused2(false)}
             onChange={(value) => setPhone2(value)}
           />
-          <p className="text-red-600 text-sm mb-2 mt-1">
-            {!isValid2 && !isFocused2 && phone2 != "+251 "
-              ? "Phone Number is not valid."
-              : null}
-          </p>
           <Btn
             label="Next"
             type="submit"
             className="mt-6"
             isLoading={isLoading}
-            disabled={!phone1 || !name}
+            disabled={phone1 != "+251 " || !name}
           />
         </form>
       </div>
