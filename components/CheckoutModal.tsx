@@ -4,6 +4,7 @@ import { FC, FormEventHandler, useState } from "react";
 import Btn from "./Btn";
 import Overlay from "./Overlay";
 import PhoneField from "./PhoneField";
+import { isPhoneValid } from "@/pages/register";
 
 type props = {
   onClose: VoidFunction;
@@ -13,13 +14,17 @@ const CheckoutModal: FC<props> = ({ onClose }) => {
   const [name, setName] = useState("");
   const [phone1, setPhone1] = useState("");
   const [phone2, setPhone2] = useState("");
+  const [isFocused1, setIsFocused1] = useState(false);
+  const [isFocused2, setIsFocused2] = useState(false);
+  const isValid1 = isPhoneValid(phone1);
+  const isValid2 = isPhoneValid(phone2);
   const [isLoading, setIsLoading] = useState(false);
 
   // TODO: add loading to btn
   const { cart, removeFromCart, setCartItemQty } = useApp();
   const total = cart.reduce(
     (prev, item) => prev + item.item.price * item.qty,
-    0
+    0,
   );
 
   const onSubmit: FormEventHandler = (e) => {
@@ -83,15 +88,29 @@ const CheckoutModal: FC<props> = ({ onClose }) => {
           </label>
           <PhoneField
             label="Phone Number"
+            onFocus={() => setIsFocused1(true)}
+            onBlur={() => setIsFocused1(false)}
             onChange={(value) => setPhone1(value)}
           />
+          <p className="text-red-600 text-sm mb-2 mt-1">
+            {!isValid1 && !isFocused1! && phone1 != "+251 "
+              ? "Phone Number is not valid."
+              : null}
+          </p>
           <label className="text-xs font-bold text-neutral-600 mt-4 mb-0.5">
             Phone Number 2(Optional)
           </label>
           <PhoneField
             label="Phone Number 2"
+            onFocus={() => setIsFocused2(true)}
+            onBlur={() => setIsFocused2(false)}
             onChange={(value) => setPhone2(value)}
           />
+          <p className="text-red-600 text-sm mb-2 mt-1">
+            {!isValid2 && !isFocused2 && phone2 != "+251 "
+              ? "Phone Number is not valid."
+              : null}
+          </p>
           <Btn
             label="Next"
             type="submit"

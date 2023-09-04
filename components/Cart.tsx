@@ -98,8 +98,9 @@ export function CartItem({
 
   return (
     <div
-      className={`flex flex-col px-4 ${isExpanded && "border-b border-neutral-300 bg-neutral-50"
-        }`}
+      className={`flex flex-col px-4 ${
+        isExpanded && "border-b border-neutral-300 bg-neutral-50"
+      }`}
       onClick={() => setisExpanded(!isExpanded)}
     >
       <div className="flex py-4 gap-3 items-start">
@@ -165,7 +166,7 @@ export function CartItem({
 
 const LoginModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
   const router = useRouter();
-  console.log(router)
+
   return (
     <Overlay onClick={onClose}>
       <div
@@ -180,7 +181,7 @@ const LoginModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
           label="Register"
           onClick={() =>
             router.push(
-              `/register?redirect=${encodeURIComponent(router.pathname)}`,
+              `/register?redirect=${encodeURIComponent(router.asPath)}`,
             )
           }
         />

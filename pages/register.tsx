@@ -18,7 +18,7 @@ import { FcGoogle } from "react-icons/fc";
 
 const phoneUtil = PhoneNumberUtil.getInstance();
 
-const isPhoneValid = (phone: string) => {
+export const isPhoneValid = (phone: string) => {
   try {
     return phoneUtil.isValidNumber(phoneUtil.parseAndKeepRawInput(phone));
   } catch (error) {
@@ -74,7 +74,6 @@ function Page() {
         <header className="mb-3">
           <Logo />
         </header>
-        <form onSubmit={formSubmit} className="flex flex-col">
           <button
             onClick={googleLogin}
             className="bg-slate-50 hover:bg-slate-100 flex items-center gap-3 py-3 px-4 rounded-lg shadow-md"
@@ -82,6 +81,7 @@ function Page() {
             <FcGoogle size={24} />
             Sign in with Google
           </button>
+        <form onSubmit={formSubmit} className="flex flex-col">
           <p className="text-center text-neutral-500 text-lg font-bold my-5">
             OR
           </p>
