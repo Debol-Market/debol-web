@@ -33,3 +33,14 @@ export type PaymentData = {
   basketId: string;
   sizeId: string;
 };
+
+export type Order = {
+  uid: string;
+  phone1: string;
+  phone2: string;
+  items: CartItem[];
+  name: string;
+  status: "pending" | "completed" | "payment pending";
+  paymentId?: string;
+  timestamp: number;
+};
