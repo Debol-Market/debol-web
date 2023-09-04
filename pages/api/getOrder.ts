@@ -5,16 +5,16 @@ import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse,
+  res: NextApiResponse
 ) {
   if (req.method !== "GET")
     return res.status(405).send({ error: "Method not allowed" });
 
   const token = req.headers.authorization?.split(" ")[1];
 
-  if (!token) return res.status(403).json({ error: 'No token is provided' });
+  if (!token) return res.status(403).json({ error: "No token is provided" });
   const uid = (await admin.auth().verifyIdToken(token)).uid;
-  
+
   const { orderId } = req.query as {
     orderId?: string;
   };
@@ -30,7 +30,6 @@ export default async function handler(
   const order = orderRef.val() as Order;
 
   const orderCode = encrypt({ ...order, uid });
-  console.log(orderCode);
 
   res.status(200).send({ ...order, orderCode: encrypt({ ...order, uid }) });
 }
