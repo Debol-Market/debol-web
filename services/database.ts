@@ -8,7 +8,7 @@ import {
   ref,
   set,
 } from "firebase/database";
-import { collection, doc, getDocs, query, setDoc, where } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { firestore, rtdb } from "./firebase";
 
 export const getBaskets = async () => {
@@ -30,8 +30,8 @@ export async function getBasketsByKeyword(keyword: string[]) {
   const baskets = await getDocs(
     query(
       collection(firestore, "baskets"),
-      where("keywords", "array-contains-any", keyword),
-    ),
+      where("keywords", "array-contains-any", keyword)
+    )
   );
   const basketsData = baskets.docs.map((doc) => ({
     id: doc.id,
@@ -55,7 +55,7 @@ export async function getCatagories() {
 
 export async function getBasketsByCatagory(name: string) {
   const baskets = await get(
-    dbQuery(ref(rtdb, "baskets"), orderByChild("catagory"), equalTo(name)),
+    dbQuery(ref(rtdb, "baskets"), orderByChild("catagory"), equalTo(name))
   );
 
   if (!baskets.exists() || !baskets.val()) return [];
@@ -66,11 +66,7 @@ export async function getBasketsByCatagory(name: string) {
   }));
 }
 
-export const createContact =async (contacts:Contacts) => {
-  const contactsRef = push(ref(rtdb, 'contacts'));
-  setDoc(doc(firestore, `contacts`, contactsRef.key), {
-    ...contacts,
-    keywords: contacts,
-  });
-  return set(contactsRef,contacts);
-}
+export const createContact = async (contacts: Contacts) => {
+  const contactsRef = push(ref(rtdb, "contacts"));
+  return set(contactsRef, contacts);
+};

@@ -10,3 +10,7 @@ export async function signInWithGoogle() {
 
   return await signInWithPopup(auth, provider);
 }
+
+export async function logout() {
+  return await auth.signOut();
+}
