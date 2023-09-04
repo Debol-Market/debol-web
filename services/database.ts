@@ -30,8 +30,8 @@ export async function getBasketsByKeyword(keyword: string[]) {
   const baskets = await getDocs(
     query(
       collection(firestore, "baskets"),
-      where("keywords", "array-contains-any", keyword)
-    )
+      where("keywords", "array-contains-any", keyword),
+    ),
   );
   const basketsData = baskets.docs.map((doc) => ({
     id: doc.id,
@@ -55,7 +55,7 @@ export async function getCatagories() {
 
 export async function getBasketsByCatagory(name: string) {
   const baskets = await get(
-    dbQuery(ref(rtdb, "baskets"), orderByChild("catagory"), equalTo(name))
+    dbQuery(ref(rtdb, "baskets"), orderByChild("catagory"), equalTo(name)),
   );
 
   if (!baskets.exists() || !baskets.val()) return [];

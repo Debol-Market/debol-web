@@ -1,15 +1,63 @@
 import Navbar from "@/components/Navbar";
+import useApp from "@/services/appContext";
+import { Order } from "@/utils/types";
 import { useRouter } from "next/router";
+import { QRCodeCanvas } from "qrcode.react";
+import { useEffect, useState } from "react";
 
 const Page = () => {
   const router = useRouter();
+  console.log(router.query);
   const { orderId } = router.query;
- 
+  const { user } = useApp();
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+  const [data, setData] = useState<Order & { orderCode: string }>();
+
+  useEffect(() => {
+    if (!orderId || !user) return;
+    setIsLoading(true);
+    user.getIdToken().then((token) => {
+      fetch(`/api/getOrder?orderId=${orderId}`, {
+        headers: { authorization: `bearer ${token}` },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setData(data);
+          setIsLoading(false);
+        })
+        .catch((err) => {
+          console.error(err);
+          setError(err);
+          setIsLoading(false);
+        });
+    });
+  }, [orderId]);
+
+  if (error) {
+    return <div>{error.toString()}</div>;
+  }
+
   return (
     <>
       <Navbar />
-      <div className="my-8 text-lg flex items-center justify-center">
-        Your Order was a Success
+      <div className="my-8 text-lg flex flex-col gap-3 md:flex-row items-center justify-center">
+        {isLoading ? (
+          <div>Loading...</div>
+        ) : error ? (
+          <div>{error.toString()}</div>
+        ) : (
+          <>
+            <QRCodeCanvas value={data.orderCode as string} size={270} />
+            <div className="text-center px-10">
+              <div className="font-bold text-xl">
+                Your Order was a Success!!!
+              </div>
+              <div className=""></div>
+              <p>Show this Qr Code to deliver person only.</p>
+            </div>
+          </>
+        )}
       </div>
     </>
   );
