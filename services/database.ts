@@ -1,12 +1,14 @@
-import { Basket } from "@/utils/types";
+import { Basket, Contacts } from "@/utils/types";
 import {
   query as dbQuery,
   equalTo,
   get,
   orderByChild,
+  push,
   ref,
+  set,
 } from "firebase/database";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, doc, getDocs, query, setDoc, where } from "firebase/firestore";
 import { firestore, rtdb } from "./firebase";
 
 export const getBaskets = async () => {
@@ -62,4 +64,13 @@ export async function getBasketsByCatagory(name: string) {
     id: k,
     ...(v as Basket),
   }));
+}
+
+export const createContact =async (contacts:Contacts) => {
+  const contactsRef = push(ref(rtdb, 'contacts'));
+  setDoc(doc(firestore, `contacts`, contactsRef.key), {
+    ...contacts,
+    keywords: contacts,
+  });
+  return set(contactsRef,contacts);
 }
