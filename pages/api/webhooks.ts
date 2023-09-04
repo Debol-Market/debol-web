@@ -1,9 +1,7 @@
 import admin from "@/services/firebase-admin";
 import stripe from "@/services/stripe";
 import { buffer } from "micro";
-import Cors from "micro-cors";
 import { NextApiRequest, NextApiResponse } from "next";
-import Stripe from "stripe";
 
 // const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? "", {
 // apiVersion: "2023-08-16",
@@ -18,7 +16,7 @@ export const config = {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse,
+  res: NextApiResponse
 ) {
   if (req.method !== "POST")
     return res.status(405).send({ error: "Method not allowed" });
@@ -45,6 +43,7 @@ export default async function handler(
       const charge = event.data.object;
       const { orderId } = charge.metadata as { orderId: string };
       admin.database().ref(`orders/${orderId}`).update({
+        paymentId: charge.id,
         status: "pending",
       });
       break;
