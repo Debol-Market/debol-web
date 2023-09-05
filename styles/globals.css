@@ -27,7 +27,7 @@
 }
 
 input,
-button {
+button, textarea {
   outline: none;
 }
 
