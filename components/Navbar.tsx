@@ -100,7 +100,7 @@ const Navbar = () => {
       </div>
       {dropdown && (
         <div className="absolute top-16 right-0 w-full md:w-[240px] rounded-lg shadow-lg bg-white py-2 flex justify-center flex-col text-center">
-          <Link href="/orders" className="py-2">
+          <Link href="/order" className="py-2">
             <div>Orders</div>
           </Link>
           <div
