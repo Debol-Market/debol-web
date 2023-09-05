@@ -5,7 +5,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   if (req.method !== "POST")
     return res.status(405).send({ error: "Method not allowed" });
@@ -25,6 +25,8 @@ export default async function handler(
   if (!items) return res.status(400).send({ error: "Cart is empty" });
   if (!name || !phone1 || !phone2)
     return res.status(400).send({ error: "No Shipping info is provided" });
+
+  const itemsBrought = [];
 
   const line_items = [];
   let total = 0;
@@ -54,6 +56,12 @@ export default async function handler(
         enabled: false,
       },
     });
+    itemsBrought.push({
+      basketId: item.basketId,
+      sizeId: item.sizeId,
+      basket,
+      qty: item.qty,
+    });
     total += size.price * item.qty;
   }
 
@@ -77,7 +85,7 @@ export default async function handler(
     phone2,
     uid,
     status: "payment pending",
-    items,
+    items: itemsBrought,
     timestamp: Date.now(),
   });
 
