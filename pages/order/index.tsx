@@ -31,7 +31,7 @@ const Page = () => {
   }, [user]);
 
   function isEmpty() {
-    const orderBool = data.filter((item) => item.status !== "pending" && item.status !== "completed");
+    const orderBool = data.map((item) => item.status !== "pending" && item.status !== "completed");
     return orderBool;
   }
 
