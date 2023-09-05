@@ -5,7 +5,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   if (req.method !== "GET")
     return res.status(405).send({ error: "Method not allowed" });
@@ -28,6 +28,10 @@ export default async function handler(
     return res.status(404).send({ error: "Order not found" });
 
   const order = orderRef.val() as Order;
+
+  if (!order?.uid) return res.status(400).send({ error: "Order not found" });
+
+  if (order.uid !== uid) return res.status(403).send({ error: "Unauthorized" });
 
   const orderCode = encrypt({ ...order, uid });
 
