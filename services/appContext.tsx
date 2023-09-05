@@ -22,7 +22,7 @@ type ContextType = {
     size: Size,
     qty: number,
     basketId: string,
-    basket: Basket
+    basket: Basket,
   ) => void;
 };
 
@@ -52,7 +52,7 @@ export const AppContext = ({ children }: props) => {
     qty: number,
     basketId: string,
 
-    basket: Basket
+    basket: Basket,
   ) => {
     if (cart.some((item: CartItem) => item.item.id == size.id)) return;
     updateCart([...cart, { item: size, basketId, qty, basket }]);
@@ -66,31 +66,35 @@ export const AppContext = ({ children }: props) => {
     if (qty == 0) return removeFromCart(sizeId);
 
     updateCart(
-      cart.map((item) => (item.item.id == sizeId ? { ...item, qty } : item))
+      cart.map((item) => (item.item.id == sizeId ? { ...item, qty } : item)),
     );
   };
 
   useEffect(() => {
-    if (!cart.length) return;
-    Promise.all(cart.map((item) => getBasket(item.basketId))).then(
-      (baskets) => {
-        const newCart: CartItem[] = [];
-        baskets.forEach((basket) => {
-          if (!basket) return;
-          basket.sizes.forEach((size) => {
-            const dbSize = cart.find((cartItem) => cartItem.item.id == size.id);
-            if (!dbSize) return;
-            if (newCart.find((item) => item.item.id == dbSize.item.id)) return;
-            newCart.push({ ...dbSize, item: size, basket });
-          });
-        });
-        clearCart();
-        updateCart(newCart);
-      }
-    );
     const sub = onAuthStateChanged(auth, onAuthChange);
 
-    return sub;
+    if (cart.length)
+      Promise.all(cart.map((item) => getBasket(item.basketId))).then(
+        (baskets) => {
+          const newCart: CartItem[] = [];
+          baskets.forEach((basket) => {
+            if (!basket) return;
+            basket.sizes.forEach((size) => {
+              const dbSize = cart.find(
+                (cartItem) => cartItem.item.id == size.id,
+              );
+              if (!dbSize) return;
+              if (newCart.find((item) => item.item.id == dbSize.item.id))
+                return;
+              newCart.push({ ...dbSize, item: size, basket });
+            });
+          });
+          clearCart();
+          updateCart(newCart);
+        },
+      );
+
+    return () => sub();
   }, []);
 
   return (
