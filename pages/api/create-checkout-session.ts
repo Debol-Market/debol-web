@@ -5,7 +5,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse,
+  res: NextApiResponse
 ) {
   if (req.method !== "POST")
     return res.status(405).send({ error: "Method not allowed" });
@@ -61,9 +61,9 @@ export default async function handler(
     price_data: {
       currency: "usd",
       product_data: {
-        name: "Service Charge(30%)",
+        name: "Distribution and Delivery Fee(20%)",
       },
-      unit_amount: total * 0.3,
+      unit_amount: total * 0.2,
     },
     quantity: 1,
     adjustable_quantity: {
