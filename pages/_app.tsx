@@ -55,5 +55,5 @@ const MainFallback = () => {
 
 function PageLoader({ children }: { children: JSX.Element }) {
   const { isLoading } = useApp();
-  return !isLoading ? <MainFallback /> : <>{children}</>;
+  return isLoading ? <MainFallback /> : <>{children}</>;
 }
