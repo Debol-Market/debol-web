@@ -6,11 +6,9 @@ import { FC, useEffect, useState } from "react";
 
 const Page = () => {
   const { user } = useApp();
-  console.log(user);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const [data, setData] = useState<(Order & { id: string })[]>([]);
-  console.log(data);
 
   useEffect(() => {
     if (!user) return;
