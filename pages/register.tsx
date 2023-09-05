@@ -93,7 +93,7 @@ function Page() {
             OR
           </p>
           <PhoneField
-            country="US"
+            country="us"
             label="Phone Number"
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
