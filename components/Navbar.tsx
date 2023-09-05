@@ -8,13 +8,14 @@ import Logo from "./Logo";
 import SearchBar, { SearchSvg } from "./SearchBar";
 import Link from "next/link";
 import { logout } from "@/services/auth";
+import { CartItem } from "@/utils/types";
 
 const Navbar = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [windowWidth, setWindowWidth] = useState(() =>
     typeof window == "undefined" ? 1080 : window?.innerWidth,
   );
-  const { cart, user } = useApp();
+  const { cart, user, onAuthChange } = useApp();
   const [dropdown, setDropdown] = useState(false);
   const [isCart, setIsCart] = useState(false);
 
@@ -76,46 +77,74 @@ const Navbar = () => {
                 {dropdown ? <GrClose size={24} /> : <AiOutlineMenu size={24} />}
               </button>
             )}
-            <motion.button
-              key={cart.toString()}
-              animate={{
-                x: [0, -2, 2, 0],
-                rotate: [0, 10, -10, 0],
-              }}
-              onClick={() => setIsCart(!isCart)}
-              className="p-2 relative my-2 rounded-full hover:bg-slate-100 "
-            >
-              <AiOutlineShoppingCart className="h-8 w-8" />
-              {cart.length > 0 ? (
-                <motion.div
-                  animate={{ scale: [1, 2, 1] }}
-                  className="h-2.5 w-2.5 rounded-full bg-red-500 absolute top-2.5 right-2"
-                ></motion.div>
-              ) : (
-                <></>
-              )}
-            </motion.button>
+            <CartBtn cart={cart} setIsCart={setIsCart} />
           </div>
         </div>
       </div>
-      {dropdown && (
-        <div className="absolute top-16 right-0 w-full md:w-[240px] rounded-lg shadow-lg bg-white py-2 flex justify-center flex-col text-center">
-          <Link href="/order" className="py-2">
-            <div>Orders</div>
+      {dropdown && <DropdownMenu loggedIn={!!user} onAuthChange={onAuthChange} setDropdown={setDropdown} />}
+      {isCart && <Cart onClose={() => setIsCart(false)} />}
+    </>
+  );
+};
+
+const CartBtn: FC<{
+  cart: CartItem[];
+  setIsCart: React.Dispatch<React.SetStateAction<boolean>>;
+}> = ({ cart, setIsCart }) => {
+  return (
+    <motion.button
+      key={cart.toString()}
+      animate={{
+        x: [0, -2, 2, 0],
+        rotate: [0, 10, -10, 0],
+      }}
+      onClick={() => setIsCart((p: boolean) => !p)}
+      className="p-2 relative my-2 rounded-full hover:bg-slate-100 "
+    >
+      <AiOutlineShoppingCart className="h-8 w-8" />
+      {cart.length > 0 ? (
+        <motion.div
+          animate={{ scale: [1, 2, 1] }}
+          className="h-2.5 w-2.5 rounded-full bg-red-500 absolute top-2.5 right-2"
+        ></motion.div>
+      ) : (
+        <></>
+      )}
+    </motion.button>
+  );
+};
+
+const DropdownMenu: FC<{
+  onAuthChange: (p: any) => void;
+  loggedIn: boolean;
+  setDropdown: (p: boolean) => void;
+}> = ({ loggedIn, onAuthChange, setDropdown }) => {
+  return (
+    <div className="fixed top-16 sm:top-[72px] right-0 sm:right-10 border border-neutral-200/90 w-full sm:w-[240px] sm:rounded-lg shadow-lg bg-white py-2 flex justify-center flex-col">
+      {loggedIn ? (
+        <>
+          <Link href="/order">
+            <div className="py-2.5 pl-5 hover:bg-slate-100/80">Orders</div>
           </Link>
           <div
             onClick={() => {
               setDropdown(false);
-              logout();
+              logout().then(() => onAuthChange(null));
             }}
-            className="py-2 cursor-pointer"
+            className="py-2.5 pl-5 hover:bg-slate-100/80 cursor-pointer"
           >
             Logout
           </div>
-        </div>
+        </>
+      ) : (
+        <Link href="/register">
+          <div className="py-2.5 pl-5 hover:bg-slate-100/80">Register</div>
+        </Link>
       )}
-      {isCart && <Cart onClose={() => setIsCart(false)} />}
-    </>
+      <Link href="/contacts">
+        <div className="py-2.5 pl-5 hover:bg-slate-100/80">Contact Us</div>
+      </Link>
+    </div>
   );
 };
 
