@@ -4,7 +4,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   if (req.method !== "GET")
     return res.status(405).send({ error: "Method not allowed" });
@@ -14,7 +14,12 @@ export default async function handler(
   if (!token) return res.status(403).json({ error: "No token is provided" });
   const uid = (await admin.auth().verifyIdToken(token)).uid;
 
-  const ordersRef = await admin.database().ref(`orders/`).get();
+  const ordersRef = await admin
+    .database()
+    .ref(`orders/`)
+    .orderByChild("uid")
+    .equalTo(uid)
+    .get();
 
   if (!ordersRef.exists() || !ordersRef.val())
     return res.status(404).send({ error: "Orders not found" });
