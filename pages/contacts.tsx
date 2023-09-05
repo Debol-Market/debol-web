@@ -4,6 +4,7 @@ import { createContact } from "@/services/database";
 import { useEffect, useState } from "react";
 import { FormEvent } from "react";
 import { useRouter } from "next/router";
+import Head from "next/head";
 
 const Page = () => {
   const router = useRouter();
@@ -22,7 +23,10 @@ const Page = () => {
   };
 
   return (
-    <div>
+    <>
+      <Head>
+        <title>{"Contact Us - Debolmarket"}</title>
+      </Head>
       <Navbar />
       <div className="flex justify-center">
         <div className="flex md:flex-row flex-col justify-between items-start gap-14 px-5 sm:px-10 py-5 sm:pt-8">
@@ -84,7 +88,7 @@ const Page = () => {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
