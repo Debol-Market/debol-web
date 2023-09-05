@@ -44,7 +44,7 @@ const Page = () => {
               to serving you!
             </p>
           </div>
-          <div className="max-w-xl min-w-[320px]">
+          <div className="max-w-xl min-w-[280px]">
             <h1 className="text-3xl font-semibold mb-4">Send Message</h1>
             <form onSubmit={submit}>
               <div className="flex flex-col">
