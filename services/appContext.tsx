@@ -13,6 +13,7 @@ import { auth } from "./firebase";
 
 type ContextType = {
   user?: User;
+  isLoading: boolean;
   cart: CartItem[];
   removeFromCart: (sizeId: string) => void;
   clearCart: () => void;
@@ -32,6 +33,7 @@ type props = {
 
 export const appContext = createContext<ContextType>({
   cart: [],
+  isLoading: true,
   addToCart: () => {},
   clearCart: () => {},
   setCartItemQty: () => {},
@@ -41,17 +43,18 @@ export const appContext = createContext<ContextType>({
 
 export const AppContext = ({ children }: props) => {
   const [user, setUser] = useState<User>();
+  const [isLoading, setIsLoading] = useState(true);
   const [cart, updateCart, clearCart] = useLocalStorage<CartItem[]>("cart", []);
 
   const onAuthChange = useCallback(async (user: User | null) => {
     setUser(user ?? undefined);
+    setIsLoading(false);
   }, []);
 
   const addToCart = (
     size: Size,
     qty: number,
     basketId: string,
-
     basket: Basket,
   ) => {
     if (cart.some((item: CartItem) => item.item.id == size.id)) return;
@@ -71,6 +74,7 @@ export const AppContext = ({ children }: props) => {
   };
 
   useEffect(() => {
+    setIsLoading(true);
     const sub = onAuthStateChanged(auth, onAuthChange);
 
     if (cart.length)
@@ -101,12 +105,13 @@ export const AppContext = ({ children }: props) => {
     <appContext.Provider
       value={{
         user,
-        clearCart,
         cart,
         addToCart,
-        removeFromCart,
-        setCartItemQty,
+        clearCart,
+        isLoading,
         onAuthChange,
+        setCartItemQty,
+        removeFromCart,
       }}
     >
       {children}

@@ -3,6 +3,8 @@ import "@/styles/globals.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { AppProps } from "next/app";
 import Head from "next/head";
+import Logo from "../components/Logo";
+import useApp from "../services/appContext";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -32,9 +34,26 @@ export default function App({ Component, pageProps }: AppProps) {
       </Head>
       <AppContext>
         <QueryClientProvider client={queryClient}>
-          <Component {...pageProps} />
+          <PageLoader>
+            <Component {...pageProps} />
+          </PageLoader>
         </QueryClientProvider>
       </AppContext>
     </>
   );
+}
+
+const MainFallback = () => {
+  return (
+    <div className="w-screen h-screen bg-gradient-to-br from-white-200 to-white-100 grid place-items-center ">
+      <div className="text-4xl">
+        <Logo size={60} />
+      </div>
+    </div>
+  );
+};
+
+function PageLoader({ children }: { children: JSX.Element }) {
+  const { isLoading } = useApp();
+  return !isLoading ? <MainFallback /> : <>{children}</>;
 }
