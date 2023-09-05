@@ -32,6 +32,7 @@ function Page() {
   const redirectUrl = useRedirect();
   const [phone, setPhone] = useState("");
   const isValid = isPhoneValid(phone);
+  const [error, setError] = useState<string>();
   const [isFocused, setIsFocused] = useState(false);
   const [loading, setLoading] = useState(false);
   const [confirmation, setConfirmation] = useState<ConfirmationResult>();
@@ -55,6 +56,12 @@ function Page() {
         setOpenModal(true);
         setConfirmation(confirmationRes);
       })
+      .catch((err) => {
+        if (err.code === "auth/too-many-requests") {
+          setError("Too many requests. Try again later.");
+        }
+        console.log(err);
+      })
       .finally(() => setLoading(false));
   };
 
@@ -74,27 +81,29 @@ function Page() {
         <header className="mb-3">
           <Logo />
         </header>
-          <button
-            onClick={googleLogin}
-            className="bg-slate-50 hover:bg-slate-100 flex items-center gap-3 py-3 px-4 rounded-lg shadow-md"
-          >
-            <FcGoogle size={24} />
-            Sign in with Google
-          </button>
+        <button
+          onClick={googleLogin}
+          className="bg-slate-50 hover:bg-slate-100 flex items-center gap-3 w-full py-3 px-4 rounded-lg shadow-md"
+        >
+          <FcGoogle size={24} />
+          Sign in with Google
+        </button>
         <form onSubmit={formSubmit} className="flex flex-col">
-          <p className="text-center text-neutral-500 text-lg font-bold my-5">
+          <p className="text-center text-neutral-500 text-lg font-bold mb-4 mt-3">
             OR
           </p>
           <PhoneField
+            country="US"
             label="Phone Number"
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
             onChange={(value) => setPhone(value)}
           />
           <p className="text-red-600 text-sm mb-2 mt-1">
-            {!isValid && !isFocused && phone != "+251 "
+            {!isValid && !isFocused && phone != "+1 "
               ? "Phone Number is not valid."
               : null}
+            {error}
           </p>
 
           <Btn
@@ -102,7 +111,7 @@ function Page() {
             label="Register"
             className="mt-3"
             isLoading={loading}
-            disabled={!isValid}
+            disabled={!isValid || !!error}
           />
         </form>
       </div>
