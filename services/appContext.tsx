@@ -8,11 +8,14 @@ import {
   useEffect,
   useState,
 } from "react";
-import { getBasket } from "./database";
+import { getBasket, getCurrencyMulti } from "./database";
 import { auth } from "./firebase";
 
 type ContextType = {
   user?: User;
+  currency: string;
+  currencyMultiplier: number;
+  setCurrency: (currency: string) => void;
   isLoading: boolean;
   cart: CartItem[];
   removeFromCart: (sizeId: string) => void;
@@ -33,6 +36,9 @@ type props = {
 
 export const appContext = createContext<ContextType>({
   cart: [],
+  currency: "USD",
+  currencyMultiplier: 1,
+  setCurrency: () => {},
   isLoading: true,
   addToCart: () => {},
   clearCart: () => {},
@@ -44,7 +50,9 @@ export const appContext = createContext<ContextType>({
 export const AppContext = ({ children }: props) => {
   const [user, setUser] = useState<User>();
   const [isLoading, setIsLoading] = useState(true);
+  const [currencyMultiplier, setCurrencyMultiplier] = useState(1);
   const [cart, updateCart, clearCart] = useLocalStorage<CartItem[]>("cart", []);
+  const [currency, setCurrency] = useLocalStorage<string>("currency", "USD");
 
   const onAuthChange = useCallback(async (user: User | null) => {
     setUser(user ?? undefined);
@@ -72,6 +80,12 @@ export const AppContext = ({ children }: props) => {
       cart.map((item) => (item.item.id == sizeId ? { ...item, qty } : item)),
     );
   };
+
+  useEffect(() => {
+    if (currency !== "USD")
+      getCurrencyMulti(currency).then(setCurrencyMultiplier);
+    else setCurrencyMultiplier(1);
+  }, [currency]);
 
   useEffect(() => {
     setIsLoading(true);
@@ -106,9 +120,12 @@ export const AppContext = ({ children }: props) => {
       value={{
         user,
         cart,
+        currency,
         addToCart,
         clearCart,
         isLoading,
+        setCurrency,
+        currencyMultiplier,
         onAuthChange,
         setCartItemQty,
         removeFromCart,
