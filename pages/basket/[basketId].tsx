@@ -2,6 +2,7 @@ import Navbar from "@/components/Navbar";
 import useApp from "@/services/appContext";
 import { getBasket } from "@/services/database";
 import { getUrl } from "@/services/storage";
+import convertCurrency from "@/utils/convertCurrency";
 import { Basket } from "@/utils/types";
 import { GetServerSidePropsContext } from "next";
 import Head from "next/head";
@@ -15,7 +16,7 @@ type props = {
 
 const Page = ({ basket, basketId, imageUrl }: props) => {
   const [sizeIndex, setSizeIndex] = useState(0);
-  const { cart, addToCart, removeFromCart, setCartItemQty } = useApp();
+  const { cart, addToCart, currencyMultiplier, currency } = useApp();
 
   if (!basketId || !basket)
     return (
@@ -40,11 +41,7 @@ const Page = ({ basket, basketId, imageUrl }: props) => {
       <div className="p-4 sm:p-8 mb-10">
         <div className="flex flex-col landscape:flex-row gap-6 md:gap-10 h-full ">
           <div className="rounded-2xl overflow-hidden landscape:h-[80vh] max-h-[600px] landscape:max-w-[40vw] shrink-0">
-            <img
-              src={imageUrl}
-              alt=""
-              className="object-cover h-full w-full"
-            />
+            <img src={imageUrl} alt="" className="object-cover h-full w-full" />
           </div>
           <div className="grow px-3 flex flex-col items-stretch landscape:max-w-md">
             <h1 className="text-2xl sm:text-3xl font-bold ">{basket.name}</h1>
@@ -75,7 +72,11 @@ const Page = ({ basket, basketId, imageUrl }: props) => {
                     Price:
                   </div>
                   <div className="my-auto font-bold text-2xl text-primary">
-                    ${basket.sizes[sizeIndex].price / 100}
+                    {convertCurrency(
+                      basket.sizes[sizeIndex].price,
+                      currencyMultiplier,
+                      currency,
+                    )}
                   </div>
                 </div>
 
