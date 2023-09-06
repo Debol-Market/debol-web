@@ -22,10 +22,11 @@ export default async function handler(
 
   const currencies = await newCurrencies.json();
 
-  await firebaseAdmin
-    .database()
-    .ref("currencies")
-    .set({ currencies, cacheTime: Date.now() });
+  if (currencies.success)
+    await firebaseAdmin
+      .database()
+      .ref("currencies")
+      .set({ currencies, cacheTime: Date.now() });
 
   res.status(200).json(currencies);
 }
