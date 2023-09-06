@@ -70,3 +70,12 @@ export const createContact = async (contacts: Contacts) => {
   const contactsRef = push(ref(rtdb, "contacts"));
   return set(contactsRef, contacts);
 };
+
+export async function getCurrencyMulti(currency: string) {
+  const res = await fetch('/api/get-currencies');
+  const currencies = await res.json();
+
+  const usd = currencies.rates.USD;
+
+  return currencies.rates[currency] / usd;
+} 
