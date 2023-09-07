@@ -9,6 +9,7 @@ import useRedirect from "@/utils/useRedirect";
 import {
   ConfirmationResult,
   RecaptchaVerifier,
+  getRedirectResult,
   signInWithPhoneNumber,
 } from "firebase/auth";
 import { PhoneNumberUtil } from "google-libphonenumber";
@@ -68,7 +69,13 @@ function Page() {
   const googleLogin = () => {
     try {
       signInWithGoogle()
-        .then((userCred) => onAuthChange(userCred.user))
+        .then(() => {
+          getRedirectResult(auth)
+            .then((result) => {
+              const user = result.user;
+              onAuthChange(user);
+            })
+        })
         .then(() => router.push(redirectUrl));
     } catch (error) {
       console.log(error);
