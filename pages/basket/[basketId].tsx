@@ -1,3 +1,4 @@
+import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import useApp from "@/services/appContext";
 import { getBasket } from "@/services/database";
@@ -56,11 +57,10 @@ const Page = ({ basket, basketId, imageUrl }: props) => {
                   <button
                     key={index}
                     onClick={() => setSizeIndex(index)}
-                    className={`rounded-full px-4 py-2 text-lg shrink-0 ${
-                      sizeIndex === index
+                    className={`rounded-full px-4 py-2 text-lg shrink-0 ${sizeIndex === index
                         ? "bg-primary text-white"
                         : "text-black hover:bg-primary/30"
-                    }`}
+                      }`}
                   >
                     {size.name}
                   </button>
@@ -110,6 +110,7 @@ const Page = ({ basket, basketId, imageUrl }: props) => {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 };
@@ -127,9 +128,8 @@ const AddToCartBtn: FC<{ onClick: VoidFunction; isInCart: boolean }> = ({
   return (
     <button
       onClick={onClick}
-      className={`rounded-xl text-white font-semibold disabled:opacity-75 shadow-md disabled:shadow-none text-xl px-6 py-2 flex items-center justify-center hover:brightness-110 ${
-        isInCart ? "bg-primary" : "bg-gradient"
-      }`}
+      className={`rounded-xl text-white font-semibold disabled:opacity-75 shadow-md disabled:shadow-none text-xl px-6 py-2 flex items-center justify-center hover:brightness-110 ${isInCart ? "bg-primary" : "bg-gradient"
+        }`}
       disabled={isInCart}
     >
       Add To Cart
