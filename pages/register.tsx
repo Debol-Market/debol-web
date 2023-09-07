@@ -72,8 +72,7 @@ function Page() {
         .then(() => {
           getRedirectResult(auth)
             .then((result) => {
-              const user = result.user;
-              onAuthChange(user);
+              onAuthChange(result.user);
             })
         })
         .then(() => router.push(redirectUrl));
