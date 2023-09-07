@@ -118,7 +118,7 @@ const OrderCard: FC<{ order: Order & { id: string } }> = ({ order }) => {
         </div>
         <div>
           {order.items.map((item) => (
-            <div className="flex gap-2 justify-between items-center">
+            <div key={item.sizeId} className="flex gap-2 justify-between items-center">
               <div className="flex max-w-[160px] flex-wrap">
                 <p className="">{item.basket.name}</p>
                 <p className="ml-1 text-primary font-bold">
