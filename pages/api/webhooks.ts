@@ -38,14 +38,18 @@ export default async function handler(
     return;
   }
 
-  switch (event.type) {
-    case "charge.succeeded":
       const charge = event.data.object;
       const { orderId } = charge.metadata as { orderId: string };
+
+  switch (event.type) {
+    case "charge.succeeded":
       admin.database().ref(`orders/${orderId}`).update({
         paymentId: charge.id,
         status: "pending",
       });
+      break;
+    case "charge.failed":
+      admin.database().ref(`orders/${orderId}`).remove();
       break;
 
     default:
