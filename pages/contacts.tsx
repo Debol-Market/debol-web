@@ -4,22 +4,32 @@ import { createContact } from "@/services/database";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { FormEvent, useState } from "react";
-import Footer from '../components/Footer';
+import Footer from "../components/Footer";
+import Overlay from "@/components/Overlay";
+import Spinner from "@/components/Spinner";
 
 const Page = () => {
   const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const submit = (e: FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
 
     createContact({
       name,
       email,
       message,
-    }).then(() => router.push("/"));
+    })
+      .then(() => router.push("/"))
+      .catch((e) => {
+        setIsLoading(false);
+        setError("Something went wrong, please try again.");
+      });
   };
 
   return (
@@ -89,6 +99,17 @@ const Page = () => {
         </div>
       </div>
       <Footer />
+      {error || isLoading ? (
+        <Overlay onClick={() => setIsLoading(false)}>
+          <div className="bg-white rounded-lg p-5 text-lg flex items-center justify-center">
+            {isLoading ? (
+              <Spinner className="h-16 w-16 text-primary" />
+            ) : (
+              <p>{error}</p>
+            )}
+          </div>
+        </Overlay>
+      ) : null}
     </>
   );
 };
