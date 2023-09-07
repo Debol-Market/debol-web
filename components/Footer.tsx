@@ -21,16 +21,12 @@ const Footer = () => {
           <div className='flex flex-col gap-1.5 w-[10vw] min-w-[150px]'>
             <h2 className='my-3 font-medium text-lg text-white-0'>General</h2>
             <Link href='/contact'>
-              <p className='font-light text-white-300'>Contact Us</p>
+              <p className='font-light text-white-300 underline decoration-black'>Contact Us</p>
 
             </Link>
           </div>
         </div>
         <div className='flex flex-col'>
-          <p className='font-light text-white-300 md:max-w-[240px]'>
-            Follow us on social media and stay updated with the latest
-            information about our services
-          </p>
           <div className='gap-4 flex mt-4 w-full justify-center sm:justify-start'>
             {/* <Link href='https://instagram.com/zebo.connect?igshid=ZGUzMzM3NWJiOQ=='>
               <TiSocialInstagram className='fill-white-300 h-8 w-8 hover:fill-white-0' />
