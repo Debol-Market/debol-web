@@ -34,16 +34,21 @@ export type PaymentData = {
   sizeId: string;
 };
 
-export type Contacts ={
+export type Contacts = {
   name: string;
   email: string;
   message: string;
-}
+};
+
+export type OrderItem = {
+  basket: Basket;
+} & PaymentData;
+
 export type Order = {
   uid: string;
   phone1: string;
   phone2: string;
-  items: CartItem[];
+  items: OrderItem[];
   name: string;
   status: "pending" | "completed" | "payment pending";
   paymentId?: string;
