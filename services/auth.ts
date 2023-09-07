@@ -1,14 +1,13 @@
 import { auth } from "@/services/firebase";
 import {
-  createUserWithEmailAndPassword,
   GoogleAuthProvider,
-  signInWithPopup,
+  signInWithRedirect
 } from "firebase/auth";
 
 export async function signInWithGoogle() {
   const provider = new GoogleAuthProvider();
 
-  return await signInWithPopup(auth, provider);
+  return await signInWithRedirect(auth, provider);
 }
 
 export async function logout() {
