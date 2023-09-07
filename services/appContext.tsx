@@ -15,6 +15,7 @@ type ContextType = {
   user?: User;
   currency: string;
   currencyMultiplier: number;
+  setCurrencyMultiplier: (multiplier: number) => void;
   setCurrency: (currency: string) => void;
   isLoading: boolean;
   cart: CartItem[];
@@ -39,6 +40,7 @@ export const appContext = createContext<ContextType>({
   currency: "USD",
   currencyMultiplier: 1,
   setCurrency: () => {},
+  setCurrencyMultiplier: () => {},
   isLoading: true,
   addToCart: () => {},
   clearCart: () => {},
@@ -82,14 +84,14 @@ export const AppContext = ({ children }: props) => {
   };
 
   useEffect(() => {
-    if (currency !== "USD")
-      getCurrencyMulti(currency).then(setCurrencyMultiplier);
-    else setCurrencyMultiplier(1);
-  }, [currency]);
-
-  useEffect(() => {
     setIsLoading(true);
     const sub = onAuthStateChanged(auth, onAuthChange);
+
+    if (currency != "USD") {
+      getCurrencyMulti(currency).then((res) => {
+        setCurrencyMultiplier(res);
+      });
+    }
 
     if (cart.length)
       Promise.all(cart.map((item) => getBasket(item.basketId))).then(
@@ -126,6 +128,7 @@ export const AppContext = ({ children }: props) => {
         isLoading,
         setCurrency,
         currencyMultiplier,
+        setCurrencyMultiplier,
         onAuthChange,
         setCartItemQty,
         removeFromCart,

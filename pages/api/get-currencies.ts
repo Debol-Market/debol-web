@@ -11,7 +11,7 @@ export default async function handler(
     const cacheAge = Date.now() - getCurrencies.val().cacheTime;
     if (cacheAge < 90 * 60 * 1000) {
       return res.status(200).json({
-        currencies: getCurrencies.val(),
+        ...getCurrencies.val(),
       });
     }
   }
@@ -26,7 +26,7 @@ export default async function handler(
     await firebaseAdmin
       .database()
       .ref("currencies")
-      .set({ currencies, cacheTime: Date.now() });
+      .set({ ...currencies, cacheTime: Date.now() });
 
   res.status(200).json(currencies);
 }
