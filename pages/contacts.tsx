@@ -1,10 +1,10 @@
 import Btn from "@/components/Btn";
 import Navbar from "@/components/Navbar";
 import { createContact } from "@/services/database";
-import { useEffect, useState } from "react";
-import { FormEvent } from "react";
-import { useRouter } from "next/router";
 import Head from "next/head";
+import { useRouter } from "next/router";
+import { FormEvent, useState } from "react";
+import Footer from '../components/Footer';
 
 const Page = () => {
   const router = useRouter();
@@ -88,6 +88,7 @@ const Page = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 };
