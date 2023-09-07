@@ -13,6 +13,8 @@ const Page = () => {
   const [error, setError] = useState<Error | null>(null);
   const [data, setData] = useState<Order & { orderCode: string }>();
 
+  if (!user) router.push("/");
+
   useEffect(() => {
     if (!orderId || !user) return;
     setIsLoading(true);

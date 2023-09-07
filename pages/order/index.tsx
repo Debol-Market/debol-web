@@ -4,6 +4,7 @@ import Spinner from "@/components/Spinner";
 import useApp from "@/services/appContext";
 import { Order } from "@/utils/types";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { FC, useEffect, useState } from "react";
 
 const Page = () => {
@@ -11,6 +12,9 @@ const Page = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const [data, setData] = useState<(Order & { id: string })[]>([]);
+  const router = useRouter();
+
+  if (!user) router.push("/");
 
   useEffect(() => {
     if (!user) return;
