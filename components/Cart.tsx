@@ -13,13 +13,14 @@ import { CartItem } from "../utils/types";
 import Btn from "./Btn";
 import CheckoutModal from "./CheckoutModal";
 import Overlay from "./Overlay";
+import convertCurrency from "@/utils/convertCurrency";
 
 type props = {
   onClose: () => void;
 };
 
 const Cart = ({ onClose }: props) => {
-  const { user } = useApp();
+  const { user, currencyMultiplier, currency } = useApp();
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
   const { cart, removeFromCart, setCartItemQty } = useApp();
   const total = cart.reduce(
@@ -61,7 +62,9 @@ const Cart = ({ onClose }: props) => {
         {cart.length > 0 && (
           <div className="flex justify-between p-2 px-4">
             <h2 className="text-lg">Total:</h2>
-            <p className="font-bold text-2xl">${total / 100}</p>
+            <p className="font-bold text-2xl">
+              {convertCurrency(total, currencyMultiplier, currency)}
+            </p>
           </div>
         )}
         <Btn
@@ -91,6 +94,7 @@ export function CartItem({
   onChange: (qty: number) => void;
 }) {
   const [isExpanded, setisExpanded] = useState(false);
+  const { currencyMultiplier, currency } = useApp();
   const { data, status } = useQuery({
     queryKey: ["getBasketImage", cartItem.basketId],
     queryFn: () => getUrl(cartItem.basket.image),
@@ -121,7 +125,9 @@ export function CartItem({
         </div>
         <div className=" grow">
           <h3 className="text-xl">{cartItem.basket.name}</h3>
-          <p className="font-bold text-lg">${cartItem.item.price / 100}</p>
+          <p className="font-bold text-lg">
+            {convertCurrency(cartItem.item.price, currencyMultiplier, currency)}
+          </p>
           <p className="text-sm">{cartItem.item.name}</p>
           <div
             className="flex gap-2 text-neutral-800"
@@ -151,10 +157,10 @@ export function CartItem({
               <div className="w-[120px]">{item.name}</div>
               <div className="">
                 {item.quantity}
-                {item.unit} x {item.pricePerUnit / 100}$
+                {item.unit} x {convertCurrency(item.pricePerUnit, currencyMultiplier, currency)}
               </div>
               <div className="">
-                {(item.pricePerUnit / 100) * item.quantity}$
+                {convertCurrency(item.pricePerUnit * item.quantity, currencyMultiplier, currency)}
               </div>
             </div>
           ))}
