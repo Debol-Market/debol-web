@@ -33,7 +33,7 @@ export default async function handler(
 
   if (order.uid !== uid) return res.status(403).send({ error: "Unauthorized" });
 
-  const orderCode = encrypt({ ...order, id: orderId });
+  const orderCode = encrypt({ uid, paymentId: order.paymentId, id: orderId });
 
   res.status(200).send({ ...order, orderCode });
 }
