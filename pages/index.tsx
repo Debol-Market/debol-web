@@ -1,14 +1,10 @@
-import add4 from "@/assets/add4.png";
-import BasketCard from "@/components/BasketCard";
 import Carousel from "@/components/Carousel";
 import CatagoryRow from "@/components/CatagoryRow";
+import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
-import { getBaskets, getCatagories } from "@/services/database";
-import { Basket } from "@/utils/types";
+import { getCatagories } from "@/services/database";
 import { useQuery } from "@tanstack/react-query";
 import Head from "next/head";
-import Image from "next/image";
-import { useEffect, useState } from "react";
 import "swiper/css";
 
 const Page = () => {
@@ -42,6 +38,7 @@ const Page = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 };
