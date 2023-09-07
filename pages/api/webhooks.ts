@@ -52,6 +52,10 @@ export default async function handler(
       admin.database().ref(`orders/${orderId}`).remove();
       break;
 
+    case "payment_intent.canceled":
+      admin.database().ref(`orders/${orderId}`).remove();
+      break;
+
     default:
       break;
   }
