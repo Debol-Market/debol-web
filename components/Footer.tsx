@@ -1,19 +1,19 @@
 import Link from 'next/link';
 import { AiOutlineCopyright } from 'react-icons/ai';
-import Logo from './Logo';
 
 const Footer = () => {
   return (
-    <div className='flex items-center flex-col bg-white-900 px-9 py-6'>
+    <div className='flex items-center flex-col bg-gray-100 shadow-xl px-9 py-6'>
       <div className='flex justify-between w-full gap-4 my-6 flex-col md:flex-row'>
         <div className='flex flex-col grow-[3] md:max-w-xl items-start'>
-          <Link href='/' className='text-white-0'>
-            <Logo />
-          </Link>
+          <div className='flex gap-2  justify-start'>
+            <p className='text-yellow-500 italic font-bold  text-4xl items-start '>Debol</p>
+            <p className='text-primary font-slight-bold text-xl italic'>Market</p>
+          </div>
           <p className='md:max-w-md mt-4 font-light text-white-300'>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique
-            sequi, maiores nobis sint officia vero. Quasi, mollitia! Explicabo
-            incidunt aperiam eveniet! Molestiae, provident eius!
+            Debol is an innovative delivery platform that aims to revolutionize the shopping experience
+            in Ethiopia. It collaborates with multiple institutions to offer a comprehensive platform for
+            selling and delivering various items and equipment.
           </p>
         </div>
 
@@ -47,8 +47,8 @@ const Footer = () => {
           </div>
         </div>
       </div>
-      <span className='text-white-400/75 text-sm'>
-        <AiOutlineCopyright /> 2023 - Debol all right reserved
+      <span className='text-white-400/75 text-sm flex gap-2'>
+        <AiOutlineCopyright size={15} /> 2023 - Debol Trading LLC. all right reserved
       </span>
     </div>
   );
