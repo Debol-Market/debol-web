@@ -31,28 +31,33 @@ const Page = () => {
     });
   }, [user]);
 
-  function isEmpty() {
-    const orderBool = data.map((item) => item.status !== "pending" && item.status !== "completed");
-    return orderBool;
-  }
-
   return (
     <>
       <Navbar />
-      {isEmpty ? <div className="flex justify-center items-center  h-screen">
-        <p className="text-primary font-semibold text-3xl  my-4 text-center">You have not made any orders</p>
-      </div> :
+      {data.length == 0 && !isLoading ? (
+        <div className="flex justify-center items-center  h-screen">
+          <p className="text-primary font-semibold text-3xl  my-4 text-center">
+            You have not made any orders
+          </p>
+        </div>
+      ) : (
         <div className="h-screen">
           <div className="flex flex-col gap-3 items-center ">
-            <h2 className="text-2xl font-semibold text-slate-500">Pending Orders</h2>
-            {!isLoading && data.length == 0 ? <p>You Have No Pending Orders</p> : data
-              .filter((item) => item.status == "pending")
-              .map((item) => (
-                <OrderCard key={item.id} order={item} />
-              ))}
+            <h2 className="text-2xl font-semibold text-slate-500">
+              Pending Orders
+            </h2>
+            {!isLoading && data.length == 0 ? (
+              <p>You Have No Pending Orders</p>
+            ) : (
+              data
+                .filter((item) => item.status == "pending")
+                .map((item) => <OrderCard key={item.id} order={item} />)
+            )}
           </div>
           <div className="flex flex-col gap-3 items-center">
-            <h2 className="text-2xl font-semibold text-slate-500">Completed Orders</h2>
+            <h2 className="text-2xl font-semibold text-slate-500">
+              Completed Orders
+            </h2>
             {data
               .filter((item) => item.status == "completed")
               .map((item) => (
@@ -60,7 +65,7 @@ const Page = () => {
               ))}
           </div>
         </div>
-      }
+      )}
       <Footer />
     </>
   );
