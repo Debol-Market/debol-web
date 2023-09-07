@@ -1,3 +1,4 @@
+import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import useApp from "@/services/appContext";
 import { Order } from "@/utils/types";
@@ -38,10 +39,10 @@ const Page = () => {
   return (
     <>
       <Navbar />
-      {isEmpty ? <div className="flex justify-center items-center mt-20">
-        <p className="text-primary font-semibold text-3xl mx-4 my-4 text-center">You have not made any orders</p>
+      {isEmpty ? <div className="flex justify-center items-center  h-screen">
+        <p className="text-primary font-semibold text-3xl  my-4 text-center">You have not made any orders</p>
       </div> :
-        <div>
+        <div className="h-screen">
           <div className="flex flex-col gap-3 items-center ">
             <h2 className="text-2xl font-semibold text-slate-500">Pending Orders</h2>
             {!isLoading && data.length == 0 ? <p>You Have No Pending Orders</p> : data
@@ -60,7 +61,7 @@ const Page = () => {
           </div>
         </div>
       }
-
+      <Footer />
     </>
   );
 };
