@@ -67,11 +67,21 @@ const Page = () => {
 };
 
 const OrderCard: FC<{ order: Order & { id: string } }> = ({ order }) => {
+
   return (
     <Link href={`/order/${order.id}`}>
       <div className="flex gap-6 shadow rounded bg-white overflow-hidden w-full max-w-sm px-3 py-2">
         <p className="text-lg">{order.name}</p>
         <p className="text-slate-500">{order.status}</p>
+        {order.items.map((item, id) => (
+          item.basket.sizes.map((size) => (
+            <div key={id} className="flex justify-between shadow-lg rounded-md">
+              <p>{item.basket.name}</p>
+              <p key={size.id}>{size.name}</p>
+              <p>{size.price}</p>
+            </div>
+          ))))
+        }
       </div>
     </Link>
   );
