@@ -1,5 +1,6 @@
 import { logout } from "@/services/auth";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { FC } from "react";
 
 type Props = {
@@ -15,6 +16,7 @@ const DropdownMenu: FC<Props> = ({
   onAuthChange,
   setCurrencyModal,
 }) => {
+  const router = useRouter();
   return (
     <div className="fixed top-16 sm:top-[72px] right-0 sm:right-10 border border-neutral-200/90 w-full sm:w-[240px] sm:rounded-lg shadow-lg bg-white py-2 flex justify-center flex-col z-20">
       {loggedIn ? (
@@ -34,7 +36,7 @@ const DropdownMenu: FC<Props> = ({
           </div>
         </>
       ) : (
-        <Link href="/register">
+        <Link href={`/register?redirect=${encodeURIComponent(router.asPath)}`}>
           <div className="py-2.5 pl-5 hover:bg-slate-100/80">Register</div>
         </Link>
       )}

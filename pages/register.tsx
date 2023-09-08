@@ -29,7 +29,7 @@ export const isPhoneValid = (phone: string) => {
 
 function Page() {
   const router = useRouter();
-  const { onAuthChange } = useApp();
+  const { onAuthChange, user } = useApp();
   const redirectUrl = useRedirect();
   const [phone, setPhone] = useState("");
   const isValid = isPhoneValid(phone);
@@ -38,6 +38,8 @@ function Page() {
   const [loading, setLoading] = useState(false);
   const [confirmation, setConfirmation] = useState<ConfirmationResult>();
   const [openModal, setOpenModal] = useState(false);
+  
+  if(user) router.push(redirectUrl || '/');
 
   const formSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -71,7 +73,7 @@ function Page() {
       signInWithGoogle()
         .then(() => getRedirectResult(auth))
         .then((result) => onAuthChange(result.user))
-        .then(() => router.push(redirectUrl && '/'));
+        .then(() => router.push(redirectUrl));
     } catch (error) {
       console.log(error);
     }

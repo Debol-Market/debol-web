@@ -10,6 +10,7 @@ import Link from "next/link";
 import CartBtn from "./CartBtn";
 import CurrencyModal from "./CurrencyModal";
 import DropdownMenu from "./DropdownMenu";
+import { useRouter } from "next/router";
 
 const Navbar = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -18,6 +19,7 @@ const Navbar = () => {
   );
   const { user, onAuthChange } = useApp();
   const [isCart, setIsCart] = useState(false);
+  const router = useRouter();
   const [dropdown, setDropdown] = useState(false);
   const [currencyModal, setCurrencyModal] = useState(false);
 
@@ -98,7 +100,11 @@ const Navbar = () => {
                 >
                   <BsCurrencyExchange size={24} />
                 </button>
-                <Link href="/register">
+                <Link
+                  href={`/register?redirect=${encodeURIComponent(
+                    router.asPath,
+                  )}`}
+                >
                   <div className="h-full px-2.5 flex items-center hover:bg-slate-100 text-lg">
                     Register
                   </div>
