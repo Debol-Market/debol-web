@@ -10,6 +10,26 @@ export default async function handler(
   if (req.method !== "GET")
     return res.status(405).send({ error: "Method not allowed" });
 
+  const token = req.headers.authorization?.split(" ")[1];
+
+  if (!token) return res.status(403).json({ error: "No token is provided" });
+
+  let uid;
+
+  try {
+    uid = (await firebaseAdmin.auth().verifyIdToken(token)).uid;
+  } catch {
+    return res.status(403).json({ error: "Invalid token" });
+  }
+
+  const user = await firebaseAdmin.auth().getUser(uid);
+
+  if (user?.customClaims)
+    return res.status(403).json({ error: "not authorized" });
+
+  if (user.customClaims?.role !== "driver")
+    return res.status(403).json({ error: "not authorized" });
+
   const { orderCode } = req.query as {
     orderCode?: string;
   };
@@ -30,5 +50,9 @@ export default async function handler(
   if (!orderRef.exists() || !orderRef.val())
     return res.status(404).send({ error: "Order not found" });
 
-  res.status(200).send(order);
+  await firebaseAdmin.database().ref(`orders/${order.id}`).update({
+    status: "completed",
+  });
+
+  res.status(200).send({ status: "completed" });
 }
