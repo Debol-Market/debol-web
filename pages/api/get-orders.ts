@@ -22,7 +22,7 @@ export default async function handler(
     .get();
 
   if (!ordersRef.exists() || !ordersRef.val())
-    return res.status(404).send({ error: "Orders not found" });
+    return res.status(200).send({ orders: [] });
 
   const orders = Object.entries(ordersRef.val()).map(([k, v]) => ({
     id: k,
