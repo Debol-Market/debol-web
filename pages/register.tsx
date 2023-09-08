@@ -69,13 +69,9 @@ function Page() {
   const googleLogin = () => {
     try {
       signInWithGoogle()
-        .then(() => {
-          getRedirectResult(auth)
-            .then((result) => {
-              onAuthChange(result.user);
-            })
-        })
-        .then(() => router.push(redirectUrl));
+        .then(() => getRedirectResult(auth))
+        .then((result) => onAuthChange(result.user))
+        .then(() => router.push(redirectUrl && '/'));
     } catch (error) {
       console.log(error);
     }
