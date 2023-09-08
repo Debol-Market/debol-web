@@ -6,7 +6,7 @@ import { connectStorageEmulator, getStorage } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDveSpCYo90F_uDGC-GHWXutLnsxMN3JhI",
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  authDomain: "debolpackages.firebaseapp.com",
   databaseURL: "https://debolpackages-default-rtdb.firebaseio.com",
   projectId: "debolpackages",
   storageBucket: "debolpackages.appspot.com",
