@@ -48,7 +48,6 @@ export default async function handler(
         .update({
           paymentId: charge.id,
           status: "pending",
-          user: {},
           customerInfo: {
             name: charge.billing_details.name,
             email: charge.billing_details.email,
