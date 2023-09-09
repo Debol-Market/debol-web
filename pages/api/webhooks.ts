@@ -40,6 +40,8 @@ export default async function handler(
   const charge = event.data.object;
   const { orderId } = charge.metadata as { orderId: string };
 
+console.log(charge);
+
   switch (event.type) {
     case "charge.succeeded":
       admin
