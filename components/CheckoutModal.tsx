@@ -32,7 +32,7 @@ const CheckoutModal: FC<props> = ({ onClose }) => {
     e.preventDefault();
     if (!user) return;
     setIsLoading(true);
-    const token = await user.getIdToken();
+    const token = await user.getIdToken(true);
     try {
       const res = await fetch("/api/create-checkout-session", {
         method: "POST",
@@ -111,7 +111,7 @@ const CheckoutModal: FC<props> = ({ onClose }) => {
             type="submit"
             className="mt-6"
             isLoading={isLoading}
-            disabled={phone1 == "+251 " || !name}
+            disabled={!isValid1 || !name}
           />
         </form>
       </div>
