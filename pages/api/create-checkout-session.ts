@@ -13,7 +13,16 @@ export default async function handler(
   const token = req.headers.authorization?.split(" ")[1];
 
   if (!token) return res.status(403).json({ error: "No token is provided" });
-  const uid = (await admin.auth().verifyIdToken(token)).uid;
+
+  let uid;
+
+  try {
+    uid = (await admin.auth().verifyIdToken(token)).uid;
+  } catch (err) {
+    return res.status(403).json({ error: "Invalid token" });
+  }
+
+  const user = await admin.auth().getUser(uid);
 
   const { items, name, phone1, phone2 } = req.body as {
     items?: PaymentData[];
@@ -79,6 +88,15 @@ export default async function handler(
     },
   });
 
+  console.log(user);
+
+  const userData: any = {
+    signinMethod: user.providerData[0].providerId,
+  };
+
+  if (user.email) userData.email = user.email;
+  if (user.phoneNumber) userData.phone = user.phoneNumber;
+
   const orderRef = await admin.database().ref("orders/").push({
     name,
     phone1,
@@ -87,6 +105,7 @@ export default async function handler(
     status: "payment pending",
     items: itemsBrought,
     timestamp: Date.now(),
+    user: userData,
   });
 
   try {
