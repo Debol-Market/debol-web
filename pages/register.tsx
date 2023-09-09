@@ -14,7 +14,7 @@ import {
 } from "firebase/auth";
 import { PhoneNumberUtil } from "google-libphonenumber";
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 
 const phoneUtil = PhoneNumberUtil.getInstance();
@@ -38,8 +38,12 @@ function Page() {
   const [loading, setLoading] = useState(false);
   const [confirmation, setConfirmation] = useState<ConfirmationResult>();
   const [openModal, setOpenModal] = useState(false);
-  
-  if(user) router.push(redirectUrl || '/');
+
+  useEffect(() => {
+    getRedirectResult(auth).then((res) => {
+      if (res) router.push(redirectUrl || "/");
+    });
+  }, []);
 
   const formSubmit = (e: React.FormEvent) => {
     e.preventDefault();
