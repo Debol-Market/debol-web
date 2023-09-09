@@ -24,6 +24,7 @@
     "firebase": "^10.3.0",
     "firebase-admin": "^11.10.1",
     "framer-motion": "^10.16.1",
+    "generate-password-ts": "^1.6.5",
     "google-libphonenumber": "^3.2.33",
     "micro": "^10.0.1",
     "micro-cors": "^0.1.1",
