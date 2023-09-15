@@ -13,16 +13,18 @@ import { auth } from "./firebase";
 
 type ContextType = {
   user?: User;
-  currency: string;
-  currencyMultiplier: number;
-  setCurrencyMultiplier: (multiplier: number) => void;
-  setCurrency: (currency: string) => void;
-  isLoading: boolean;
   cart: CartItem[];
-  removeFromCart: (sizeId: string) => void;
+  currency: string;
+  isLoading: boolean;
+  currencyMultiplier: number;
+  isAdmin: boolean;
   clearCart: () => void;
-  setCartItemQty: (sizeId: string, qty: number) => void;
+  setIsAdmin: (boolean) => void;
+  setCurrency: (currency: string) => void;
+  removeFromCart: (sizeId: string) => void;
   onAuthChange: (user: User | null) => Promise<void>;
+  setCurrencyMultiplier: (multiplier: number) => void;
+  setCartItemQty: (sizeId: string, qty: number) => void;
   addToCart: (
     size: Size,
     qty: number,
@@ -38,26 +40,35 @@ type props = {
 export const appContext = createContext<ContextType>({
   cart: [],
   currency: "USD",
-  currencyMultiplier: 1,
-  setCurrency: () => {},
-  setCurrencyMultiplier: () => {},
   isLoading: true,
+  currencyMultiplier: 1,
+  isAdmin: false,
   addToCart: () => {},
   clearCart: () => {},
+  setIsAdmin: () => {},
+  setCurrency: () => {},
   setCartItemQty: () => {},
   removeFromCart: () => {},
+  setCurrencyMultiplier: () => {},
   onAuthChange: async (user) => {},
 });
 
 export const AppContext = ({ children }: props) => {
   const [user, setUser] = useState<User>();
+  const [isAdmin, setIsAdmin] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [currencyMultiplier, setCurrencyMultiplier] = useState(1);
-  const [cart, updateCart, clearCart] = useLocalStorage<CartItem[]>("cart", []);
   const [currency, setCurrency] = useLocalStorage<string>("currency", "USD");
+  const [cart, updateCart, clearCart] = useLocalStorage<CartItem[]>("cart", []);
 
   const onAuthChange = useCallback(async (user: User | null) => {
     setUser(user ?? undefined);
+    if (user) {
+      const { claims } = await user.getIdTokenResult();
+      setIsAdmin(
+        Object.keys(claims).includes("role") && claims?.role == "admin",
+      );
+    }
     setIsLoading(false);
   }, []);
 
@@ -122,16 +133,18 @@ export const AppContext = ({ children }: props) => {
       value={{
         user,
         cart,
+        isAdmin,
         currency,
         addToCart,
         clearCart,
         isLoading,
+        setIsAdmin,
         setCurrency,
-        currencyMultiplier,
-        setCurrencyMultiplier,
         onAuthChange,
         setCartItemQty,
         removeFromCart,
+        currencyMultiplier,
+        setCurrencyMultiplier,
       }}
     >
       {children}
