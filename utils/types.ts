@@ -25,6 +25,7 @@ export type CartItem = {
   basket: Basket;
   basketId: string;
   item: Size;
+  sizeId: string;
   qty: number;
 };
 
@@ -44,13 +45,34 @@ export type OrderItem = {
   basket: Basket;
 } & PaymentData;
 
-export type Order = {
-  uid: string;
-  phone1: string;
-  phone2: string;
-  items: OrderItem[];
+export type Catagory = {
   name: string;
-  status: "pending" | "completed" | "payment pending";
-  paymentId?: string;
-  timestamp: number;
+  count: string;
 };
+
+export type Order = {
+    uid: string;
+    phone1: string;
+    phone2: string;
+    items: CartItem[];
+    name: string;
+    status: 'pending' | 'completed' | 'payment pending';
+    paymentId?: string;
+    timestamp: number;
+    user?: {
+      signinMethod: string;
+      email?: string;
+      phone?: string;
+    };
+    customerInfo: {
+      name?: string;
+      email?: string;
+      phone?: string;
+    };
+};
+
+export type Driver = {
+  name: string;
+  email: string;
+  password: string;
+}
