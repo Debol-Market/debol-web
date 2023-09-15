@@ -1,0 +1,94 @@
+import { createBasket } from '@/services/database';
+import { generateID } from '@/utils/misc';
+import { Size } from '@/utils/types';
+import { useState } from 'react';
+import { GrClose } from 'react-icons/gr';
+import FirstPage from './FirstPage';
+import SecondPage from './SecondPage';
+
+type props = {
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  onClose: () => void;
+};
+
+const BasketModal = ({ setOpen }: props) => {
+  const [page, setPage] = useState(0);
+  const [name, setName] = useState('');
+  const [desc, setDesc] = useState('');
+  const [image, setImage] = useState('');
+  const [nameErr, setNameErr] = useState('');
+  const [catagory, setCatagory] = useState('');
+  const [sizes, setSizes] = useState<Size[]>([
+    {
+      id: generateID(),
+      name: '',
+      description: '',
+      price: 0,
+      items: [],
+    },
+  ]);
+
+  const [loading, setLoading] = useState(false);
+
+  const submit = async () => {
+    setLoading(true);
+    const basket = {
+      image: `baskets/default/${image}`,
+      name,
+      catagory,
+      description: desc,
+      sizes,
+    };
+    createBasket(basket).then(() => {
+      setLoading(false);
+      setOpen(false);
+    });
+  };
+
+  return (
+    <div className="min-h-screen h-full w-screen bg-slate-200 absolute top-0 left-0 z-50 py-3">
+      <button
+        className="bg-transparent absolute top-0 right-0 m-2 p-3 rounded-full hover:bg-neutral-100"
+        onClick={() => setOpen(false)}
+      >
+        <GrClose className="h-6 w-6" />
+      </button>
+      <div className="flex items-center justify-center flex-col h-full ">
+        {(() => {
+          if (page == 0)
+            return (
+              <FirstPage
+                {...{
+                  image,
+                  setImage,
+                  name,
+                  setName,
+                  desc,
+                  setDesc,
+                  catagory,
+                  setCatagory,
+                  nameErr,
+                  setNameErr,
+                  page,
+                  setPage,
+                }}
+              />
+            );
+          if (page == 1)
+            return (
+              <SecondPage
+                submit={submit}
+                sizes={sizes}
+                setPage={setPage}
+                isLoading={loading}
+                setSizes={setSizes}
+              />
+            );
+          return <></>;
+        })()}
+      </div>
+    </div>
+  );
+};
+
+export default BasketModal;
