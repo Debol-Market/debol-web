@@ -5,7 +5,7 @@ import { auth } from '@/services/firebase';
 import { getRedirectResult, signOut } from 'firebase/auth';
 import { Formik } from 'formik';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FcGoogle } from 'react-icons/fc';
 
 const Page = () => {
@@ -13,12 +13,17 @@ const Page = () => {
   const router = useRouter();
   const [authErr, setAuthErr] = useState('');
 
+useEffect(() => {
+    getRedirectResult(auth).then(async (res) => {
+      if(!res) return
+      const { claims } = await res.user.getIdTokenResult()
+      if(claims?.role && claims?.role == 'admin') router.push("/admin");
+    });
+  }, []);
+
   const googleLogin = () => {
     try {
       signInWithGoogle()
-        .then(() => getRedirectResult(auth))
-        .then((result) => onAuthChange(result.user))
-        .then(() => { if (isAdmin) router.push('/admin') });
     } catch (error) {
       console.log(error);
     }
