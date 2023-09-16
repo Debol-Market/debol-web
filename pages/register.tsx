@@ -29,7 +29,6 @@ export const isPhoneValid = (phone: string) => {
 
 function Page() {
   const router = useRouter();
-  const { onAuthChange, user } = useApp();
   const redirectUrl = useRedirect();
   const [phone, setPhone] = useState("");
   const isValid = isPhoneValid(phone);
@@ -74,10 +73,7 @@ function Page() {
 
   const googleLogin = () => {
     try {
-      signInWithGoogle()
-        .then(() => getRedirectResult(auth))
-        .then((result) => onAuthChange(result.user))
-        .then(() => router.push(redirectUrl));
+      signInWithGoogle();
     } catch (error) {
       console.log(error);
     }
