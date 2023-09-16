@@ -1,16 +1,16 @@
 import Overlay from '@/components/Overlay';
-import { CartItem, Order } from '@/utils/types';
+import { Order, OrderItem } from '@/utils/types';
 import { QRCodeCanvas } from 'qrcode.react';
 import { RiCloseCircleFill } from 'react-icons/ri';
 
 type props = {
   order: Order;
-  cartItem: CartItem[];
+  orderItems: OrderItem[];
   setOpenModal: () => void;
   orderId: string;
 };
 
-const OrderModal = ({ cartItem, order, setOpenModal, orderId }: props) => {
+const OrderModal = ({ orderItems, order, setOpenModal, orderId }: props) => {
   return (
     <Overlay onClick={setOpenModal}>
       <div
@@ -73,7 +73,7 @@ const OrderModal = ({ cartItem, order, setOpenModal, orderId }: props) => {
         </div>
 
         <div className="flex flex-col gap-5">
-          {cartItem.map((item, i) => (
+          {orderItems.map((item, i) => (
             <div className="flex justify-between items-center px-3 rounded-lg py-2 bg-slate-200 text-lg items"
               key={i}>
               <div>

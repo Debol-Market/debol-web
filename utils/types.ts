@@ -25,14 +25,14 @@ export type CartItem = {
   basket: Basket;
   basketId: string;
   item: Size;
-  sizeId: string;
   qty: number;
 };
 
+
 export type PaymentData = {
-  qty: number;
   basketId: string;
   sizeId: string;
+  qty: number;
 };
 
 export type Contacts = {
@@ -54,7 +54,7 @@ export type Order = {
     uid: string;
     phone1: string;
     phone2: string;
-    items: CartItem[];
+    items: OrderItem[];
     name: string;
     status: 'pending' | 'completed' | 'payment pending';
     paymentId?: string;

@@ -1,6 +1,6 @@
 import admin from "@/services/firebase-admin";
 import stripe from "@/services/stripe";
-import { Basket, PaymentData } from "@/utils/types";
+import { Basket, OrderItem, PaymentData } from "@/utils/types";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
@@ -35,7 +35,7 @@ export default async function handler(
   if (!name || !phone1 || !phone2)
     return res.status(400).send({ error: "No Shipping info is provided" });
 
-  const itemsBrought = [];
+  const itemsBrought:OrderItem[] = [];
 
   const line_items = [];
   let total = 0;
