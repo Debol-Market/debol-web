@@ -22,7 +22,7 @@ const CatagoryCreateModal = ({ onClose, onSubmit }: props) => {
         onSubmit?.({
           id: ref.key ?? '',
           name,
-          baskets: [],
+          count: 0,
         });
         onClose();
       })

@@ -47,7 +47,7 @@ export type OrderItem = {
 
 export type Catagory = {
   name: string;
-  count: string;
+  count: number;
 };
 
 export type Order = {
