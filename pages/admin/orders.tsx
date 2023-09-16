@@ -1,9 +1,11 @@
-import OrdersTable from '@/components/admin/OrdersTable';
-import Link from 'next/link';
-import { MdOutlineArrowBack } from 'react-icons/md';
+import OrdersTable from "@/components/admin/OrdersTable";
+import useAdmin from "@/utils/useAdmin";
+import Link from "next/link";
+import { MdOutlineArrowBack } from "react-icons/md";
 
+const Page = () => {
+  useAdmin();
 
-const orders = () => {
   return (
     <div className="h-full min-h-[100vh] bg-slate-200 md:py-2 md:px-10">
       <div className="flex p-2 items-center gap-3">
@@ -17,4 +19,4 @@ const orders = () => {
   );
 };
 
-export default orders;
+export default Page;

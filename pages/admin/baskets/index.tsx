@@ -1,7 +1,10 @@
-import BasketsOverviewCard from '@/components/admin/BasketsOverviewCard';
-import Navbar from '@/components/admin/Navbar';
+import BasketsOverviewCard from "@/components/admin/BasketsOverviewCard";
+import Navbar from "@/components/admin/Navbar";
+import useAdmin from "@/utils/useAdmin";
 
 const Page = () => {
+  useAdmin();
+
   return (
     <div className="min-h-screen">
       <Navbar name="Dashboard" />

@@ -1,8 +1,9 @@
 import Navbar from "@/components/admin/Navbar";
+import useAdmin from "@/utils/useAdmin";
 import Link from "next/link";
 
 const Page = () => {
-  // uploadFakeData();
+  useAdmin();
 
   return (
     <div className="min-h-screen">
