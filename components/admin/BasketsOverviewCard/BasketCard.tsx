@@ -8,7 +8,7 @@ type props = {
 
 const BasketCard = ({ basket, remove }: props) => {
   return (
-    <Link href={`/admin/basket/${basket.id}`}>
+    <Link href={`/admin/baskets/${basket.id}`}>
       <div className="min-h-[150px] hover:bg-slate-100 min-w-[180px] px-6 py-4 bg-white shadow rounded-md flex gap-3">
         <div className="">
           <h1 className="text-2xl">{basket.name}</h1>
