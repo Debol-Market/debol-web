@@ -47,8 +47,7 @@ const Page = ({ basket, basketId, imageUrl }: props) => {
           <div className="grow px-3 flex flex-col items-stretch landscape:max-w-md">
             <h1 className="text-2xl sm:text-3xl font-bold ">{basket.name}</h1>
             <p className="text-lg sm:text-xl my-4">
-              {basket.description ||
-                "This particular basket has everything to cater 8-10 people including Traditional beverages and bread"}
+              {basket.description}
             </p>
             <div className="font-bold text-lg my-2">Basket Sizes</div>
             <div className="bg-mint rounded-xl md:max-w-md my-4 mb-8 pb-5 flex flex-col items-center">
