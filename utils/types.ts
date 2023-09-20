@@ -94,6 +94,6 @@ export type Product = {
   unit: string;
   price: number;
   catagories: string[];
-  verdor: string;
+  vendor: string;
   images: string[];
 };
