@@ -190,7 +190,7 @@ export const createProduct = async (product: Product) => {
   const productRef = push(ref(rtdb, 'products'));
   if (productRef.key == null) throw new Error('Could not create product');
 
-  setDoc(doc(firestore, `baskets`, productRef.key), {
+  setDoc(doc(firestore, `products`, productRef.key), {
     ...product,
     keywords: generateProductKeywords(product),
   });
