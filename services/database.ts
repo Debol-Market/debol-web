@@ -151,7 +151,7 @@ export const deleteBasket = async (basketId: string) => {
 };
 
 export const getProduct = async (productId: string) => {
-  const snap = await get(ref(rtdb, `/baskets/${productId}`));
+  const snap = await get(ref(rtdb, `/products/${productId}`));
 
   if (!snap.val()) return;
   return { ...(snap.val() as Product), id: productId };
