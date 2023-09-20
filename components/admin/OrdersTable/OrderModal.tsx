@@ -68,11 +68,20 @@ const OrderModal = ({ orderItems, order, setOpenModal, orderId }: props) => {
           </div>
         )}
         {<div className="flex gap-2 ml-2">
-          <h2 className="text-slate-600">Shipping info: </h2>
-          <p>phone no. 1 : {order.phone1 ?? "UNKNOWN"}</p>
-          <p>phone no. 2 : {order.phone2 ?? "UNKNOWN"}</p>
+          <h2 className="text-slate-600"> info: </h2>
+          <p>phone 1 : {order.phone1 ?? "UNKNOWN"}</p>
         </div>}
-
+        <div className="mb-2">
+          <h2 className="text-xl font-bold text-slate-800 pl-2 bg-slate-100">
+            Shipping Info:
+          </h2>
+          <div className="flex gap-2 ml-2">
+            <h2 className="text-slate-600">phone 1: </h2>
+            <p>{order.phone1 ?? 'UNKNOWN'}</p>
+            <h2 className="text-slate-600">phone 2: </h2>
+            <p>{order.phone2 ?? "UNKNOWN"}</p>
+          </div>
+        </div>
         <div className="flex justify-center my-3">
           <QRCodeCanvas value={orderId} size={160} />
         </div>
