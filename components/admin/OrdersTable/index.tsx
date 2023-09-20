@@ -78,7 +78,7 @@ const TableRow: FC<{ order: Order; setOpenModal: () => void }> = ({
   setOpenModal,
 }) => {
   return (
-    <tr className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700" onClick={() => { }}>
+    <tr className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700" onClick={setOpenModal}>
       <td className="pl-3 py-2">{order.name}</td>
       <td className="pl-2 py-2">{order.phone1}</td>
       <td className="pl-2 py-2">{order.phone2}</td>
