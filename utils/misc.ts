@@ -1,4 +1,4 @@
-import { Basket } from './types';
+import { Basket, Product } from './types';
 
 export function generateID() {
   let result = '';
@@ -39,6 +39,24 @@ export const generateBasketKeywords = (basket: Basket) => {
             (arr, i) => [...arr, ...generateKeywords(i.name)],
             [] as string[]
           ),
+        ],
+        [] as string[]
+      ),
+    ])
+  );
+};
+
+export const generateProductKeywords = (product: Product) => {
+  return Array.from(
+    new Set([
+      ...generateKeywords(product.name),
+      ...generateKeywords(product.description),
+      ...generateKeywords(product.vendor),
+      ...generateKeywords(product.catagory),
+      ...product.catagories.reduce(
+        (a, s) => [
+          ...a,
+          ...generateKeywords(s ?? ''),
         ],
         [] as string[]
       ),
