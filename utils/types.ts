@@ -28,7 +28,6 @@ export type CartItem = {
   qty: number;
 };
 
-
 export type PaymentData = {
   basketId: string;
   sizeId: string;
@@ -51,28 +50,50 @@ export type Catagory = {
 };
 
 export type Order = {
-    uid: string;
-    phone1: string;
-    phone2: string;
-    items: OrderItem[];
-    name: string;
-    status: 'pending' | 'completed' | 'payment pending';
-    paymentId?: string;
-    timestamp: number;
-    user?: {
-      signinMethod: string;
-      email?: string;
-      phone?: string;
-    };
-    customerInfo: {
-      name?: string;
-      email?: string;
-      phone?: string;
-    };
+  uid: string;
+  phone1: string;
+  phone2: string;
+  items: OrderItem[];
+  name: string;
+  status: "pending" | "completed" | "payment pending";
+  paymentId?: string;
+  timestamp: number;
+  user?: {
+    signinMethod: string;
+    email?: string;
+    phone?: string;
+  };
+  customerInfo: {
+    name?: string;
+    email?: string;
+    phone?: string;
+  };
 };
 
 export type Driver = {
   name: string;
   email: string;
   password: string;
-}
+};
+
+export type BasketItem = {
+  basketId: string;
+  sizeId: string;
+  qty: number;
+};
+
+export type ProductItem = {
+  productId: string;
+  qty: number;
+};
+
+export type Product = {
+  name: string;
+  description: string;
+  catagory: string;
+  unit: string;
+  price: number;
+  catagories: string[];
+  verdor: string;
+  images: string[];
+};
