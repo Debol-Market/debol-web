@@ -44,9 +44,6 @@ const OrdersTable = () => {
             <th scope="col" className="pl-3 py-3">
               Time
             </th>
-            <th scope="col" className="pl-3 py-3">
-              Items
-            </th>
           </tr>
         </thead>
         <tbody className="">
@@ -81,20 +78,12 @@ const TableRow: FC<{ order: Order; setOpenModal: () => void }> = ({
   setOpenModal,
 }) => {
   return (
-    <tr className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700">
+    <tr className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700" onClick={() => { }}>
       <td className="pl-3 py-2">{order.name}</td>
       <td className="pl-2 py-2">{order.phone1}</td>
       <td className="pl-2 py-2">{order.phone2}</td>
       <td className="pl-2 py-2">{order.status}</td>
       <td className="pl-2 py-2">{timeStampToRelativeTime(order.timestamp)}</td>
-      <td className="pl-2 py-2">
-        <button
-          className="bg-emerald-500 text-white rounded-lg shadow px-2 py-2"
-          onClick={setOpenModal}
-        >
-          Items
-        </button>
-      </td>
     </tr>
   );
 };
