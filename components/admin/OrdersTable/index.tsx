@@ -82,7 +82,6 @@ const TableRow: FC<{ order: Order; setOpenModal: () => void }> = ({
 }) => {
   return (
     <tr className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700">
-      {/* <td className="px-6 py-4">{item.id}</td> */}
       <td className="pl-3 py-2">{order.name}</td>
       <td className="pl-2 py-2">{order.phone1}</td>
       <td className="pl-2 py-2">{order.phone2}</td>
