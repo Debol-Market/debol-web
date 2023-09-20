@@ -179,7 +179,7 @@ export const deleteProduct = async (productId: string) =>{
 export const updateProduct = async (product: Product, productId: string) => {
   await Promise.all([
     update(ref(rtdb, 'products/' + productId), product),
-    updateDoc(doc(firestore, 'baskets', productId), {
+    updateDoc(doc(firestore, 'products', productId), {
       ...product,
       keywords: generateProductKeywords(product),
     }),
