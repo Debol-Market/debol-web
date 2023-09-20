@@ -1,5 +1,5 @@
-import { generateBasketKeywords } from "@/utils/misc";
-import { Basket, Contacts } from "@/utils/types";
+import { generateBasketKeywords, generateProductKeywords } from "@/utils/misc";
+import { Basket, Contacts, Product } from "@/utils/types";
 import {
   query as dbQuery,
   equalTo,
@@ -148,4 +148,50 @@ export const deleteBasket = async (basketId: string) => {
     remove(ref(rtdb, 'baskets/' + basketId)),
     deleteDoc(doc(firestore, 'baskets', basketId)),
   ]);
+};
+
+export const getProduct = async (productId: string) => {
+  const snap = await get(ref(rtdb, `/baskets/${productId}`));
+
+  if (!snap.val()) return;
+  return { ...(snap.val() as Product), id: productId };
+}
+
+export const deleteProduct = async (productId: string) =>{
+  const product = await get(ref(rtdb, `products/${productId}`))
+
+  if (product.val().catagory) {
+    const catRef = await get(
+      dbQuery(
+        ref(rtdb, 'catagories'),
+        orderByChild('name'),
+        equalTo(product.val().catagory)
+      )
+    );
+    if (catRef.exists() && catRef.val()) {
+      if (catRef.val().count)
+        update(ref(rtdb, 'catagories/' + catRef.key), {
+          count: (catRef.val()?.count ?? 0) - 1,
+        });
+    }
+}}
+
+export const updateProduct = async (product: Product, productId: string) => {
+  await Promise.all([
+    update(ref(rtdb, 'products/' + productId), product),
+    updateDoc(doc(firestore, 'baskets', productId), {
+      ...product,
+      keywords: generateProductKeywords(product),
+    }),
+  ]);
+};
+
+export const createProduct = async (product: Product) => {
+  const productRef = push(ref(rtdb, 'products'));
+  if (productRef.key == null) throw new Error('Could not create product');
+
+  setDoc(doc(firestore, `baskets`, productRef.key), {
+    ...product,
+    keywords: generateProductKeywords(product),
+  });
 };
