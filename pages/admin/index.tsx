@@ -23,6 +23,12 @@ const Page = () => {
             Baskets
           </Link>
           <Link
+            href="/admin/products"
+            className="min-w-[160px] text-lg bg-amber-500 rounded-lg shadow px-10 py-2"
+          >
+            Products
+          </Link>
+          <Link
             href="/admin/contacts"
             className="min-w-[160px] text-lg bg-amber-500 rounded-lg shadow px-10 py-2"
           >
