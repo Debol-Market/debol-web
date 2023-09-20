@@ -29,9 +29,6 @@ const OrdersTable = () => {
       <table className="table-auto w-full text-sm max-h-[80vh]  min-w-[720px] text-left text-gray-500 dark:text-gray-300">
         <thead className="text-2xs text-slate-600 uppercase bg-gray-400 dark:bg-gray-800/90 dark:text-gray-400">
           <tr>
-            {/* <th scope="col" className="px-6 py-3">
-              Id
-            </th> */}
             <th scope="col" className="pl-3 py-3">
               Name
             </th>
