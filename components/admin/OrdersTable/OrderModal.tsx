@@ -1,6 +1,5 @@
 import Overlay from '@/components/Overlay';
 import { Order, OrderItem } from '@/utils/types';
-import { QRCodeCanvas } from 'qrcode.react';
 import { RiCloseCircleFill } from 'react-icons/ri';
 
 type props = {
@@ -78,9 +77,9 @@ const OrderModal = ({ orderItems, order, setOpenModal, orderId }: props) => {
             </div>
           </div>
         )}
-        <div className="flex justify-center my-3">
+        {/* <div className="flex justify-center my-3">
           <QRCodeCanvas value={orderId} size={160} />
-        </div>
+        </div> */}
 
         <div className="flex flex-col gap-5">
           {orderItems.map((item, i) => (
