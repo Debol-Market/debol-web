@@ -68,7 +68,7 @@ const OrderModal = ({ orderItems, order, setOpenModal, orderId }: props) => {
               <h2 className="text-xl font-bold text-slate-800 pl-2 bg-slate-100">
                 Shipping Info:
               </h2>
-              <div className="flex flex-col gap-1 ml-2">
+              <div className="flex  gap-1 ml-2">
                 <h2 className="text-slate-600">phone 1: </h2>
                 <p>{order.phone1 ?? 'UNKNOWN'}</p>
                 <h2 className="text-slate-600">phone 2: </h2>
