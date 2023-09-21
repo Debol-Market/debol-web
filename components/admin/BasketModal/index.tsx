@@ -1,10 +1,10 @@
-import { createBasket } from '@/services/database';
-import { generateID } from '@/utils/misc';
-import { Size } from '@/utils/types';
-import { useState } from 'react';
-import { GrClose } from 'react-icons/gr';
-import FirstPage from './FirstPage';
-import SecondPage from './SecondPage';
+import { createBasket } from "@/services/database";
+import { generateID } from "@/utils/misc";
+import { Size } from "@/utils/types";
+import { useState } from "react";
+import { GrClose } from "react-icons/gr";
+import FirstPage from "./FirstPage";
+import SecondPage from "./SecondPage";
 
 type props = {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -13,16 +13,16 @@ type props = {
 
 const BasketModal = ({ setOpen }: props) => {
   const [page, setPage] = useState(0);
-  const [name, setName] = useState('');
-  const [desc, setDesc] = useState('');
-  const [image, setImage] = useState('');
-  const [nameErr, setNameErr] = useState('');
-  const [catagory, setCatagory] = useState('');
+  const [name, setName] = useState("");
+  const [desc, setDesc] = useState("");
+  const [image, setImage] = useState("");
+  const [nameErr, setNameErr] = useState("");
+  const [catagory, setCatagory] = useState("");
   const [sizes, setSizes] = useState<Size[]>([
     {
       id: generateID(),
-      name: '',
-      description: '',
+      name: "",
+      description: "",
       price: 0,
       items: [],
     },
@@ -38,6 +38,7 @@ const BasketModal = ({ setOpen }: props) => {
       catagory,
       description: desc,
       sizes,
+      created_at: Date.now(),
     };
     createBasket(basket).then(() => {
       setLoading(false);

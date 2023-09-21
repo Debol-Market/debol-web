@@ -29,7 +29,7 @@ type ContextType = {
     size: Size,
     qty: number,
     basketId: string,
-    basket: Basket,
+    basket: Basket
   ) => void;
 };
 
@@ -66,7 +66,7 @@ export const AppContext = ({ children }: props) => {
     if (user) {
       const { claims } = await user.getIdTokenResult();
       setIsAdmin(
-        Object.keys(claims).includes("role") && claims?.role == "admin",
+        Object.keys(claims).includes("role") && claims?.role == "admin"
       );
     }
     setIsLoading(false);
@@ -76,7 +76,7 @@ export const AppContext = ({ children }: props) => {
     size: Size,
     qty: number,
     basketId: string,
-    basket: Basket,
+    basket: Basket
   ) => {
     if (cart.some((item: CartItem) => item.item.id == size.id)) return;
     updateCart([...cart, { item: size, basketId, qty, basket }]);
@@ -90,7 +90,7 @@ export const AppContext = ({ children }: props) => {
     if (qty == 0) return removeFromCart(sizeId);
 
     updateCart(
-      cart.map((item) => (item.item.id == sizeId ? { ...item, qty } : item)),
+      cart.map((item) => (item.item.id == sizeId ? { ...item, qty } : item))
     );
   };
 
@@ -112,7 +112,7 @@ export const AppContext = ({ children }: props) => {
             if (!basket) return;
             basket.sizes.forEach((size) => {
               const dbSize = cart.find(
-                (cartItem) => cartItem.item.id == size.id,
+                (cartItem) => cartItem.item.id == size.id
               );
               if (!dbSize) return;
               if (newCart.find((item) => item.item.id == dbSize.item.id))
@@ -122,7 +122,7 @@ export const AppContext = ({ children }: props) => {
           });
           clearCart();
           updateCart(newCart);
-        },
+        }
       );
 
     return () => sub();

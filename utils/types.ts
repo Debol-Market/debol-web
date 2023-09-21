@@ -19,6 +19,7 @@ export type Basket = {
   description: string;
   catagory?: string;
   sizes: Size[];
+  created_at: number;
 };
 
 export type CartItem = {
