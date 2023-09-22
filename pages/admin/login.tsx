@@ -1,29 +1,29 @@
-import Spinner from '@/components/Spinner';
-import useApp from '@/services/appContext';
-import { login, signInWithGoogle } from '@/services/auth';
-import { auth } from '@/services/firebase';
-import { getRedirectResult, signOut } from 'firebase/auth';
-import { Formik } from 'formik';
-import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
-import { FcGoogle } from 'react-icons/fc';
+import Spinner from "@/components/Spinner";
+import useApp from "@/services/appContext";
+import { login, signInWithGoogle } from "@/services/auth";
+import { auth } from "@/services/firebase";
+import { getRedirectResult, signOut } from "firebase/auth";
+import { Formik } from "formik";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import { FcGoogle } from "react-icons/fc";
 
 const Page = () => {
   const { user, onAuthChange, isAdmin } = useApp();
   const router = useRouter();
-  const [authErr, setAuthErr] = useState('');
+  const [authErr, setAuthErr] = useState("");
 
-useEffect(() => {
+  useEffect(() => {
     getRedirectResult(auth).then(async (res) => {
-      if(!res) return
-      const { claims } = await res.user.getIdTokenResult()
-      if(claims?.role && claims?.role == 'admin') router.push("/admin");
+      if (!res) return;
+      const { claims } = await res.user.getIdTokenResult();
+      if (claims?.role && claims?.role == "admin") router.push("/admin");
     });
   }, []);
 
   const googleLogin = () => {
     try {
-      signInWithGoogle()
+      signInWithGoogle();
     } catch (error) {
       console.log(error);
     }
@@ -41,43 +41,43 @@ useEffect(() => {
           Login in with Google
         </button>
         <Formik
-          initialValues={{ email: '', password: '' }}
+          initialValues={{ email: "", password: "" }}
           validate={(values) => {
-            const errors = { email: '', password: '' };
+            const errors = { email: "", password: "" };
             if (!values.email) {
-              errors.email = 'Required';
+              errors.email = "Required";
             } else if (
               !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
             ) {
-              errors.email = 'Invalid email address';
+              errors.email = "Invalid email address";
             }
           }}
           onSubmit={(values, { setSubmitting }) => {
-            setAuthErr('');
+            setAuthErr("");
             login(values.email, values.password)
               .then(async (userCred) => {
                 await onAuthChange(userCred.user);
                 const { claims } = await userCred.user.getIdTokenResult();
                 if (
                   !(
-                    Object.keys(claims).includes('role') &&
-                    claims?.role == 'admin'
+                    Object.keys(claims).includes("role") &&
+                    claims?.role == "admin"
                   )
                 ) {
                   await signOut(auth);
-                  throw new Error('Incorrect Email or Password');
+                  throw new Error("Incorrect Email or Password");
                 }
-                router.push('/');
+                router.push("/");
                 setSubmitting(false);
               })
               .catch((err) => {
-                if (err.code === 'auth/user-not-found') {
-                  setAuthErr('Incorrect Email or Password');
-                } else if (err.code === 'auth/wrong-password') {
-                  setAuthErr('Incorrect Email or Password');
-                } else if (err.code === 'auth/network-request-failed') {
+                if (err.code === "auth/user-not-found") {
+                  setAuthErr("Incorrect Email or Password");
+                } else if (err.code === "auth/wrong-password") {
+                  setAuthErr("Incorrect Email or Password");
+                } else if (err.code === "auth/network-request-failed") {
                   setAuthErr(
-                    'Cannot connect. Check your internet and try again.'
+                    "Cannot connect. Check your internet and try again.",
                   );
                 } else {
                   setAuthErr(err.message);
@@ -113,8 +113,9 @@ useEffect(() => {
                 onBlur={handleBlur}
                 value={values.email}
                 onChange={handleChange}
-                className={`py-3 px-4 focus:outline-none border-2 border-slate-400 focus:border-blue rounded-lg ${errors.email ? 'border-red-600' : ''
-                  } w-auto min-w-0`}
+                className={`py-3 px-4 focus:outline-none border-2 border-slate-400 focus:border-blue rounded-lg ${
+                  errors.email ? "border-red-600" : ""
+                } w-auto min-w-0`}
               />
               <p className="text-xs text-red-600 ">
                 {errors.email && touched.email && errors.email}
@@ -132,8 +133,9 @@ useEffect(() => {
                 onBlur={handleBlur}
                 value={values.password}
                 onChange={handleChange}
-                className={`py-3 px-4 focus:outline-none border-2 border-slate-400 focus:border-blue rounded-lg ${errors.password ? 'border-red-600' : ''
-                  } w-auto min-w-0`}
+                className={`py-3 px-4 focus:outline-none border-2 border-slate-400 focus:border-blue rounded-lg ${
+                  errors.password ? "border-red-600" : ""
+                } w-auto min-w-0`}
               />
               <p className="text-xs text-red-600 ">
                 {errors.password && touched.password && errors.password}
