@@ -1,15 +1,16 @@
 import Overlay from '@/components/Overlay';
-import { Order, OrderItem } from '@/utils/types';
+import { BasketItemData, Order, ProductItemData } from '@/utils/types';
 import { RiCloseCircleFill } from 'react-icons/ri';
 
 type props = {
   order: Order;
-  orderItems: OrderItem[];
+  orderBasketItems: BasketItemData[];
+  orderProductItems: ProductItemData[];
   setOpenModal: () => void;
   orderId: string;
 };
 
-const OrderModal = ({ orderItems, order, setOpenModal, orderId }: props) => {
+const OrderModal = ({ orderProductItems, orderBasketItems, order, setOpenModal, orderId }: props) => {
   return (
     <Overlay onClick={setOpenModal}>
       <div
@@ -80,7 +81,8 @@ const OrderModal = ({ orderItems, order, setOpenModal, orderId }: props) => {
         </div> */}
 
         <div className="flex flex-col gap-5">
-          {orderItems.map((item, i) => (
+          <p className="text-xl font-bold text-slate-600 mb-2">Baskets</p>
+          {orderBasketItems.length !== 0 ? orderBasketItems.map((item, i) => (
             <div className="flex justify-between items-center px-3 rounded-lg py-2 bg-slate-200 text-lg items"
               key={i}>
               <div>
@@ -91,7 +93,20 @@ const OrderModal = ({ orderItems, order, setOpenModal, orderId }: props) => {
               </div>
               <p className="text-slate-900 text-2xl font-bold">{item.qty}</p>
             </div>
-          ))}
+          )) : <div>no baskets found</div>}
+          <p className="text-xl font-bold text-slate-600 mb-2">Products</p>
+          {orderProductItems.length !== 0 ? orderProductItems.map((item, i) => (
+            <div className="flex justify-between items-center px-3 rounded-lg py-2 bg-slate-200 text-lg items"
+              key={i}>
+              <div>
+                <p className="">{item.product?.name}</p>
+                <p className="">
+                  {item.product.price}
+                </p>
+              </div>
+              <p className="text-slate-900 text-2xl font-bold">{item.product.unit}</p>
+            </div>
+          )) : <div>no product found</div>}
         </div>
       </div>
     </Overlay>
