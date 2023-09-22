@@ -58,7 +58,8 @@ const OrdersTable = () => {
         selectedIndex < data.length && (
           <OrderModal
             order={data[selectedIndex]}
-            orderItems={data[selectedIndex].items}
+            orderBasketItems={data[selectedIndex].basket}
+            orderProductItems={data[selectedIndex].products}
             setOpenModal={() => setOpenOrderBasketModal(false)}
             orderId={data[selectedIndex].id}
           />
