@@ -31,10 +31,10 @@ const EMULATORS_STARTED = "EMULATORS_STARTED";
 function startEmulators() {
   if (!(global as any)[EMULATORS_STARTED]) {
     (global as any)[EMULATORS_STARTED] = true;
-    connectAuthEmulator(auth, "http://127.0.0.1:9099");
-    connectStorageEmulator(storage, "0.0.0.0", 9199);
-    connectFirestoreEmulator(firestore, "0.0.0.0", 8080);
-    connectDatabaseEmulator(rtdb, "0.0.0.0", 9000);
+    connectAuthEmulator(auth, `http://${process.env.LOCAL_IP}:9099`);
+    connectStorageEmulator(storage, process.env.LOCAL_IP, 9199);
+    connectFirestoreEmulator(firestore, process.env.LOCAL_IP, 8080);
+    connectDatabaseEmulator(rtdb, process.env.LOCAL_IP, 9000);
   }
 }
 
