@@ -52,14 +52,6 @@ export const generateProductKeywords = (product: Product) => {
       ...generateKeywords(product.name),
       ...generateKeywords(product.description),
       ...generateKeywords(product.vendor),
-      ...generateKeywords(product.catagory),
-      ...product.catagories.reduce(
-        (a, s) => [
-          ...a,
-          ...generateKeywords(s ?? ''),
-        ],
-        [] as string[]
-      ),
     ])
   );
 };
