@@ -33,35 +33,6 @@ export type Catagory = {
   count: number;
 };
 
-export type Driver = {
-  name: string;
-  email: string;
-  password: string;
-};
-
-export type Product = {
-  name: string;
-  description: string;
-  catagory: string;
-  unit: string;
-  price: number;
-  catagories: string[];
-  vendor: string;
-  images: string[];
-  created_at: number;
-};
-
-export type BasketItem = {
-  basketId: string;
-  sizeId: string;
-  qty: number;
-};
-
-export type ProductItem = {
-  productId: string;
-  qty: number;
-};
-
 export type BasketItemData = BasketItem & { basket: Basket };
 export type ProductItemData = ProductItem & { product: Product };
 
@@ -86,7 +57,6 @@ export type Order = {
     phone?: string;
   };
 };
-<<<<<<< HEAD
 
 export type Driver = {
   name: string;
@@ -115,5 +85,3 @@ export type Product = {
   vendor: string;
   images?: string[];
 };
-=======
->>>>>>> 3dbb05029105ecd0bdb3a56c178a77659298af1f
