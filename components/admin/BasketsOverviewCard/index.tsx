@@ -1,12 +1,12 @@
-import { rtdb } from '@/services/firebase';
-import { Basket } from '@/utils/types';
-import { onValue, ref } from 'firebase/database';
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import { MdOutlineArrowBack } from 'react-icons/md';
-import BasketModal from '../BasketModal';
-import CatagoryCreateModal from '../CatagoryCreateModal';
-import BasketCard from './BasketCard';
+import { rtdb } from "@/services/firebase";
+import { Basket } from "@/utils/types";
+import { onValue, ref } from "firebase/database";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { MdOutlineArrowBack } from "react-icons/md";
+import BasketModal from "../BasketModal";
+import CatagoryCreateModal from "../CatagoryCreateModal";
+import BasketCard from "./BasketCard";
 
 const BasketsOverviewCard = () => {
   const [baskets, setBaskets] = useState<(Basket & { id: string })[]>([]);
@@ -14,13 +14,14 @@ const BasketsOverviewCard = () => {
   const [openCatagoryModal, setOpenCatagoryModal] = useState(false);
 
   useEffect(() => {
-    const sub = onValue(ref(rtdb, 'baskets/'), (snap) => {
-      setBaskets(
-        Object.entries(snap.val()).map(([basketId, basket]) => ({
-          id: basketId,
-          ...(basket as Basket),
-        }))
-      );
+    const sub = onValue(ref(rtdb, "baskets/"), (snap) => {
+      if (snap.val() && snap.exists())
+        setBaskets(
+          Object.entries(snap.val()).map(([basketId, basket]) => ({
+            id: basketId,
+            ...(basket as Basket),
+          }))
+        );
     });
 
     return () => sub();
@@ -33,7 +34,7 @@ const BasketsOverviewCard = () => {
   return (
     <div className="p-3 md:p-10 shadow-lg rounded-xl bg-slate-300 flex flex-col gap-5 justify-start">
       <Link href="/admin">
-        <div className='flex justify-start my-2'>
+        <div className="flex justify-start my-2">
           <MdOutlineArrowBack size={30} />
         </div>
       </Link>
