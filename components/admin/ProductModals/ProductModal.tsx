@@ -29,7 +29,7 @@ const ProductModal = ({ setOpen, onClose }: props) => {
       vendor,
       unit,
       price,
-
+      createdAt: Date.now(),
     };
     createProduct(product).then(() => {
       setLoading(false);
