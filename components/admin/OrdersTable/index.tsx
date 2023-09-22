@@ -1,9 +1,9 @@
-import { rtdb } from '@/services/firebase';
-import { timeStampToRelativeTime } from '@/utils/dateDiff';
-import { Order } from '@/utils/types';
-import { onValue, ref } from 'firebase/database';
-import { FC, useEffect, useState } from 'react';
-import OrderModal from './OrderModal';
+import { rtdb } from "@/services/firebase";
+import { timeStampToRelativeTime } from "@/utils/dateDiff";
+import { Order } from "@/utils/types";
+import { onValue, ref } from "firebase/database";
+import { FC, useEffect, useState } from "react";
+import OrderModal from "./OrderModal";
 
 const OrdersTable = () => {
   const [openOrderBasketModal, setOpenOrderBasketModal] = useState(false);
@@ -11,14 +11,14 @@ const OrdersTable = () => {
   const [selectedIndex, setSelectedIndex] = useState<number>();
 
   useEffect(() => {
-    const sub = onValue(ref(rtdb, 'orders/'), (snap) => {
+    const sub = onValue(ref(rtdb, "orders/"), (snap) => {
       setData(
         Object.entries(snap.val())
           .map(([orderId, order]) => ({
             id: orderId,
             ...(order as Order),
           }))
-          .filter((order) => order.status == 'pending')
+          .filter((order) => order.status == "pending")
       );
     });
     return () => sub();
@@ -58,8 +58,6 @@ const OrdersTable = () => {
         selectedIndex < data.length && (
           <OrderModal
             order={data[selectedIndex]}
-            orderBasketItems={data[selectedIndex].basket}
-            orderProductItems={data[selectedIndex].products}
             setOpenModal={() => setOpenOrderBasketModal(false)}
             orderId={data[selectedIndex].id}
           />
@@ -73,7 +71,10 @@ const TableRow: FC<{ order: Order; setOpenModal: () => void }> = ({
   setOpenModal,
 }) => {
   return (
-    <tr className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700" onClick={setOpenModal}>
+    <tr
+      className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700"
+      onClick={setOpenModal}
+    >
       <td className="pl-3 py-2">{order.name}</td>
       <td className="pl-2 py-2">{order.status}</td>
       <td className="pl-2 py-2">{timeStampToRelativeTime(order.timestamp)}</td>

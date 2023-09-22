@@ -1,16 +1,14 @@
-import Overlay from '@/components/Overlay';
-import { BasketItemData, Order, ProductItemData } from '@/utils/types';
-import { RiCloseCircleFill } from 'react-icons/ri';
+import Overlay from "@/components/Overlay";
+import { Order } from "@/utils/types";
+import { RiCloseCircleFill } from "react-icons/ri";
 
 type props = {
   order: Order;
-  orderBasketItems: BasketItemData[];
-  orderProductItems: ProductItemData[];
   setOpenModal: () => void;
   orderId: string;
 };
 
-const OrderModal = ({ orderProductItems, orderBasketItems, order, setOpenModal, orderId }: props) => {
+const OrderModal = ({ order, setOpenModal, orderId }: props) => {
   return (
     <Overlay onClick={setOpenModal}>
       <div
@@ -33,13 +31,13 @@ const OrderModal = ({ orderProductItems, orderBasketItems, order, setOpenModal, 
             {order.user?.phone && (
               <div className="flex gap-2 ml-2">
                 <h2 className="text-slate-600">Phone Number:</h2>
-                <p>{order.user?.phone ?? 'UNKNOWN'}</p>
+                <p>{order.user?.phone ?? "UNKNOWN"}</p>
               </div>
             )}
             {order.user?.email && (
               <div className="flex gap-2 ml-2">
                 <h2 className="text-slate-600">Email: </h2>
-                <p>{order.user?.email ?? 'UNKNOWN'}</p>
+                <p>{order.user?.email ?? "UNKNOWN"}</p>
               </div>
             )}
           </div>
@@ -51,18 +49,18 @@ const OrderModal = ({ orderProductItems, orderBasketItems, order, setOpenModal, 
             </h2>
             <div className="flex gap-2 ml-2">
               <h2 className="text-slate-600">Name:</h2>
-              <p>{order.customerInfo?.name ?? 'UNKNOWN'}</p>
+              <p>{order.customerInfo?.name ?? "UNKNOWN"}</p>
             </div>
             {order.customerInfo?.phone && (
               <div className="flex gap-2 ml-2">
                 <h2 className="text-slate-600">Phone Number:</h2>
-                <p>{order.customerInfo?.phone ?? 'UNKNOWN'}</p>
+                <p>{order.customerInfo?.phone ?? "UNKNOWN"}</p>
               </div>
             )}
             {order.customerInfo?.email && (
               <div className="flex gap-2 ml-2">
                 <h2 className="text-slate-600">Email: </h2>
-                <p>{order.customerInfo?.email ?? 'UNKNOWN'}</p>
+                <p>{order.customerInfo?.email ?? "UNKNOWN"}</p>
               </div>
             )}
             <div className="flex flex-col mb-2">
@@ -70,8 +68,12 @@ const OrderModal = ({ orderProductItems, orderBasketItems, order, setOpenModal, 
                 Shipping Info:
               </h2>
               <div className="flex flex-col  gap-1 ml-2">
-                <h2 className="text-slate-600">phone 1: {order.phone1 ?? 'UNKNOWN'}</h2>
-                <h2 className="text-slate-600">phone 2: {order.phone2 ?? "UNKNOWN"}</h2>
+                <h2 className="text-slate-600">
+                  phone 1: {order.phone1 ?? "UNKNOWN"}
+                </h2>
+                <h2 className="text-slate-600">
+                  phone 2: {order.phone2 ?? "UNKNOWN"}
+                </h2>
               </div>
             </div>
           </div>
@@ -82,31 +84,43 @@ const OrderModal = ({ orderProductItems, orderBasketItems, order, setOpenModal, 
 
         <div className="flex flex-col gap-5">
           <p className="text-xl font-bold text-slate-600 mb-2">Baskets</p>
-          {orderBasketItems.length !== 0 ? orderBasketItems.map((item, i) => (
-            <div className="flex justify-between items-center px-3 rounded-lg py-2 bg-slate-200 text-lg items"
-              key={i}>
-              <div>
-                <p className="">{item.basket?.name}</p>
-                <p className="">
-                  {item.basket.sizes.find((s) => s.id == item.sizeId)?.name}
-                </p>
+          {order.baskets.length !== 0 ? (
+            order.baskets.map((item, i) => (
+              <div
+                className="flex justify-between items-center px-3 rounded-lg py-2 bg-slate-200 text-lg items"
+                key={i}
+              >
+                <div>
+                  <p className="">{item.basket?.name}</p>
+                  <p className="">
+                    {item.basket.sizes.find((s) => s.id == item.sizeId)?.name}
+                  </p>
+                </div>
+                <p className="text-slate-900 text-2xl font-bold">{item.qty}</p>
               </div>
-              <p className="text-slate-900 text-2xl font-bold">{item.qty}</p>
-            </div>
-          )) : <div>no baskets found</div>}
+            ))
+          ) : (
+            <div>no baskets found</div>
+          )}
           <p className="text-xl font-bold text-slate-600 mb-2">Products</p>
-          {orderProductItems.length !== 0 ? orderProductItems.map((item, i) => (
-            <div className="flex justify-between items-center px-3 rounded-lg py-2 bg-slate-200 text-lg items"
-              key={i}>
-              <div>
-                <p className="">{item.product?.name}</p>
-                <p className="">
-                  {item.product.price}
+          {order.products.length !== 0 ? (
+            order.products.map((item, i) => (
+              <div
+                className="flex justify-between items-center px-3 rounded-lg py-2 bg-slate-200 text-lg items"
+                key={i}
+              >
+                <div>
+                  <p className="">{item.product?.name}</p>
+                  <p className="">{item.product.price}</p>
+                </div>
+                <p className="text-slate-900 text-2xl font-bold">
+                  {item.product.unit}
                 </p>
               </div>
-              <p className="text-slate-900 text-2xl font-bold">{item.product.unit}</p>
-            </div>
-          )) : <div>no product found</div>}
+            ))
+          ) : (
+            <div>no product found</div>
+          )}
         </div>
       </div>
     </Overlay>
