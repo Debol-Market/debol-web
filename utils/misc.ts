@@ -51,15 +51,6 @@ export const generateProductKeywords = (product: Product) => {
     new Set([
       ...generateKeywords(product.name),
       ...generateKeywords(product.description),
-<<<<<<< HEAD
-      ...generateKeywords(product.vendor),
-=======
-      ...generateKeywords(product.catagory),
-      ...product.catagories.reduce(
-        (a, s) => [...a, ...generateKeywords(s ?? "")],
-        [] as string[]
-      ),
->>>>>>> 3dbb05029105ecd0bdb3a56c178a77659298af1f
     ])
   );
 };
