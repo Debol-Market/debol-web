@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { MdOutlineArrowBack } from "react-icons/md";
 import { Product } from '../../../utils/types';
 import CatagoryCreateModal from "../CatagoryCreateModal";
+import ProductModal from "../ProductModals/ProductModal";
 import ProductCard from "./ProductCard";
 
 const ProductOverviewCard = () => {
@@ -13,7 +14,7 @@ const ProductOverviewCard = () => {
   const [products, setProducts] = useState<(Product & { id: string })[]>();
 
   useEffect(() => {
-    const sub = onValue(ref(rtdb, 'baskets/'), (snap) => {
+    const sub = onValue(ref(rtdb, 'products/'), (snap) => {
       setProducts(
         Object.entries(snap.val()).map(([productId, product]) => ({
           id: productId,
@@ -48,20 +49,18 @@ const ProductOverviewCard = () => {
     {products ? (
       products.map((prod, i) => (
         <ProductCard
-          key={prod.id}
+          key={i}
           product={prod}
         />
       ))
     ) : (
       <div>Loading</div>
     )}
-    {/* {openProductModal ? (
+    {openProductModal && (
       <ProductModal
         setOpen={setOpenProductModal}
-        onClose={() => setOpenProductModal(false)}
-      />
-
-    ) : null} */}
+        onClose={() => setOpenProductModal(false)} />
+    )}
     {openCatagoryModal && (
       <CatagoryCreateModal onClose={() => setOpenCatagoryModal(false)} />
     )}
