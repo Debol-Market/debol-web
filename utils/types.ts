@@ -91,10 +91,10 @@ export type ProductItem = {
 export type Product = {
   name: string;
   description: string;
-  catagory: string;
+  catagory?: string;
   unit: string;
   price: number;
-  catagories: string[];
+  catagories?: string[]; // made them obtional for test  i will add them to products page 
   vendor: string;
-  images: string[];
+  images?: string[];
 };
