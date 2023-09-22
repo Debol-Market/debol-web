@@ -23,7 +23,6 @@
     "eslint-config-next": "13.4.19",
     "firebase": "^10.3.0",
     "firebase-admin": "^11.10.1",
-    "formic": "^0.0.10",
     "formik": "^2.4.4",
     "framer-motion": "^10.16.1",
     "generate-password-ts": "^1.6.5",
