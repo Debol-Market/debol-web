@@ -86,34 +86,3 @@ export type Order = {
     phone?: string;
   };
 };
-<<<<<<< HEAD
-
-export type Driver = {
-  name: string;
-  email: string;
-  password: string;
-};
-
-export type BasketItem = {
-  basketId: string;
-  sizeId: string;
-  qty: number;
-};
-
-export type ProductItem = {
-  productId: string;
-  qty: number;
-};
-
-export type Product = {
-  name: string;
-  description: string;
-  catagory?: string;
-  unit: string;
-  price: number;
-  catagories?: string[]; // made them obtional for test  i will add them to products page 
-  vendor: string;
-  images?: string[];
-};
-=======
->>>>>>> 3dbb05029105ecd0bdb3a56c178a77659298af1f
