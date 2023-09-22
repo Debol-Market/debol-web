@@ -84,4 +84,5 @@ export type Product = {
   catagories?: string[]; // made them obtional for test  i will add them to products page 
   vendor: string;
   images?: string[];
+  created_at: number;
 };
