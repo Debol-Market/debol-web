@@ -22,59 +22,33 @@ export type Basket = {
   created_at: number;
 };
 
-export type CartItem = {
-  basket: Basket;
-  basketId: string;
-  item: Size;
-  qty: number;
-};
-
-export type PaymentData = {
-  basketId: string;
-  sizeId: string;
-  qty: number;
-};
-
 export type Contacts = {
   name: string;
   email: string;
   message: string;
 };
 
-export type OrderItem = {
-  basket: Basket;
-} & PaymentData;
-
 export type Catagory = {
   name: string;
   count: number;
-};
-
-export type Order = {
-  uid: string;
-  phone1: string;
-  phone2: string;
-  items: OrderItem[];
-  name: string;
-  status: "pending" | "completed" | "payment pending";
-  paymentId?: string;
-  timestamp: number;
-  user?: {
-    signinMethod: string;
-    email?: string;
-    phone?: string;
-  };
-  customerInfo: {
-    name?: string;
-    email?: string;
-    phone?: string;
-  };
 };
 
 export type Driver = {
   name: string;
   email: string;
   password: string;
+};
+
+export type Product = {
+  name: string;
+  description: string;
+  catagory: string;
+  unit: string;
+  price: number;
+  catagories: string[];
+  vendor: string;
+  images: string[];
+  created_at: number;
 };
 
 export type BasketItem = {
@@ -88,13 +62,27 @@ export type ProductItem = {
   qty: number;
 };
 
-export type Product = {
+export type BasketItemData = BasketItem & { basket: Basket };
+export type ProductItemData = ProductItem & { product: Product };
+
+export type Order = {
+  uid: string;
+  phone1: string;
+  phone2: string;
   name: string;
-  description: string;
-  catagory: string;
-  unit: string;
-  price: number;
-  catagories: string[];
-  vendor: string;
-  images: string[];
+  basket: BasketItemData[];
+  products: ProductItemData[];
+  status: "pending" | "completed" | "payment pending";
+  paymentId?: string;
+  timestamp: number;
+  user?: {
+    signinMethod: string;
+    email?: string;
+    phone?: string;
+  };
+  customerInfo: {
+    name?: string;
+    email?: string;
+    phone?: string;
+  };
 };

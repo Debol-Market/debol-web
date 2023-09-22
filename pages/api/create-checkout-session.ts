@@ -1,11 +1,18 @@
 import admin from "@/services/firebase-admin";
 import stripe from "@/services/stripe";
-import { Basket, OrderItem, PaymentData } from "@/utils/types";
+import {
+  Basket,
+  BasketItem,
+  BasketItemData,
+  ProductItem,
+  ProductItemData,
+} from "@/utils/types";
 import type { NextApiRequest, NextApiResponse } from "next";
+import { Product } from "../../utils/types";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse,
+  res: NextApiResponse
 ) {
   if (req.method !== "POST")
     return res.status(405).send({ error: "Method not allowed" });
@@ -24,23 +31,29 @@ export default async function handler(
 
   const user = await admin.auth().getUser(uid);
 
-  const { items, name, phone1, phone2 } = req.body as {
-    items?: PaymentData[];
+  const { productCart, basketCart, name, phone1, phone2 } = req.body as {
+    productCart: ProductItem[];
+    basketCart: BasketItem[];
     name?: string;
     phone1?: string;
     phone2?: string;
   };
 
-  if (!items) return res.status(400).send({ error: "Cart is empty" });
+  if (!productCart || !basketCart)
+    return res.status(400).send({ error: "Cart is empty" });
+  if (!productCart.length || !basketCart.length)
+    return res.status(400).send({ error: "Cart is empty" });
   if (!name || !phone1 || !phone2)
     return res.status(400).send({ error: "No Shipping info is provided" });
 
-  const itemsBrought:OrderItem[] = [];
+  const basketBrought: BasketItemData[] = [];
+  const productBrought: ProductItemData[] = [];
 
   const line_items = [];
   let total = 0;
 
-  for (let item of items) {
+  // For Basket Items
+  for (let item of basketCart) {
     if (item.qty == 0) continue;
     const basketRef = await admin
       .database()
@@ -65,13 +78,47 @@ export default async function handler(
         enabled: false,
       },
     });
-    itemsBrought.push({
+    basketBrought.push({
       basketId: item.basketId,
       sizeId: item.sizeId,
       basket,
       qty: item.qty,
     });
     total += size.price * item.qty;
+  }
+
+  // For Product Items
+  for (let item of productCart) {
+    if (item.qty == 0) continue;
+    const ProductRef = await admin
+      .database()
+      .ref(`products/${item.productId}`)
+      .get();
+    if (!ProductRef.exists || !ProductRef.val()) continue;
+
+    const product = ProductRef.val() as Product;
+
+    line_items.push({
+      price_data: {
+        currency: "usd",
+        product_data: {
+          name: `${product.name} -`,
+        },
+        unit_amount: product.price,
+      },
+      quantity: item.qty,
+      adjustable_quantity: {
+        enabled: false,
+      },
+    });
+
+    productBrought.push({
+      productId: item.productId,
+      qty: item.qty,
+      product,
+    });
+
+    total += product.price * item.qty;
   }
 
   line_items.push({
@@ -88,8 +135,6 @@ export default async function handler(
     },
   });
 
-  console.log(user);
-
   const userData: any = {
     signinMethod: user.providerData[0].providerId,
   };
@@ -103,7 +148,8 @@ export default async function handler(
     phone2,
     uid,
     status: "payment pending",
-    items: itemsBrought,
+    baskets: basketBrought,
+    products: productBrought,
     timestamp: Date.now(),
     user: userData,
   });

@@ -1,4 +1,4 @@
-import { Basket, CartItem, Size } from "@/utils/types";
+import { Basket, BasketItem, Product, ProductItem } from "@/utils/types";
 import useLocalStorage from "@/utils/useLocalStorage";
 import { User, onAuthStateChanged } from "firebase/auth";
 import {
@@ -8,29 +8,35 @@ import {
   useEffect,
   useState,
 } from "react";
-import { getBasket, getCurrencyMulti } from "./database";
+import { getBasket, getCurrencyMulti, getProduct } from "./database";
 import { auth } from "./firebase";
 
 type ContextType = {
   user?: User;
-  cart: CartItem[];
   currency: string;
   isLoading: boolean;
   currencyMultiplier: number;
   isAdmin: boolean;
-  clearCart: () => void;
   setIsAdmin: (boolean) => void;
   setCurrency: (currency: string) => void;
-  removeFromCart: (sizeId: string) => void;
   onAuthChange: (user: User | null) => Promise<void>;
   setCurrencyMultiplier: (multiplier: number) => void;
-  setCartItemQty: (sizeId: string, qty: number) => void;
-  addToCart: (
-    size: Size,
-    qty: number,
-    basketId: string,
-    basket: Basket
-  ) => void;
+
+  // basketCart
+  basketCart: BasketItem[];
+  basketCartItems: Basket[];
+  clearBasketCart: () => void;
+  addToBasketCart: (item: BasketItem, basket: Basket) => void;
+  removeFromBasketCart: (sizeId: string) => void;
+  setBasketCartItemQty: (sizeId: string, qty: number) => void;
+
+  // productCart
+  productCart: ProductItem[];
+  productCartItems: Product[];
+  clearProductCart: () => void;
+  addToProductCart: (item: ProductItem, product: Product) => void;
+  removeFromProductCart: (sizeId: string) => void;
+  setProductCartItemQty: (sizeId: string, qty: number) => void;
 };
 
 type props = {
@@ -38,19 +44,28 @@ type props = {
 };
 
 export const appContext = createContext<ContextType>({
-  cart: [],
   currency: "USD",
   isLoading: true,
   currencyMultiplier: 1,
   isAdmin: false,
-  addToCart: () => {},
-  clearCart: () => {},
   setIsAdmin: () => {},
   setCurrency: () => {},
-  setCartItemQty: () => {},
-  removeFromCart: () => {},
   setCurrencyMultiplier: () => {},
   onAuthChange: async (user) => {},
+
+  basketCart: [],
+  basketCartItems: [],
+  addToBasketCart: () => {},
+  clearBasketCart: () => {},
+  removeFromBasketCart: () => {},
+  setBasketCartItemQty: () => {},
+
+  productCart: [],
+  productCartItems: [],
+  addToProductCart: () => {},
+  clearProductCart: () => {},
+  removeFromProductCart: () => {},
+  setProductCartItemQty: () => {},
 });
 
 export const AppContext = ({ children }: props) => {
@@ -59,7 +74,19 @@ export const AppContext = ({ children }: props) => {
   const [isLoading, setIsLoading] = useState(true);
   const [currencyMultiplier, setCurrencyMultiplier] = useState(1);
   const [currency, setCurrency] = useLocalStorage<string>("currency", "USD");
-  const [cart, updateCart, clearCart] = useLocalStorage<CartItem[]>("cart", []);
+  const [basketCart, updateBasketCart, clearBasketCart] = useLocalStorage<
+    BasketItem[]
+  >("basketCart", []);
+  const [productCart, updateProductCart, clearProductCart] = useLocalStorage<
+    ProductItem[]
+  >("productCart", []);
+
+  const [basketCartItems, setBasketCartItems] = useState<
+    (Basket & { id: string })[] | undefined
+  >();
+  const [productCartItems, setProductCartItems] = useState<
+    (Product & { id: string })[] | undefined
+  >();
 
   const onAuthChange = useCallback(async (user: User | null) => {
     setUser(user ?? undefined);
@@ -72,25 +99,58 @@ export const AppContext = ({ children }: props) => {
     setIsLoading(false);
   }, []);
 
-  const addToCart = (
-    size: Size,
-    qty: number,
-    basketId: string,
-    basket: Basket
+  const addToBasketCart = (
+    item: BasketItem,
+    basket: Basket & { id: string }
   ) => {
-    if (cart.some((item: CartItem) => item.item.id == size.id)) return;
-    updateCart([...cart, { item: size, basketId, qty, basket }]);
+    if (basketCart.some((i) => JSON.stringify(i) == JSON.stringify(item)))
+      return;
+    updateBasketCart([...basketCart, item]);
+    setBasketCartItems((p) => [...p, basket]);
   };
 
-  const removeFromCart = (sizeId: string) => {
-    updateCart(cart.filter((item) => item.item.id != sizeId));
+  const addToProductCart = (
+    item: ProductItem,
+    product: Product & { id: string }
+  ) => {
+    if (productCart.some((i) => JSON.stringify(i) == JSON.stringify(item)))
+      return;
+    updateProductCart([...productCart, item]);
+    setProductCartItems((p) => [...p, product]);
   };
 
-  const setCartItemQty = (sizeId: string, qty: number) => {
-    if (qty == 0) return removeFromCart(sizeId);
+  const removeFromBasketCart = (sizeId: string) => {
+    const itemIndex = basketCart.findIndex((item) => item.sizeId == sizeId);
+    console.log(sizeId, itemIndex);
+    if (itemIndex == -1) return;
+    updateBasketCart(basketCart.filter((_, index) => index != itemIndex));
+    setBasketCartItems((p) => p.filter((_, index) => index != itemIndex));
+  };
 
-    updateCart(
-      cart.map((item) => (item.item.id == sizeId ? { ...item, qty } : item))
+  const removeFromProductCart = (productId: string) => {
+    updateProductCart(
+      productCart.filter((item) => item.productId == productId)
+    );
+    setProductCartItems((p) => p.filter((item) => item.id != productId));
+  };
+
+  const setBasketCartItemQty = (sizeId: string, qty: number) => {
+    if (qty == 0) return removeFromBasketCart(sizeId);
+
+    updateBasketCart(
+      basketCart.map((item) =>
+        item.sizeId == sizeId ? { ...item, qty } : item
+      )
+    );
+  };
+
+  const setProductCartItemQty = (productId: string, qty: number) => {
+    if (qty == 0) return removeFromProductCart(productId);
+
+    updateProductCart(
+      productCart.map((item) =>
+        item.productId == productId ? { ...item, qty } : item
+      )
     );
   };
 
@@ -104,26 +164,37 @@ export const AppContext = ({ children }: props) => {
       });
     }
 
-    if (cart.length)
-      Promise.all(cart.map((item) => getBasket(item.basketId))).then(
-        (baskets) => {
-          const newCart: CartItem[] = [];
-          baskets.forEach((basket) => {
-            if (!basket) return;
-            basket.sizes.forEach((size) => {
-              const dbSize = cart.find(
-                (cartItem) => cartItem.item.id == size.id
-              );
-              if (!dbSize) return;
-              if (newCart.find((item) => item.item.id == dbSize.item.id))
-                return;
-              newCart.push({ ...dbSize, item: size, basket });
-            });
-          });
-          clearCart();
-          updateCart(newCart);
+    // fetch and verify each basketCart item
+    if (basketCart.length)
+      (async () => {
+        const newBasketCart: BasketItem[] = [];
+        for (let basketItem of basketCart) {
+          const basket = await getBasket(basketItem.basketId);
+          if (!basket) continue;
+          const size = basket.sizes.find(
+            (item) => item.id == basketItem.sizeId
+          );
+          if (!size) continue;
+          setBasketCartItems((p) => [...(p ?? []), basket]);
+          newBasketCart.push(basketItem);
         }
-      );
+        clearBasketCart();
+        updateBasketCart(newBasketCart);
+      })();
+
+    // fetch and verify each productCart item
+    if (productCart.length)
+      (async () => {
+        const newProductCart: ProductItem[] = [];
+        for (let productItem of productCart) {
+          const product = await getProduct(productItem.productId);
+          if (!product) continue;
+          newProductCart.push(productItem);
+          setProductCartItems((p) => [...(p ?? []), product]);
+        }
+        clearProductCart();
+        updateProductCart(newProductCart);
+      })();
 
     return () => sub();
   }, []);
@@ -132,19 +203,28 @@ export const AppContext = ({ children }: props) => {
     <appContext.Provider
       value={{
         user,
-        cart,
         isAdmin,
         currency,
-        addToCart,
-        clearCart,
         isLoading,
         setIsAdmin,
         setCurrency,
         onAuthChange,
-        setCartItemQty,
-        removeFromCart,
         currencyMultiplier,
         setCurrencyMultiplier,
+
+        basketCart,
+        basketCartItems,
+        addToBasketCart,
+        clearBasketCart,
+        setBasketCartItemQty,
+        removeFromBasketCart,
+
+        productCart,
+        productCartItems,
+        addToProductCart,
+        clearProductCart,
+        setProductCartItemQty,
+        removeFromProductCart,
       }}
     >
       {children}
