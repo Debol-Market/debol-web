@@ -1,9 +1,9 @@
-import { Basket, Product } from './types';
+import { Basket, Product } from "./types";
 
 export function generateID() {
-  let result = '';
+  let result = "";
   const characters =
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   const charactersLength = characters.length;
 
   for (let i = 0; i < 12; i++) {
@@ -16,7 +16,7 @@ export function generateID() {
 
 export const generateKeywords = (str: string) => {
   const keywords: string[] = [];
-  for (const word of str.split(' ')) {
+  for (const word of str.split(" ")) {
     if (!word.length) continue;
     for (let i = 0; i < word.length; i++) {
       keywords.push(word.toLocaleLowerCase().slice(0, i + 1));
@@ -34,7 +34,7 @@ export const generateBasketKeywords = (basket: Basket) => {
         (a, s) => [
           ...a,
           ...generateKeywords(s.name),
-          ...generateKeywords(s.description ?? ''),
+          ...generateKeywords(s.description ?? ""),
           ...s.items.reduce(
             (arr, i) => [...arr, ...generateKeywords(i.name)],
             [] as string[]
@@ -51,7 +51,15 @@ export const generateProductKeywords = (product: Product) => {
     new Set([
       ...generateKeywords(product.name),
       ...generateKeywords(product.description),
+<<<<<<< HEAD
       ...generateKeywords(product.vendor),
+=======
+      ...generateKeywords(product.catagory),
+      ...product.catagories.reduce(
+        (a, s) => [...a, ...generateKeywords(s ?? "")],
+        [] as string[]
+      ),
+>>>>>>> 3dbb05029105ecd0bdb3a56c178a77659298af1f
     ])
   );
 };

@@ -1,6 +1,5 @@
 import { isPhoneValid } from "@/pages/register";
 import useApp from "@/services/appContext";
-import { PaymentData } from "@/utils/types";
 import { FC, FormEventHandler, useState } from "react";
 import Btn from "./Btn";
 import Overlay from "./Overlay";
@@ -22,11 +21,7 @@ const CheckoutModal: FC<props> = ({ onClose }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   // TODO: add loading to btn
-  const { cart, removeFromCart, setCartItemQty } = useApp();
-  const total = cart.reduce(
-    (prev, item) => prev + item.item.price * item.qty,
-    0
-  );
+  const { basketCart, productCart } = useApp();
 
   const onSubmit: FormEventHandler = async (e) => {
     e.preventDefault();
@@ -41,11 +36,8 @@ const CheckoutModal: FC<props> = ({ onClose }) => {
           authorization: `bearer ${token}`,
         },
         body: JSON.stringify({
-          items: cart.map((item) => ({
-            basketId: item.basketId,
-            sizeId: item.item.id,
-            qty: item.qty,
-          })) as PaymentData[],
+          productCart,
+          basketCart,
           name,
           phone1,
           phone2,

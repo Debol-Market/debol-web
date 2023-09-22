@@ -17,7 +17,8 @@ type props = {
 
 const Page = ({ basket, basketId, imageUrl }: props) => {
   const [sizeIndex, setSizeIndex] = useState(0);
-  const { cart, addToCart, currencyMultiplier, currency } = useApp();
+  const { basketCart, addToBasketCart, currencyMultiplier, currency } =
+    useApp();
 
   if (!basketId || !basket)
     return (
@@ -46,9 +47,7 @@ const Page = ({ basket, basketId, imageUrl }: props) => {
           </div>
           <div className="grow px-3 flex flex-col items-stretch landscape:max-w-md">
             <h1 className="text-2xl sm:text-3xl font-bold ">{basket.name}</h1>
-            <p className="text-lg sm:text-xl my-4">
-              {basket.description}
-            </p>
+            <p className="text-lg sm:text-xl my-4">{basket.description}</p>
             <div className="font-bold text-lg my-2">Basket Sizes</div>
             <div className="bg-mint rounded-xl md:max-w-md my-4 mb-8 pb-5 flex flex-col items-center">
               <div className="flex gap-2 mb-4 overflow-auto no-scrollbar px-8 shrink-0">
@@ -56,10 +55,11 @@ const Page = ({ basket, basketId, imageUrl }: props) => {
                   <button
                     key={index}
                     onClick={() => setSizeIndex(index)}
-                    className={`rounded-full px-4 py-2 text-lg shrink-0 ${sizeIndex === index
+                    className={`rounded-full px-4 py-2 text-lg shrink-0 ${
+                      sizeIndex === index
                         ? "bg-primary text-white"
                         : "text-black hover:bg-primary/30"
-                      }`}
+                    }`}
                   >
                     {size.name}
                   </button>
@@ -74,7 +74,7 @@ const Page = ({ basket, basketId, imageUrl }: props) => {
                     {convertCurrency(
                       basket.sizes[sizeIndex].price,
                       currencyMultiplier,
-                      currency,
+                      currency
                     )}
                   </div>
                 </div>
@@ -96,13 +96,20 @@ const Page = ({ basket, basketId, imageUrl }: props) => {
             </div>
             <AddToCartBtn
               onClick={() =>
-                addToCart(basket.sizes[sizeIndex], 1, basketId, basket)
+                addToBasketCart(
+                  {
+                    sizeId: basket.sizes[sizeIndex].id,
+                    qty: 1,
+                    basketId,
+                  },
+                  basket
+                )
               }
               isInCart={
-                cart.find(
+                basketCart.find(
                   (item) =>
                     item.basketId == basketId &&
-                    item.item.id == basket.sizes[sizeIndex].id,
+                    item.sizeId == basket.sizes[sizeIndex].id
                 ) != undefined
               }
             />
@@ -127,8 +134,9 @@ const AddToCartBtn: FC<{ onClick: VoidFunction; isInCart: boolean }> = ({
   return (
     <button
       onClick={onClick}
-      className={`rounded-xl text-white font-semibold disabled:opacity-75 shadow-md disabled:shadow-none text-xl px-6 py-2 flex items-center justify-center hover:brightness-110 ${isInCart ? "bg-primary" : "bg-gradient"
-        }`}
+      className={`rounded-xl text-white font-semibold disabled:opacity-75 shadow-md disabled:shadow-none text-xl px-6 py-2 flex items-center justify-center hover:brightness-110 ${
+        isInCart ? "bg-primary" : "bg-gradient"
+      }`}
       disabled={isInCart}
     >
       Add To Cart
@@ -145,7 +153,6 @@ export async function getServerSideProps({
   } catch (error) {
     console.log(error);
   }
-  console.log(basket, params);
   if (!basket) return { props: { basket: null, basketId: null, imageUrl: "" } };
   let imageUrl;
 

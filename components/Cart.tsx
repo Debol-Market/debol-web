@@ -1,19 +1,19 @@
 import useApp from "@/services/appContext";
 import { getUrl } from "@/services/storage";
+import convertCurrency from "@/utils/convertCurrency";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import ContentLoader from "react-content-loader";
 import { AiFillMinusCircle } from "react-icons/ai";
 import { BiSolidTrashAlt } from "react-icons/bi";
 import { GrClose } from "react-icons/gr";
 import { IoAddCircle, IoCloseCircleOutline } from "react-icons/io5";
-import { CartItem } from "../utils/types";
+import { Basket, BasketItem } from "../utils/types";
 import Btn from "./Btn";
 import CheckoutModal from "./CheckoutModal";
 import Overlay from "./Overlay";
-import convertCurrency from "@/utils/convertCurrency";
 
 type props = {
   onClose: () => void;
@@ -22,16 +22,36 @@ type props = {
 const Cart = ({ onClose }: props) => {
   const { user, currencyMultiplier, currency } = useApp();
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
-  const { cart, removeFromCart, setCartItemQty } = useApp();
-  const total = cart.reduce(
-    (prev, item) => prev + item.item.price * item.qty,
-    0,
-  );
+  const {
+    basketCart,
+    basketCartItems,
+    removeFromBasketCart,
+    setBasketCartItemQty,
+    productCart,
+    productCartItems,
+    setProductCartItemQty,
+    removeFromProductCart,
+  } = useApp();
+  const [total, setTotal] = useState(0);
+
+  useEffect(() => {
+    let total = 0;
+    basketCart.forEach((cartItem, index) => {
+      const size = basketCartItems[index].sizes.find(
+        (s) => s.id == cartItem.sizeId
+      );
+      total += size.price * cartItem.qty;
+    });
+    productCart.forEach((cartItem, index) => {
+      total += productCartItems[index].price * cartItem.qty;
+    });
+    setTotal(total);
+  }, [basketCart, basketCartItems, productCart, productCartItems]);
 
   return (
     <Overlay onClick={onClose}>
       <div
-        className="z-50 w-full max-w-md bg-white h-full shadow absolute right-0 flex flex-col h-[100dvh]"
+        className="z-50 w-full max-w-md bg-white h-full shadow absolute right-0 flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex h-16 gap-2 items-center border-b-neutral-300 border-b">
@@ -44,13 +64,14 @@ const Cart = ({ onClose }: props) => {
           <h2 className="text-xl sm:text-2xl font-semibold">Your Cart</h2>
         </div>
         <div className="flex flex-col grow">
-          {cart.length ? (
-            cart.map((item) => (
-              <CartItem
-                cartItem={item}
-                key={item.item.id}
-                onChange={(qty) => setCartItemQty(item.item.id, qty)}
-                onDel={() => removeFromCart(item.item.id)}
+          {basketCart.length ? (
+            basketCart.map((item, index) => (
+              <BasketCartItem
+                basket={basketCartItems[index]}
+                basketItem={item}
+                key={item.sizeId}
+                onChange={(qty) => setBasketCartItemQty(item.sizeId, qty)}
+                onDel={() => removeFromBasketCart(item.sizeId)}
               />
             ))
           ) : (
@@ -59,7 +80,7 @@ const Cart = ({ onClose }: props) => {
             </p>
           )}
         </div>
-        {cart.length > 0 && (
+        {basketCart.length > 0 && (
           <div className="flex justify-between p-2 px-4">
             <h2 className="text-lg">Total:</h2>
             <p className="font-bold text-2xl">
@@ -69,7 +90,7 @@ const Cart = ({ onClose }: props) => {
         )}
         <Btn
           label="Checkout"
-          disabled={cart.length == 0}
+          disabled={basketCart.length == 0}
           className="m-4 mt-2"
           onClick={() => setIsCheckoutModalOpen(true)}
         />
@@ -84,21 +105,25 @@ const Cart = ({ onClose }: props) => {
   );
 };
 
-export function CartItem({
-  cartItem,
+export function BasketCartItem({
+  basketItem,
+  basket,
   onDel,
   onChange,
 }: {
-  cartItem: CartItem;
+  basketItem: BasketItem;
+  basket: Basket;
   onDel: () => void;
   onChange: (qty: number) => void;
 }) {
   const [isExpanded, setisExpanded] = useState(false);
   const { currencyMultiplier, currency } = useApp();
   const { data, status } = useQuery({
-    queryKey: ["getBasketImage", cartItem.basketId],
-    queryFn: () => getUrl(cartItem.basket.image),
+    queryKey: ["getBasketImage", basketItem.basketId],
+    queryFn: () => getUrl(basket.image),
   });
+
+  const size = basket.sizes.find((s) => s.id == basketItem.sizeId);
 
   return (
     <div
@@ -124,24 +149,24 @@ export function CartItem({
           )}
         </div>
         <div className=" grow">
-          <h3 className="text-xl">{cartItem.basket.name}</h3>
+          <h3 className="text-xl">{basket.name}</h3>
           <p className="font-bold text-lg">
-            {convertCurrency(cartItem.item.price, currencyMultiplier, currency)}
+            {convertCurrency(size.price, currencyMultiplier, currency)}
           </p>
-          <p className="text-sm">{cartItem.item.name}</p>
+          <p className="text-sm">{size.name}</p>
           <div
             className="flex gap-2 text-neutral-800"
             onClick={(e) => e.stopPropagation()}
           >
-            <button className="" onClick={() => onChange(cartItem.qty - 1)}>
-              {cartItem.qty == 1 ? (
+            <button className="" onClick={() => onChange(basketItem.qty - 1)}>
+              {basketItem.qty == 1 ? (
                 <BiSolidTrashAlt className="h-6 w-6" />
               ) : (
                 <AiFillMinusCircle className="h-6 w-6" />
               )}
             </button>
-            <span>{cartItem.qty}</span>
-            <button onClick={() => onChange(cartItem.qty + 1)}>
+            <span>{basketItem.qty}</span>
+            <button onClick={() => onChange(basketItem.qty + 1)}>
               <IoAddCircle className="h-6 w-6" />
             </button>
           </div>
@@ -152,15 +177,24 @@ export function CartItem({
       </div>
       {isExpanded && (
         <div className="pb-3 px-2">
-          {cartItem.item.items.map((item) => (
+          {size.items.map((item) => (
             <div className="flex gap-2 justify-between mb-1" key={item.name}>
               <div className="w-[120px]">{item.name}</div>
               <div className="">
                 {item.quantity}
-                {item.unit} x {convertCurrency(item.pricePerUnit, currencyMultiplier, currency)}
+                {item.unit} x{" "}
+                {convertCurrency(
+                  item.pricePerUnit,
+                  currencyMultiplier,
+                  currency
+                )}
               </div>
               <div className="">
-                {convertCurrency(item.pricePerUnit * item.quantity, currencyMultiplier, currency)}
+                {convertCurrency(
+                  item.pricePerUnit * item.quantity,
+                  currencyMultiplier,
+                  currency
+                )}
               </div>
             </div>
           ))}
@@ -187,7 +221,7 @@ const LoginModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
           label="Register"
           onClick={() =>
             router.push(
-              `/register?redirect=${encodeURIComponent(router.asPath)}`,
+              `/register?redirect=${encodeURIComponent(router.asPath)}`
             )
           }
         />
