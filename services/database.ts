@@ -240,3 +240,12 @@ export const createVendor = async (vendor: Vendor) => {
   await set(vendorRef, vendor);
   return vendorRef;
 };
+
+export const getVendors = async () => {
+  const vendors = await get(ref(rtdb, "vendors"));
+  if (!vendors.exists() || !vendors.val()) return [];
+  return Object.entries(vendors.val()).map(([vendorId, vendor]) => ({
+    id: vendorId,
+    ...(vendor as Vendor),
+  }));
+};
