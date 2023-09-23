@@ -11,6 +11,7 @@ import Btn from "../Btn";
 import CatagoriesInput from "../CatagoriesInput";
 import Input from "../Input";
 import UnitInput from "../UnitInput";
+import VendorInput from "../VendorInput";
 
 type props = {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -144,6 +145,7 @@ const ProductModal = ({ setOpen, onClose }: props) => {
               catagories={catagories}
               setCatagories={setCatagories}
             />
+            <VendorInput vendor={vendor} setVendor={setVendor} />
             <Btn
               label="Post"
               type="submit"
