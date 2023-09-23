@@ -86,3 +86,10 @@ export type Order = {
     phone?: string;
   };
 };
+
+export type Vendor = {
+  name: string;
+  addresses: string[];
+  logo?: string;
+  banners?: string[];
+};
