@@ -1,40 +1,49 @@
-import { Vendor } from '@/utils/types';
-import { RiCloseCircleFill } from 'react-icons/ri';
-import Overlay from '../Overlay';
-type props = {
-  vendor: Vendor;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-}
-const VendorModal = ({ vendor, setOpen }: props) => {
+import { createVendor } from "@/services/database";
+import { Vendor } from "@/utils/types";
+import { useState } from "react";
+import Btn from "../Btn";
+import Input from "../Input";
+import Overlay from "../Overlay";
 
-  return (<Overlay onClick={() => setOpen(false)} >
-    <div
-      className="rounded-lg bg-white w-full max-w-sm shadow py-6 px-2"
-      onClick={(e) => e.stopPropagation()}
-    >
-      <div className="flex px-6 justify-between" onClick={() => setOpen(false)}>
-        <p className="text-2xl font-bold text-slate-600 mb-2">{vendor.name}</p>
-        <RiCloseCircleFill size={24} className="text-slate-600" />
+type props = {
+  onSubmit: (vendor: Vendor & { id: string }) => void;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+const VendorModal = ({ onSubmit, setOpen }: props) => {
+  const [name, setName] = useState("");
+  const [address, setAddress] = useState("");
+
+  const handleSubmit = async () => {
+    const vendor: Vendor = {
+      name,
+      addresses: [address],
+    };
+    const ref = await createVendor(vendor);
+    onSubmit({ ...vendor, id: ref.key });
+    setOpen(false);
+  };
+
+  return (
+    <Overlay onClick={() => setOpen(false)}>
+      <div
+        className="rounded-lg bg-white w-full max-w-sm shadow py-6 px-2"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <Input
+          label="Name"
+          defaultValue={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+        <Input
+          label="Address"
+          defaultValue={address}
+          onChange={(e) => setAddress(e.target.value)}
+        />
+        <Btn type="submit" label="Submit" onClick={handleSubmit} />
       </div>
-      <div className="border shadow-xl overflow-hidden  aspect-square max-h-[240px] rounded-2xl">
-        <img src={vendor.logo} alt="" className="object-cover h-full w-full" />
-      </div>
-      <div className="flex flex-col gap-2">
-        <h2 className="text-xl text-slate-600">
-          Name: {vendor.name}
-        </h2>
-        <p className="text-xl font-bold text-slate-600 mb-2">Address</p>
-        {vendor.addresses.map((add, i) => (
-          <h2 className="text-slate-600" key={i}>{add} </h2>
-        ))}
-        {vendor.banners.map((ban, i) => (
-          <div className='border shadow-xl overflow-hidden  aspect-square max-h-[240px] rounded-2xl' >
-            <img src={ban} key={i} alt="" className="object-cover h-full w-full" />
-          </div>
-        ))}
-      </div>
-    </div>
-  </Overlay>);
-}
+    </Overlay>
+  );
+};
 
 export default VendorModal;
