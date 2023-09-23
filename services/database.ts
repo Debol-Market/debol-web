@@ -1,5 +1,5 @@
 import { generateBasketKeywords, generateProductKeywords } from "@/utils/misc";
-import { Basket, Contacts, Product } from "@/utils/types";
+import { Basket, Catagory, Contacts, Product } from "@/utils/types";
 import {
   query as dbQuery,
   equalTo,
@@ -11,7 +11,16 @@ import {
   set,
   update,
 } from "firebase/database";
-import { collection, deleteDoc, doc, getDocs, query, setDoc, updateDoc, where } from "firebase/firestore";
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  query,
+  setDoc,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 import { firestore, rtdb } from "./firebase";
 
 export const getBaskets = async () => {
@@ -47,13 +56,10 @@ export async function getCatagories() {
   const catRef = await get(ref(rtdb, "catagories"));
 
   if (!catRef.exists() || !catRef.val()) return [];
-  return Object.entries(catRef.val())
-    .map(([k, v]) => ({
-      id: k,
-      name: (v as { name: string; count?: number }).name,
-      count: (v as { name: string; count?: number }).count,
-    }))
-    .filter((item) => (item?.count ?? 0) > 0);
+  return Object.entries(catRef.val()).map(([k, v]) => ({
+    id: k,
+    ...(v as Catagory),
+  }));
 }
 
 export async function getBasketsByCatagory(name: string) {
@@ -75,24 +81,28 @@ export const createContact = async (contacts: Contacts) => {
 };
 
 export async function getCurrencyMulti(currency: string) {
-  const res = await fetch('/api/get-currencies');
+  const res = await fetch("/api/get-currencies");
   const currencies = await res.json();
 
   const usd = currencies.rates.USD;
 
   return currencies.rates[currency] / usd;
-};
+}
 
 export async function CreateCatagory(catagoryName: string) {
-  const catagoryRef = push(ref(rtdb, 'catagories'));
+  const catagoryRef = push(ref(rtdb, "catagories"));
 
-  await set(catagoryRef, { name: catagoryName, count: 0 });
+  await set(catagoryRef, {
+    name: catagoryName,
+    basketCount: 0,
+    productCount: 0,
+  } as Catagory);
   return catagoryRef;
-};
+}
 
 export const createBasket = async (basket: Basket) => {
-  const basketRef = push(ref(rtdb, 'baskets'));
-  if (basketRef.key == null) throw new Error('Could not create basket');
+  const basketRef = push(ref(rtdb, "baskets"));
+  if (basketRef.key == null) throw new Error("Could not create basket");
 
   setDoc(doc(firestore, `baskets`, basketRef.key), {
     ...basket,
@@ -102,23 +112,47 @@ export const createBasket = async (basket: Basket) => {
   if (basket.catagory) {
     const catRef = await get(
       dbQuery(
-        ref(rtdb, 'catagories'),
-        orderByChild('name'),
+        ref(rtdb, "catagories"),
+        orderByChild("name"),
         equalTo(basket.catagory)
       )
     );
     if (catRef.exists() && catRef.val())
-      update(ref(rtdb, 'catagories/' + catRef.key), {
+      update(ref(rtdb, "catagories/" + catRef.key), {
         count: (catRef.val()?.count ?? 0) + 1,
       });
   }
   return set(basketRef, basket);
 };
 
+export const updateCatagoryBasketCountById = async (
+  id: string,
+  value: number
+) => {
+  const catRef = ref(rtdb, `catagories/${id}`);
+  const catData = await get(catRef);
+
+  if (!catData.exists || !catData.val()) return;
+
+  await update(catRef, { basketCount: catData.val().basketCount + value });
+};
+
+export const updateCatagoryProductCountById = async (
+  id: string,
+  value: number
+) => {
+  const catRef = ref(rtdb, `catagories/${id}`);
+  const catData = await get(catRef);
+
+  if (!catData.exists || !catData.val()) return;
+
+  await update(catRef, { productCount: catData.val().productCount + value });
+};
+
 export const updateBasket = async (basket: Basket, basketId: string) => {
   await Promise.all([
-    update(ref(rtdb, 'baskets/' + basketId), basket),
-    updateDoc(doc(firestore, 'baskets', basketId), {
+    update(ref(rtdb, "baskets/" + basketId), basket),
+    updateDoc(doc(firestore, "baskets", basketId), {
       ...basket,
       keywords: generateBasketKeywords(basket),
     }),
@@ -126,27 +160,27 @@ export const updateBasket = async (basket: Basket, basketId: string) => {
 };
 
 export const deleteBasket = async (basketId: string) => {
-  const basket = await get(ref(rtdb, `baskets/${basketId}`))
+  const basket = await get(ref(rtdb, `baskets/${basketId}`));
 
   if (basket.val().catagory) {
     const catRef = await get(
       dbQuery(
-        ref(rtdb, 'catagories'),
-        orderByChild('name'),
+        ref(rtdb, "catagories"),
+        orderByChild("name"),
         equalTo(basket.val().catagory)
       )
     );
     if (catRef.exists() && catRef.val()) {
       if (catRef.val().count)
-        update(ref(rtdb, 'catagories/' + catRef.key), {
+        update(ref(rtdb, "catagories/" + catRef.key), {
           count: (catRef.val()?.count ?? 0) - 1,
         });
     }
   }
 
   await Promise.all([
-    remove(ref(rtdb, 'baskets/' + basketId)),
-    deleteDoc(doc(firestore, 'baskets', basketId)),
+    remove(ref(rtdb, "baskets/" + basketId)),
+    deleteDoc(doc(firestore, "baskets", basketId)),
   ]);
 };
 
@@ -155,31 +189,32 @@ export const getProduct = async (productId: string) => {
 
   if (!snap.val()) return;
   return { ...(snap.val() as Product), id: productId };
-}
+};
 
-export const deleteProduct = async (productId: string) =>{
-  const product = await get(ref(rtdb, `products/${productId}`))
+export const deleteProduct = async (productId: string) => {
+  const product = await get(ref(rtdb, `products/${productId}`));
 
   if (product.val().catagory) {
     const catRef = await get(
       dbQuery(
-        ref(rtdb, 'catagories'),
-        orderByChild('name'),
+        ref(rtdb, "catagories"),
+        orderByChild("name"),
         equalTo(product.val().catagory)
       )
     );
     if (catRef.exists() && catRef.val()) {
       if (catRef.val().count)
-        update(ref(rtdb, 'catagories/' + catRef.key), {
+        update(ref(rtdb, "catagories/" + catRef.key), {
           count: (catRef.val()?.count ?? 0) - 1,
         });
     }
-}}
+  }
+};
 
 export const updateProduct = async (product: Product, productId: string) => {
   await Promise.all([
-    update(ref(rtdb, 'products/' + productId), product),
-    updateDoc(doc(firestore, 'products', productId), {
+    update(ref(rtdb, "products/" + productId), product),
+    updateDoc(doc(firestore, "products", productId), {
       ...product,
       keywords: generateProductKeywords(product),
     }),
@@ -187,8 +222,8 @@ export const updateProduct = async (product: Product, productId: string) => {
 };
 
 export const createProduct = async (product: Product) => {
-  const productRef = push(ref(rtdb, 'products'));
-  if (productRef.key == null) throw new Error('Could not create product');
+  const productRef = push(ref(rtdb, "products"));
+  if (productRef.key == null) throw new Error("Could not create product");
 
   setDoc(doc(firestore, `products`, productRef.key), {
     ...product,
