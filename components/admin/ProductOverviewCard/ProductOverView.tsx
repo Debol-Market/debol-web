@@ -1,11 +1,11 @@
 import { rtdb } from "@/services/firebase";
+import { Product } from "@/utils/types";
 import { onValue, ref } from "firebase/database";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { MdOutlineArrowBack } from "react-icons/md";
-import { Product } from "../../../utils/types";
 import CatagoryCreateModal from "../CatagoryCreateModal";
-import ProductModal from "../ProductModals/ProductModal";
+import ProductModal from "../ProductModals";
 import ProductCard from "./ProductCard";
 
 const ProductOverviewCard = () => {
