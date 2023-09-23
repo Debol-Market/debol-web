@@ -48,10 +48,9 @@ export type BasketItem = {
 export type Product = {
   name: string;
   description: string;
-  catagory?: string;
   unit: string;
   price: number;
-  catagories?: string[]; // made them obtional for test  i will add them to products page
+  catagories: string[];
   vendor: string;
   images?: string[];
   created_at: number;
