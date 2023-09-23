@@ -53,6 +53,11 @@ export const updateBasketImage = async (
   }
 };
 
+export const uploadVendorLogo = async (vendorId: string, logo: File) => {
+  const storageRef = ref(storage, `vendors/${vendorId}/logo.jpg`);
+  await uploadBytes(storageRef, logo, { contentType: "image/jpeg" });
+};
+
 export const deleteBasketImages = async (basketId: string) => {
   const storageRef = ref(storage, `products/baskets/${basketId}`);
   await deleteObject(storageRef);
