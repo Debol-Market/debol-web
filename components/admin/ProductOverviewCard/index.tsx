@@ -4,12 +4,12 @@ import { onValue, ref } from "firebase/database";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { MdOutlineArrowBack } from "react-icons/md";
-import CatagoryCreateModal from "../CatagoryCreateModal";
 import ProductModal from "../ProductModals";
+import VendorModal from "../VendorModal";
 import ProductCard from "./ProductCard";
 
 const ProductOverviewCard = () => {
-  const [openCatagoryModal, setOpenCatagoryModal] = useState(false);
+  const [openVendorModal, setOpenVendorModal] = useState(false);
   const [openProductModal, setOpenProductModal] = useState(false);
   const [products, setProducts] = useState<(Product & { id: string })[]>();
 
@@ -37,9 +37,9 @@ const ProductOverviewCard = () => {
       <div className="flex items-center gap-2 mb-2">
         <button
           className="bg-amber-500 text-black rounded-lg shadow px-4 py-2"
-          onClick={() => setOpenCatagoryModal(true)}
+          onClick={() => setOpenVendorModal(true)}
         >
-          Add Catagory
+          Add Vendor
         </button>
         <button
           className="bg-amber-500 text-black rounded-lg shadow px-4 py-2"
@@ -59,8 +59,11 @@ const ProductOverviewCard = () => {
           onClose={() => setOpenProductModal(false)}
         />
       )}
-      {openCatagoryModal && (
-        <CatagoryCreateModal onClose={() => setOpenCatagoryModal(false)} />
+      {openVendorModal && (
+        <VendorModal
+          onClose={() => setOpenVendorModal(false)}
+          onSubmit={() => {}}
+        />
       )}
     </div>
   );
