@@ -5,13 +5,12 @@ import {
   listAll,
   ref,
   uploadBytes,
-} from 'firebase/storage';
+} from "firebase/storage";
 import { storage } from "./firebase";
 
 export async function getUrl(path: string) {
   return getDownloadURL(ref(storage, path));
 }
-
 
 export const uploadBasketImage = async (
   basketId: string,
@@ -24,13 +23,19 @@ export const uploadBasketImage = async (
       storage,
       `products/baskets/${basketId}/${basketSizes[i]}.jpg`
     );
-    await uploadBytes(storageRef, file, { contentType: 'image/jpeg' });
+    await uploadBytes(storageRef, file, { contentType: "image/jpeg" });
   }
 };
 
-export const uploadItemImage = async (itemId: string, image: File) => {
-  const storageRef = ref(storage, `products/items/${itemId}.jpg`);
-  await uploadBytes(storageRef, image, { contentType: 'image/jpeg' });
+export const uploadProductImages = async (
+  productId: string,
+  images: File[]
+) => {
+  for (let i = 0; i < images.length; i++) {
+    const file = images[i];
+    const storageRef = ref(storage, `products/${productId}/${i}.jpg`);
+    await uploadBytes(storageRef, file, { contentType: "image/jpeg" });
+  }
 };
 
 export const updateBasketImage = async (
@@ -44,7 +49,7 @@ export const updateBasketImage = async (
       storage,
       `products/baskets/${basketId}/${basketSizes[i]}.jpg`
     );
-    await uploadBytes(storageRef, file, { contentType: 'image/jpeg' });
+    await uploadBytes(storageRef, file, { contentType: "image/jpeg" });
   }
 };
 
@@ -59,7 +64,7 @@ export const deleteItemImages = async (itemId: string) => {
 };
 
 export const getDefaultBasketImages = async () => {
-  const storageRef = ref(storage, 'baskets/default/');
+  const storageRef = ref(storage, "baskets/default/");
   const imagesRefs = await listAll(storageRef);
 
   return imagesRefs.items;
@@ -69,4 +74,3 @@ export const getImageUrl = async (ref: StorageReference) => {
   const url = await getDownloadURL(ref);
   return url;
 };
-
