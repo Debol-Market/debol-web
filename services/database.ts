@@ -229,6 +229,9 @@ export const createProduct = async (product: Product) => {
     ...product,
     keywords: generateProductKeywords(product),
   });
+
+  set(productRef, product);
+  return productRef;
 };
 
 export const createVendor = async (vendor: Vendor) => {
@@ -236,4 +239,4 @@ export const createVendor = async (vendor: Vendor) => {
   if (vendorRef.key == null) throw new Error("Could not create vendor");
   await set(vendorRef, vendor);
   return vendorRef;
-}
+};
