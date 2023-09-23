@@ -30,7 +30,8 @@ export type Contacts = {
 
 export type Catagory = {
   name: string;
-  count: number;
+  basketCount: number;
+  productCount: number;
 };
 
 export type Driver = {
