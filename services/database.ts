@@ -1,5 +1,5 @@
 import { generateBasketKeywords, generateProductKeywords } from "@/utils/misc";
-import { Basket, Catagory, Contacts, Product } from "@/utils/types";
+import { Basket, Catagory, Contacts, Product, Vendor } from "@/utils/types";
 import {
   query as dbQuery,
   equalTo,
@@ -230,3 +230,10 @@ export const createProduct = async (product: Product) => {
     keywords: generateProductKeywords(product),
   });
 };
+
+export const createVendor = async (vendor: Vendor) => {
+  const vendorRef = push(ref(rtdb, "vendors"));
+  if (vendorRef.key == null) throw new Error("Could not create vendor");
+  await set(vendorRef, vendor);
+  return vendorRef;
+}
