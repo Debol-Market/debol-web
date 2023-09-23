@@ -7,10 +7,10 @@ import Overlay from "../Overlay";
 
 type props = {
   onSubmit: (vendor: Vendor & { id: string }) => void;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  onClose: VoidFunction;
 };
 
-const VendorModal = ({ onSubmit, setOpen }: props) => {
+const VendorModal = ({ onSubmit, onClose }: props) => {
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
 
@@ -21,11 +21,11 @@ const VendorModal = ({ onSubmit, setOpen }: props) => {
     };
     const ref = await createVendor(vendor);
     onSubmit({ ...vendor, id: ref.key });
-    setOpen(false);
+    onClose();
   };
 
   return (
-    <Overlay onClick={() => setOpen(false)}>
+    <Overlay onClick={onClose}>
       <div
         className="rounded-lg bg-white w-full max-w-sm shadow py-6 px-2"
         onClick={(e) => e.stopPropagation()}
