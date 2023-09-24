@@ -2,7 +2,7 @@ import DeleteModal from "@/components/admin/BasketModal/DeleteModal";
 import { deleteProduct, getProduct, updateProduct } from "@/services/database";
 import { Product } from "@/utils/types";
 import useAdmin from "@/utils/useAdmin";
-import Link from 'next/link';
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { AiOutlineDelete } from "react-icons/ai";
@@ -61,10 +61,12 @@ const Page = () => {
             </div>
             <div className="flex flex-col">
               <h1 className="text-2xl font-bold">{product.name}</h1>
-              <p className="text-slate-600">Description {product.description}</p>
+              <p className="text-slate-600">
+                Description {product.description}
+              </p>
               <p className="text-slate-600">Vendor: {product.vendor}</p>
-              <p className="text-slate-600">Catagory: {product.catagory}</p>
-              <p className="text-slate-600">Unit: {product.catagory}</p>
+              {/* <p className="text-slate-600">Catagory: {product.catagory}</p>
+              <p className="text-slate-600">Unit: {product.catagory}</p> */}
             </div>
           </div>
         </div>
@@ -88,9 +90,7 @@ const Page = () => {
         </div>
       </div>
       <div>
-        <div className="flex flex-wrap gap-[50px] p-10 justify-start mt-5 rounded-xl">
-
-        </div>
+        <div className="flex flex-wrap gap-[50px] p-10 justify-start mt-5 rounded-xl"></div>
       </div>
 
       {deleteProductModal && (
@@ -113,7 +113,8 @@ const Page = () => {
 
       {/* /> */}
       {/* )} */}
-    </div>);
-}
+    </div>
+  );
+};
 
 export default Page;
