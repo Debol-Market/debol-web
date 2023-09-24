@@ -19,14 +19,17 @@ const VendorModal = ({ onSubmit, onClose }: props) => {
   const [logo, setLogo] = useState<File>();
   const [banners, setBanners] = useState<File[]>([]);
   const imgRef = useRef<HTMLInputElement>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async () => {
     const vendor: Vendor = {
       name,
       addresses: [address],
     };
+    setIsLoading(true);
     const { key } = await createVendor(vendor);
     await uploadVendorLogo(key, logo);
+    setIsLoading(false);
     onSubmit({ ...vendor, id: key });
     onClose();
   };
@@ -106,8 +109,9 @@ const VendorModal = ({ onSubmit, onClose }: props) => {
           type="submit"
           label="Submit"
           className="mt-4"
-          disabled={!logo || !name}
           onClick={handleSubmit}
+          isLoading={isLoading}
+          disabled={!logo || !name}
         />
       </div>
     </Overlay>
