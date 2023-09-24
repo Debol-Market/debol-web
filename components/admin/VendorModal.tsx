@@ -1,6 +1,7 @@
 import { createVendor } from "@/services/database";
 import { uploadVendorLogo } from "@/services/storage";
 import { Vendor } from "@/utils/types";
+import { useQueryClient } from "@tanstack/react-query";
 import { useRef, useState } from "react";
 import { AiOutlineDelete } from "react-icons/ai";
 import { BiRefresh } from "react-icons/bi";
@@ -20,6 +21,7 @@ const VendorModal = ({ onSubmit, onClose }: props) => {
   const [banners, setBanners] = useState<File[]>([]);
   const imgRef = useRef<HTMLInputElement>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const queryClient = useQueryClient();
 
   const handleSubmit = async () => {
     const vendor: Vendor = {
@@ -29,6 +31,7 @@ const VendorModal = ({ onSubmit, onClose }: props) => {
     setIsLoading(true);
     const { key } = await createVendor(vendor);
     await uploadVendorLogo(key, logo);
+    queryClient.invalidateQueries({ queryKey: ["getVendors"] });
     setIsLoading(false);
     onSubmit({ ...vendor, id: key });
     onClose();
