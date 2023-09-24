@@ -1,4 +1,5 @@
 import { Basket } from "@/utils/types";
+import { expect } from "@jest/globals";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
 import BasketCard from "../BasketCard";
