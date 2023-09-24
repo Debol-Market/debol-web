@@ -8,7 +8,11 @@
     "start": "next start",
     "lint": "next lint",
     "test": "jest",
-    "test:watch": "jest --watchAll"
+    "test:watch": "jest --watchAll",
+    "emulate": "cross-env FIREBASE_AUTH_EMULATOR_HOST=\"localhost:9099\" FIREBASE_DATABASE_EMULATOR_HOST=\"localhost:9000\" FIRESTORE_EMULATOR_HOST=\"localhost:8080\" FIREBASE_STORAGE_EMULATOR_HOST=\"localhost:9199\"",
+    "test:open": "yarn emulate cypress open --e2e -b chrome -d",
+    "test:run": "yarn emulate cypress run -b chrome --e2e",
+    "stripe": "stripe listen --forward-to localhost:3000/webhooks"
   },
   "dependencies": {
     "@stripe/react-stripe-js": "^2.1.2",
@@ -51,6 +55,7 @@
     "@testing-library/jest-dom": "5.16.5",
     "@testing-library/react": "^14.0.0",
     "@testing-library/user-event": "^14.5.1",
+    "cross-env": "^7.0.3",
     "cypress": "^13.2.0",
     "cypress-firebase": "^3.0.2",
     "eslint-plugin-jest-dom": "^5.1.0",
