@@ -33,8 +33,9 @@ export const getBaskets = async () => {
 
 export async function getBasket(basketId: string) {
   const snap = await get(ref(rtdb, `/baskets/${basketId}`));
-
-  if (!snap.val()) return;
+  if (!snap.val()) {
+    throw new Error("Basket not found");
+  }
   return { ...(snap.val() as Basket), id: basketId };
 }
 
