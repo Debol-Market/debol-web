@@ -1,9 +1,9 @@
-import { CreateCatagory } from '@/services/database';
-import { Catagory } from '@/utils/types';
-import { FormEvent, useState } from 'react';
-import Overlay from '../Overlay';
-import Btn from './Btn';
-import Input from './Input';
+import { CreateCatagory } from "@/services/database";
+import { Catagory } from "@/utils/types";
+import { FormEvent, useState } from "react";
+import Overlay from "../Overlay";
+import Btn from "./Btn";
+import Input from "./Input";
 
 type props = {
   onClose: VoidFunction;
@@ -11,7 +11,7 @@ type props = {
 };
 
 const CatagoryCreateModal = ({ onClose, onSubmit }: props) => {
-  const [name, setName] = useState('');
+  const [name, setName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = (e: FormEvent) => {
@@ -20,9 +20,10 @@ const CatagoryCreateModal = ({ onClose, onSubmit }: props) => {
     CreateCatagory(name)
       .then((ref) => {
         onSubmit?.({
-          id: ref.key ?? '',
+          id: ref.key ?? "",
           name,
-          count: 0,
+          basketCount: 0,
+          productCount: 0,
         });
         onClose();
       })
