@@ -10,6 +10,7 @@ export default defineConfig({
       FIREBASE_AUTH_EMULATOR_HOST: "0.0.0.0:9099",
       FIREBASE_DATABASE_EMULATOR_HOST: "0.0.0.0:9000",
     },
+    defaultCommandTimeout: 10000,
     setupNodeEvents(on, config) {
       // implement node event listeners here
       return cypressFirebasePlugin(on, config, admin, {
