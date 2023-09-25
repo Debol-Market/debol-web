@@ -1,9 +1,9 @@
 describe("Main", () => {
   it("order", () => {
     cy.visit("/");
-    cy.wait(2000);
+    // cy.wait(2000);
     cy.contains("School").click();
-    cy.wait(2000);
+    // cy.wait(2000);
     cy.logout();
     cy.url().should("include", "/basket");
     cy.contains("Add To Cart").click();
@@ -18,7 +18,7 @@ describe("Main", () => {
     cy.contains("Enter Shipping Information").should("be.visible");
 
     cy.get('input[name="name"]').type("Name");
-    cy.get("input.react-international-phone-input").type("946669787");
+    cy.get("input.react-international-phone-input").first().type("946669787");
     cy.contains("Next").click();
   });
 });
