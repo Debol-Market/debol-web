@@ -12,6 +12,7 @@ const CartBtn: FC<Props> = ({ setIsCart }) => {
 
   return (
     <motion.button
+      id="cart-btn"
       key={basketCart.length.toString() + productCart.length.toString()}
       animate={{
         x: [0, -2, 2, 0],
