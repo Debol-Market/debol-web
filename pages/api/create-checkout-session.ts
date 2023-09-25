@@ -41,7 +41,7 @@ export default async function handler(
 
   if (!productCart || !basketCart)
     return res.status(400).send({ error: "Cart is empty" });
-  if (!productCart.length || !basketCart.length)
+  if (!productCart.length && !basketCart.length)
     return res.status(400).send({ error: "Cart is empty" });
   if (!name || !phone1 || !phone2)
     return res.status(400).send({ error: "No Shipping info is provided" });
