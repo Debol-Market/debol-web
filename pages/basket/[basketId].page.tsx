@@ -50,21 +50,25 @@ const Page = ({ basket, basketId, imageUrl }: props) => {
             <p className="text-lg sm:text-xl my-4">{basket.description}</p>
             <div className="font-bold text-lg my-2">Basket Sizes</div>
             <div className="bg-mint rounded-xl md:max-w-md my-4 mb-8 pb-5 flex flex-col items-center">
-              <div className="flex gap-2 mb-4 overflow-auto no-scrollbar px-8 shrink-0">
-                {basket.sizes.map((size, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setSizeIndex(index)}
-                    className={`rounded-full px-4 py-2 text-lg shrink-0 ${
-                      sizeIndex === index
-                        ? "bg-primary text-white"
-                        : "text-black hover:bg-primary/30"
-                    }`}
-                  >
-                    {size.name}
-                  </button>
-                ))}
-              </div>
+              {basket.sizes.length > 0 || basket.sizes[0].name != "" ? (
+                <div className="flex gap-2 mb-4 overflow-auto no-scrollbar px-8 shrink-0">
+                  {basket.sizes.map((size, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setSizeIndex(index)}
+                      className={`rounded-full px-4 py-2 text-lg shrink-0 ${
+                        sizeIndex === index
+                          ? "bg-primary text-white"
+                          : "text-black hover:bg-primary/30"
+                      }`}
+                    >
+                      {size.name}
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <></>
+              )}
               <div className="justify-between px-6 w-full">
                 <div className="flex gap-3 mb-2 justify-between">
                   <div className="text-lg font-semibold text-neutral-600">
@@ -148,6 +152,7 @@ export async function getServerSideProps({
   params,
 }: GetServerSidePropsContext) {
   let basket;
+  console.log("fetching basket", params?.basketId);
   try {
     basket = await getBasket(params?.basketId as string);
   } catch (error) {
