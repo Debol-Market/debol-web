@@ -47,6 +47,13 @@ const ProductOverviewCard = () => {
         >
           Add Product
         </button>
+        <Link href={"/admin/productsTable"}>
+          <button
+            className="bg-amber-500 text-black rounded-lg shadow px-4 py-2"
+          >
+            Products Table
+          </button>
+        </Link>
       </div>
       {products ? (
         products.map((prod, i) => <ProductCard key={i} product={prod} />)
@@ -62,7 +69,7 @@ const ProductOverviewCard = () => {
       {openVendorModal && (
         <VendorModal
           onClose={() => setOpenVendorModal(false)}
-          onSubmit={() => {}}
+          onSubmit={() => { }}
         />
       )}
     </div>
