@@ -2,9 +2,9 @@ import Btn from "@/components/Btn";
 import Logo from "@/components/Logo";
 import OTPModal from "@/components/OTPModal";
 import PhoneField from "@/components/PhoneField";
-import useApp from "@/services/appContext";
 import { signInWithGoogle } from "@/services/auth";
 import { auth } from "@/services/firebase";
+import { isPhoneValid } from "@/utils/phone";
 import useRedirect from "@/utils/useRedirect";
 import {
   ConfirmationResult,
@@ -12,20 +12,9 @@ import {
   getRedirectResult,
   signInWithPhoneNumber,
 } from "firebase/auth";
-import { PhoneNumberUtil } from "google-libphonenumber";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { FcGoogle } from "react-icons/fc";
-
-const phoneUtil = PhoneNumberUtil.getInstance();
-
-export const isPhoneValid = (phone: string) => {
-  try {
-    return phoneUtil.isValidNumber(phoneUtil.parseAndKeepRawInput(phone));
-  } catch (error) {
-    return false;
-  }
-};
 
 function Page() {
   const router = useRouter();
@@ -54,7 +43,7 @@ function Page() {
       "recaptcha-container",
       {
         size: "invisible",
-      },
+      }
     );
 
     signInWithPhoneNumber(auth, phone.replace(" ", ""), recaptchaVerifier)

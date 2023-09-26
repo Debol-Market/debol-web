@@ -1,5 +1,5 @@
-import { isPhoneValid } from "@/pages/register.page";
 import useApp from "@/services/appContext";
+import { isPhoneValid } from "@/utils/phone";
 import { FC, FormEventHandler, useState } from "react";
 import Btn from "./Btn";
 import Overlay from "./Overlay";
