@@ -30,10 +30,10 @@ const VendorModal = ({ onSubmit, onClose }: props) => {
     };
     setIsLoading(true);
     const { key } = await createVendor(vendor);
-    await uploadVendorLogo(key, logo);
+    // await uploadVendorLogo(key ?? "", logo);
     queryClient.invalidateQueries({ queryKey: ["getVendors"] });
     setIsLoading(false);
-    onSubmit({ ...vendor, id: key });
+    // onSubmit({ ...vendor, id: key });
     onClose();
   };
 
@@ -50,7 +50,7 @@ const VendorModal = ({ onSubmit, onClose }: props) => {
           multiple
           id=""
           onChange={(e) => {
-            if (e.target.files[0]) setLogo(e.target.files[0]);
+            if (e.target.files?.[0]) setLogo(e.target.files[0]);
           }}
           accept="image/*"
           className="hidden"
@@ -76,7 +76,7 @@ const VendorModal = ({ onSubmit, onClose }: props) => {
                 className="absolute bottom-0 left-0 bg-red-500 p-2 m-2 rounded-full text-white hover:shadow-md hover:brightness-110 cursor-pointer"
                 role="button"
                 title="Delete"
-                onClick={() => setLogo(null)}
+                onClick={() => setLogo(undefined)}
               >
                 <AiOutlineDelete />
               </div>
