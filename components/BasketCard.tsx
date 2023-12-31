@@ -20,19 +20,22 @@ const BasketCard: FC<props> = ({ id, basket }) => {
     <Link href={`basket/${id}`} className="w-full max-w-md h-full">
       <div className="border shadow-lg rounded-2xl px-4 py-5 bg-white h-full">
         {status == "success" ? (
-          <div className="rounded-lg overflow-hidden w-full aspect-[2/3]">
-            <img
-              src={data}
-              alt=""
-              className="object-cover aspect-[2/3] w-full"
-            />
+          <div className="rounded-lg overflow-hidden w-full aspect-square">
+            <img src={data} alt="" className="object-cover h-full w-full" />
           </div>
         ) : (
           <ContentLoader viewBox="0 0 200 300" className="w-full aspect-[2/3]">
             <rect x="0" y="0" rx="3" ry="3" height={300} width={200} />
           </ContentLoader>
         )}
-        <p className="text-lg md:text-xl mt-3 max-w-[200px]">{basket.name}</p>
+        <div className="flex flex-col py-1">
+          <p className="font-medium md:text-lg max-w-[200px]">{basket.name}</p>
+          {basket.description && (
+            <p className="text-sm text-gray-700 truncate">
+              {basket.description}
+            </p>
+          )}
+        </div>
       </div>
     </Link>
   );
