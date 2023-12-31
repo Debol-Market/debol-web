@@ -39,7 +39,7 @@ const Page = () => {
     <>
       <Navbar />
       <div className="my-8 text-lg flex flex-col gap-3 md:flex-row items-center justify-center">
-        {isLoading ? (
+        {isLoading || !data ? (
           <div>Loading...</div>
         ) : error ? (
           <div>{error.toString()}</div>
