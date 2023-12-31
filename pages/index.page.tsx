@@ -27,13 +27,15 @@ const Page = () => {
       </div>
       <div className="flex justify-center w-full">
         <div className="px-4 max-w-5xl w-full min-[480px]:mx-4">
-          <h2 className="text-2xl font-semibold">Baskets</h2>
+          <h2 className="text-2xl text-gray-800 font-medium">
+            Holiday Packages
+          </h2>
           <div className="gap-6 w-full p-4">
             {status == "success" ? (
               Array.from(groupBasetsByCatagory(data ?? []).entries()).map(
                 ([cat, bask]) => (
                   <CatagoryRow name={cat} baskets={bask as any} key={cat} />
-                )
+                ),
               )
             ) : (
               <div className="">
