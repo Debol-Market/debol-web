@@ -32,7 +32,7 @@ const Page = () => {
           </h2>
           <div className="gap-6 w-full p-4">
             {status == "success" ? (
-              Array.from(groupBasetsByCatagory(data ?? []).entries()).map(
+              Array.from(groupBasetsByCatagory(data).entries()).map(
                 ([cat, bask]) => (
                   <CatagoryRow name={cat} baskets={bask as any} key={cat} />
                 ),
@@ -83,7 +83,7 @@ const groupBasetsByCatagory = (baskets: Basket[]) => {
   const catagories = new Map<string, Basket[]>();
   baskets.sort((a, b) => b.created_at - a.created_at);
   baskets.forEach((basket) => {
-    const catagory = basket.catagory;
+    const catagory = basket.catagory ?? "";
     if (catagories.has(catagory)) {
       catagories.get(catagory)?.push(basket);
     } else {
