@@ -93,7 +93,7 @@ export const AppContext = ({ children }: props) => {
     if (user) {
       const { claims } = await user.getIdTokenResult();
       setIsAdmin(
-        Object.keys(claims).includes("role") && claims?.role == "admin"
+        Object.keys(claims).includes("role") && claims?.role == "admin",
       );
     }
     setIsLoading(false);
@@ -101,7 +101,7 @@ export const AppContext = ({ children }: props) => {
 
   const addToBasketCart = (
     item: BasketItem,
-    basket: Basket & { id: string }
+    basket: Basket & { id: string },
   ) => {
     if (basketCart.some((i) => JSON.stringify(i) == JSON.stringify(item)))
       return;
@@ -111,7 +111,7 @@ export const AppContext = ({ children }: props) => {
 
   const addToProductCart = (
     item: ProductItem,
-    product: Product & { id: string }
+    product: Product & { id: string },
   ) => {
     if (productCart.some((i) => JSON.stringify(i) == JSON.stringify(item)))
       return;
@@ -129,7 +129,7 @@ export const AppContext = ({ children }: props) => {
 
   const removeFromProductCart = (productId: string) => {
     updateProductCart(
-      productCart.filter((item) => item.productId == productId)
+      productCart.filter((item) => item.productId == productId),
     );
     setProductCartItems((p) => p.filter((item) => item.id != productId));
   };
@@ -139,8 +139,8 @@ export const AppContext = ({ children }: props) => {
 
     updateBasketCart(
       basketCart.map((item) =>
-        item.sizeId == sizeId ? { ...item, qty } : item
-      )
+        item.sizeId == sizeId ? { ...item, qty } : item,
+      ),
     );
   };
 
@@ -149,8 +149,8 @@ export const AppContext = ({ children }: props) => {
 
     updateProductCart(
       productCart.map((item) =>
-        item.productId == productId ? { ...item, qty } : item
-      )
+        item.productId == productId ? { ...item, qty } : item,
+      ),
     );
   };
 
@@ -172,7 +172,7 @@ export const AppContext = ({ children }: props) => {
           const basket = await getBasket(basketItem.basketId);
           if (!basket) continue;
           const size = basket.sizes.find(
-            (item) => item.id == basketItem.sizeId
+            (item) => item.id == basketItem.sizeId,
           );
           if (!size) continue;
           setBasketCartItems((p) => [...(p ?? []), basket]);
