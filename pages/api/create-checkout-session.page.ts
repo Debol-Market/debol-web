@@ -12,7 +12,7 @@ import { Product } from "../../utils/types";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   if (req.method !== "POST")
     return res.status(405).send({ error: "Method not allowed" });
@@ -49,7 +49,7 @@ export default async function handler(
   const basketBrought: BasketItemData[] = [];
   const productBrought: ProductItemData[] = [];
 
-  const line_items = [];
+  const line_items: any[] = [];
   let total = 0;
 
   // For Basket Items
