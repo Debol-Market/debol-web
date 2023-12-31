@@ -43,8 +43,8 @@ const CatagoriesInput: FC<props> = ({ catagories, setCatagories }) => {
             CreateCatagory(item).then((ref) =>
               setCatagories((prev) => [
                 ...prev,
-                { label: item, value: ref.key },
-              ])
+                { label: item, value: ref.key ?? "" },
+              ]),
             );
           }}
           value={catagories}
