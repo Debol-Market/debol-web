@@ -82,10 +82,10 @@ export const AppContext = ({ children }: props) => {
   >("productCart", []);
 
   const [basketCartItems, setBasketCartItems] = useState<
-    (Basket & { id: string })[] | undefined
+    (Basket & { id: string })[]
   >([]);
   const [productCartItems, setProductCartItems] = useState<
-    (Product & { id: string })[] | undefined
+    (Product & { id: string })[]
   >([]);
 
   const onAuthChange = useCallback(async (user: User | null) => {
