@@ -3,6 +3,8 @@
 # env
 .env
 
+*.log
+
 # dependencies
 /node_modules
 /.pnp
