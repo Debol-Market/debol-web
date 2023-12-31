@@ -31,9 +31,9 @@ const Cart = ({ onClose }: props) => {
     let total = 0;
     basketCart.forEach((cartItem, index) => {
       const size = basketCartItems[index].sizes.find(
-        (s) => s.id == cartItem.sizeId
+        (s) => s.id == cartItem.sizeId,
       );
-      total += size.price * cartItem.qty;
+      total += (size?.price ?? 0) * cartItem.qty;
     });
     productCart.forEach((cartItem, index) => {
       total += productCartItems[index].price * cartItem.qty;
