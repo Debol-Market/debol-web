@@ -1,0 +1,45 @@
+{
+  /* Visit https://firebase.google.com/docs/database/security to learn more about security rules. */
+  "rules": {
+    "baskets": {
+      ".read": true,
+      "$id": {
+        ".write": "auth !== null && auth.token.role === 'admin'"
+      },
+      ".indexOn": ["name", "description", "catagory"]
+    },
+
+    "products": {
+      ".read": true,
+      "$id": {
+        ".write": "auth !== null && auth.token.role === 'admin'"
+      },
+      ".indexOn": ["name", "description", "catagories"]
+    },
+
+    "vendors": {
+      ".read": true,
+      "$id": {
+        ".write": "auth !== null && auth.token.role === 'admin'"
+      }
+    },
+
+    "catagories": {
+      ".read": true,
+      "$id": {
+        ".write": "auth !== null && auth.token.role === 'admin'"
+      },
+      ".indexOn": ["name"]
+    },
+
+    "contacts": {
+      ".read": "auth !== null && auth.token.role === 'admin'",
+      ".write": true
+    },
+
+    "orders": {
+      ".indexOn": ["uid"],
+      ".read": "auth !== null && auth.token.role === 'admin'"
+    }
+  }
+}
