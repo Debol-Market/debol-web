@@ -37,7 +37,7 @@ const ProductModal = ({ setOpen, onClose }: props) => {
     const product: Product = {
       name,
       unit,
-      price,
+      price: price ?? 0,
       vendor,
       catagories: catagories.map((catagory) => catagory.label),
       description: desc,
@@ -47,7 +47,7 @@ const ProductModal = ({ setOpen, onClose }: props) => {
       updateCatagoryProductCountById(element.value, 1);
     });
     const { key } = await createProduct(product);
-    await uploadProductImages(key, images);
+    await uploadProductImages(key ?? "", images);
     setLoading(false);
     setOpen(false);
   };
@@ -72,7 +72,7 @@ const ProductModal = ({ setOpen, onClose }: props) => {
             multiple
             id=""
             onChange={(e) =>
-              setImages((p) => [...p, ...Array.from(e.target.files)])
+              setImages((p) => [...p, ...Array.from(e.target.files ?? [])])
             }
             accept="image/*"
             className="hidden"
