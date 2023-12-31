@@ -11,6 +11,14 @@ const nextConfig = {
     ],
   },
   pageExtensions: ["page.tsx", "page.ts", "page.jsx", "page.js"],
+  async rewrites() {
+    return [
+      {
+        source: "/__/auth/:path*",
+        destination: "https://debolpackages.firebaseapp.com/__/auth/:path*",
+      },
+    ];
+  },
 };
 
 const withBundleAnalyzer = require("@next/bundle-analyzer")({
