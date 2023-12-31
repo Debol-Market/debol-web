@@ -56,9 +56,9 @@ export default function BasketCartItem({
         <div className=" grow">
           <h3 className="text-xl">{basket.name}</h3>
           <p className="font-bold text-lg">
-            {convertCurrency(size.price, currencyMultiplier, currency)}
+            {convertCurrency(size?.price ?? 0, currencyMultiplier, currency)}
           </p>
-          <p className="text-sm">{size.name}</p>
+          <p className="text-sm">{size?.name}</p>
           <div
             className="flex gap-2 text-neutral-800"
             onClick={(e) => e.stopPropagation()}
@@ -82,27 +82,28 @@ export default function BasketCartItem({
       </div>
       {isExpanded && (
         <div className="pb-3 px-2">
-          {size.items.map((item) => (
-            <div className="flex gap-2 justify-between mb-1" key={item.name}>
-              <div className="w-[120px]">{item.name}</div>
-              <div className="">
-                {item.quantity}
-                {item.unit} x{" "}
-                {convertCurrency(
-                  item.pricePerUnit,
-                  currencyMultiplier,
-                  currency
-                )}
+          {size &&
+            size.items.map((item) => (
+              <div className="flex gap-2 justify-between mb-1" key={item.name}>
+                <div className="w-[120px]">{item.name}</div>
+                <div className="">
+                  {item.quantity}
+                  {item.unit} x{" "}
+                  {convertCurrency(
+                    item.pricePerUnit,
+                    currencyMultiplier,
+                    currency,
+                  )}
+                </div>
+                <div className="">
+                  {convertCurrency(
+                    item.pricePerUnit * item.quantity,
+                    currencyMultiplier,
+                    currency,
+                  )}
+                </div>
               </div>
-              <div className="">
-                {convertCurrency(
-                  item.pricePerUnit * item.quantity,
-                  currencyMultiplier,
-                  currency
-                )}
-              </div>
-            </div>
-          ))}
+            ))}
         </div>
       )}
     </div>
