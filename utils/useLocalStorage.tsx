@@ -1,16 +1,19 @@
 import { useEffect, useState } from "react";
 import { ZodSchema } from "zod";
 
-function useLocalStorage<T>(key: string, initialValue: T, zodSchema: ZodSchema) {
+function useLocalStorage<T>(
+  key: string,
+  initialValue: T,
+  zodSchema: ZodSchema,
+) {
   const [value, setValue] = useState<T>(() => {
     if (typeof window == "undefined") return initialValue;
 
     try {
       const storedValue = localStorage.getItem(key);
-      if (!storedValue) return initialValue;
-      const d = zodSchema.parse(storedValue)
-      JSON.parse(d);
-      return storedValue ? JSON.parse(storedValue) : initialValue;
+      const d = zodSchema.parse(JSON.parse(storedValue ?? ""));
+      return d;
+      // return storedValue ? JSON.parse(storedValue) : initialValue;
     } catch (error) {
       return initialValue;
     }
