@@ -1,6 +1,8 @@
-import ad1 from "@/assets/ad1.png";
-import ad2 from "@/assets/ad2.png";
-import ad3 from "@/assets/ad3.png";
+// import ad1 from "@/assets/Group19.svg";
+import ad2 from "@/assets/Group21.svg";
+import ad3 from "@/assets/Group22.svg";
+import ad4 from "@/assets/Group23.svg";
+import ad5 from "@/assets/Group24.svg";
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -48,7 +50,7 @@ const Carousel = () => {
       const { scrollLeft, scrollWidth, clientWidth } = element;
       const maxScrollLeft = scrollWidth - clientWidth;
       const progress = Math.round(
-        ((scrollLeft / maxScrollLeft) * 100 * 2) / 100
+        ((scrollLeft / maxScrollLeft) * 100 * 2) / 100,
       );
       if (progress != index) {
         setIndex(progress);
@@ -63,22 +65,29 @@ const Carousel = () => {
         onScroll={handleScroll}
         className="flex overflow-scroll h-full snap-mandatory snap-x no-scrollbar"
       >
-        <div className="grow shrink-0 relative -z-10 h-full flex w-full snap-start">
-          <Image src={ad1} fill alt="" className="-z-10 object-cover" />
-        </div>
+        {/* <div className="grow shrink-0 relative -z-10 h-full flex w-full snap-start"> */}
+        {/*   <Image src={ad1} fill alt="" className="-z-10 object-cover" /> */}
+        {/* </div> */}
         <div className="grow shrink-0 relative -z-10 h-full flex w-full snap-start">
           <Image src={ad2} fill alt="" className="-z-10 object-cover" />
         </div>
         <div className="grow shrink-0 relative -z-10 h-full flex w-full snap-start">
           <Image src={ad3} fill alt="" className="-z-10 object-cover" />
         </div>
+        <div className="grow shrink-0 relative -z-10 h-full flex w-full snap-start">
+          <Image src={ad4} fill alt="" className="-z-10 object-cover" />
+        </div>
+        <div className="grow shrink-0 relative -z-10 h-full flex w-full snap-start">
+          <Image src={ad5} fill alt="" className="-z-10 object-cover" />
+        </div>
       </div>
 
       <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1 -z-10">
-        {[1, 2, 3].map((_, i) => (
+        {[1, 2, 3, 4].map((_, i) => (
           <div
-            className={`rounded-full h-1.5 ${i == index ? "w-4" : "w-1.5"} ${index == 1 ? "bg-primary" : "bg-accent"
-              }`}
+            className={`rounded-full h-1.5 ${
+              i == index ? "w-4" : "w-1.5"
+            } ${"bg-accent"}`}
             key={i}
           ></div>
         ))}
