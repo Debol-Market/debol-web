@@ -1,4 +1,4 @@
-import { Basket, BasketItem, Product, ProductItem } from "@/utils/types";
+import { Basket, BasketItem, ProductItem } from "@/utils/types";
 import useLocalStorage from "@/utils/useLocalStorage";
 import { BasketItemSchema, ProductItemSchema } from "@/utils/zodSchemas";
 import { User, onAuthStateChanged } from "firebase/auth";
@@ -31,14 +31,6 @@ type ContextType = {
   addToBasketCart: (item: BasketItem, basket: Basket) => void;
   removeFromBasketCart: (sizeId: string) => void;
   setBasketCartItemQty: (sizeId: string, qty: number) => void;
-
-  // productCart
-  productCart: ProductItem[];
-  productCartItems: Product[];
-  clearProductCart: () => void;
-  addToProductCart: (item: ProductItem, product: Product) => void;
-  removeFromProductCart: (sizeId: string) => void;
-  setProductCartItemQty: (sizeId: string, qty: number) => void;
 };
 
 type props = {
@@ -61,13 +53,6 @@ export const appContext = createContext<ContextType>({
   clearBasketCart: () => {},
   removeFromBasketCart: () => {},
   setBasketCartItemQty: () => {},
-
-  productCart: [],
-  productCartItems: [],
-  addToProductCart: () => {},
-  clearProductCart: () => {},
-  removeFromProductCart: () => {},
-  setProductCartItemQty: () => {},
 });
 
 export const AppContext = ({ children }: props) => {
@@ -83,15 +68,9 @@ export const AppContext = ({ children }: props) => {
   const [basketCart, updateBasketCart, clearBasketCart] = useLocalStorage<
     BasketItem[]
   >("basketCart", [], z.array(BasketItemSchema));
-  const [productCart, updateProductCart, clearProductCart] = useLocalStorage<
-    ProductItem[]
-  >("productCart", [], z.array(ProductItemSchema));
 
   const [basketCartItems, setBasketCartItems] = useState<
     (Basket & { id: string })[]
-  >([]);
-  const [productCartItems, setProductCartItems] = useState<
-    (Product & { id: string })[]
   >([]);
 
   const onAuthChange = useCallback(async (user: User | null) => {
@@ -115,29 +94,11 @@ export const AppContext = ({ children }: props) => {
     setBasketCartItems((p) => [...p, basket]);
   };
 
-  const addToProductCart = (
-    item: ProductItem,
-    product: Product & { id: string },
-  ) => {
-    if (productCart.some((i) => JSON.stringify(i) == JSON.stringify(item)))
-      return;
-    updateProductCart([...productCart, item]);
-    setProductCartItems((p) => [...p, product]);
-  };
-
   const removeFromBasketCart = (sizeId: string) => {
     const itemIndex = basketCart.findIndex((item) => item.sizeId == sizeId);
-    console.log(sizeId, itemIndex);
     if (itemIndex == -1) return;
     updateBasketCart(basketCart.filter((_, index) => index != itemIndex));
     setBasketCartItems((p) => p.filter((_, index) => index != itemIndex));
-  };
-
-  const removeFromProductCart = (productId: string) => {
-    updateProductCart(
-      productCart.filter((item) => item.productId == productId),
-    );
-    setProductCartItems((p) => p.filter((item) => item.id != productId));
   };
 
   const setBasketCartItemQty = (sizeId: string, qty: number) => {
@@ -146,16 +107,6 @@ export const AppContext = ({ children }: props) => {
     updateBasketCart(
       basketCart.map((item) =>
         item.sizeId == sizeId ? { ...item, qty } : item,
-      ),
-    );
-  };
-
-  const setProductCartItemQty = (productId: string, qty: number) => {
-    if (qty == 0) return removeFromProductCart(productId);
-
-    updateProductCart(
-      productCart.map((item) =>
-        item.productId == productId ? { ...item, qty } : item,
       ),
     );
   };
@@ -193,20 +144,6 @@ export const AppContext = ({ children }: props) => {
         }
       })();
 
-    // // fetch and verify each productCart item
-    // if (productCart.length)
-    //   (async () => {
-    //     const newProductCart: ProductItem[] = [];
-    //     for (let productItem of productCart) {
-    //       const product = await getProduct(productItem.productId);
-    //       if (!product) continue;
-    //       newProductCart.push(productItem);
-    //       setProductCartItems((p) => [...(p ?? []), product]);
-    //     }
-    //     clearProductCart();
-    //     updateProductCart(newProductCart);
-    //   })();
-
     return () => sub();
   }, []);
 
@@ -229,13 +166,6 @@ export const AppContext = ({ children }: props) => {
         clearBasketCart,
         setBasketCartItemQty,
         removeFromBasketCart,
-
-        productCart,
-        productCartItems,
-        addToProductCart,
-        clearProductCart,
-        setProductCartItemQty,
-        removeFromProductCart,
       }}
     >
       {children}

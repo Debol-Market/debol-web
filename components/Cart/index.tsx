@@ -20,10 +20,6 @@ const Cart = ({ onClose }: props) => {
     basketCartItems,
     removeFromBasketCart,
     setBasketCartItemQty,
-    productCart,
-    productCartItems,
-    setProductCartItemQty,
-    removeFromProductCart,
   } = useApp();
   const [total, setTotal] = useState(0);
 
@@ -35,11 +31,8 @@ const Cart = ({ onClose }: props) => {
       );
       total += (size?.price ?? 0) * cartItem.qty;
     });
-    productCart.forEach((cartItem, index) => {
-      total += productCartItems[index].price * cartItem.qty;
-    });
     setTotal(total);
-  }, [basketCart, basketCartItems, productCart, productCartItems]);
+  }, [basketCart, basketCartItems]);
 
   return (
     <Overlay onClick={onClose}>

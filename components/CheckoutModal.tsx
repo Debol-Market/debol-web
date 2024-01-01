@@ -1,6 +1,8 @@
 import useApp from "@/services/appContext";
 import { isPhoneValid } from "@/utils/phone";
 import { FC, FormEventHandler, useState } from "react";
+import { CiDollar } from "react-icons/ci";
+import { IoStorefrontOutline } from "react-icons/io5";
 import Btn from "./Btn";
 import Overlay from "./Overlay";
 import PhoneField from "./PhoneField";
@@ -19,9 +21,12 @@ const CheckoutModal: FC<props> = ({ onClose }) => {
   const isValid1 = isPhoneValid(phone1);
   const isValid2 = isPhoneValid(phone2);
   const [isLoading, setIsLoading] = useState(false);
+  const [paymentMethod, setPaymenMethod] = useState<"chapa" | "stripe">(
+    "stripe",
+  );
 
   // TODO: add loading to btn
-  const { basketCart, productCart } = useApp();
+  const { basketCart, } = useApp();
 
   const onSubmit: FormEventHandler = async (e) => {
     e.preventDefault();
@@ -36,16 +41,16 @@ const CheckoutModal: FC<props> = ({ onClose }) => {
           authorization: `bearer ${token}`,
         },
         body: JSON.stringify({
-          productCart,
           basketCart,
           name,
           phone1,
           phone2,
+          paymentMethod,
         }),
       });
       const { url } = await res.json();
       setIsLoading(false);
-      window.location = url;
+      if (res.ok) window.location = url;
     } catch (error) {
       console.error(error);
     }
@@ -98,6 +103,32 @@ const CheckoutModal: FC<props> = ({ onClose }) => {
             onBlur={() => setIsFocused2(false)}
             onChange={(value) => setPhone2(value)}
           />
+          <div className="flex gap-3 justify-evenly mt-4 ">
+            <button
+              type="button"
+              className={`flex flex-col items-center flex-1 gap-2 p-3 text-gray-800 ${
+                paymentMethod === "stripe"
+                  ? "border-gray-900 shadow-lg bg-emerald-50"
+                  : "border-gray-300 shadow"
+              } rounded border`}
+              onClick={() => setPaymenMethod("stripe")}
+            >
+              <CiDollar size={32} />
+              <p className="text-sm font-medium">International</p>
+            </button>
+            <button
+              type="button"
+              className={`flex flex-col items-center flex-1 gap-2 p-3 text-gray-800 ${
+                paymentMethod === "chapa"
+                  ? "border-gray-900 shadow-lg bg-emerald-50"
+                  : "border-gray-300 shadow"
+              } rounded border`}
+              onClick={() => setPaymenMethod("chapa")}
+            >
+              <IoStorefrontOutline size={32} />
+              <p className="text-sm font-medium">Local</p>
+            </button>
+          </div>
           <Btn
             label="Next"
             type="submit"
