@@ -122,27 +122,34 @@ export const AppContext = ({ children }: props) => {
     }
 
     // fetch and verify each basketCart item
-    if (basketCart.length)
-      (async () => {
-        try {
-          const newBasketCart: BasketItem[] = [];
-          for (let basketItem of basketCart) {
-            const basket = await getBasket(basketItem.basketId);
-            if (!basket) continue;
+    if (basketCart.length) {
+      for (let basketItem of basketCart) {
+        getBasket(basketItem.basketId)
+          .then((basket) => {
             const size = basket.sizes.find(
               (item) => item.id == basketItem.sizeId,
             );
-            if (!size) continue;
+
+            // if size doesn't exist
+            if (!size)
+              return updateBasketCart((p) =>
+                p.filter(
+                  (i) =>
+                    i.basketId != basketItem.basketId ||
+                    i.sizeId == basketItem.sizeId,
+                ),
+              );
+
             setBasketCartItems((p) => [...(p ?? []), basket]);
-            newBasketCart.push(basketItem);
-          }
-          clearBasketCart();
-          updateBasketCart(newBasketCart);
-        } catch (e) {
-          // clearBasketCart();
-          console.log(e);
-        }
-      })();
+          })
+          .catch((e) => {
+            // if basket doesn't exist
+            updateBasketCart((p) =>
+              p.filter((i) => i.basketId != basketItem.basketId),
+            );
+          });
+      }
+    }
 
     return () => sub();
   }, []);
