@@ -1,5 +1,6 @@
 import { Basket, BasketItem, Product, ProductItem } from "@/utils/types";
 import useLocalStorage from "@/utils/useLocalStorage";
+import { BasketItemSchema, ProductItemSchema } from "@/utils/zodSchemas";
 import { User, onAuthStateChanged } from "firebase/auth";
 import {
   createContext,
@@ -8,7 +9,8 @@ import {
   useEffect,
   useState,
 } from "react";
-import { getBasket, getCurrencyMulti, getProduct } from "./database";
+import { z } from "zod";
+import { getBasket, getCurrencyMulti } from "./database";
 import { auth } from "./firebase";
 
 type ContextType = {
@@ -73,13 +75,17 @@ export const AppContext = ({ children }: props) => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [currencyMultiplier, setCurrencyMultiplier] = useState(1);
-  const [currency, setCurrency] = useLocalStorage<string>("currency", "USD");
+  const [currency, setCurrency] = useLocalStorage<string>(
+    "currency",
+    "USD",
+    z.string(),
+  );
   const [basketCart, updateBasketCart, clearBasketCart] = useLocalStorage<
     BasketItem[]
-  >("basketCart", []);
+  >("basketCart", [], z.array(BasketItemSchema));
   const [productCart, updateProductCart, clearProductCart] = useLocalStorage<
     ProductItem[]
-  >("productCart", []);
+  >("productCart", [], z.array(ProductItemSchema));
 
   const [basketCartItems, setBasketCartItems] = useState<
     (Basket & { id: string })[]
@@ -167,34 +173,39 @@ export const AppContext = ({ children }: props) => {
     // fetch and verify each basketCart item
     if (basketCart.length)
       (async () => {
-        const newBasketCart: BasketItem[] = [];
-        for (let basketItem of basketCart) {
-          const basket = await getBasket(basketItem.basketId);
-          if (!basket) continue;
-          const size = basket.sizes.find(
-            (item) => item.id == basketItem.sizeId,
-          );
-          if (!size) continue;
-          setBasketCartItems((p) => [...(p ?? []), basket]);
-          newBasketCart.push(basketItem);
+        try {
+          const newBasketCart: BasketItem[] = [];
+          for (let basketItem of basketCart) {
+            const basket = await getBasket(basketItem.basketId);
+            if (!basket) continue;
+            const size = basket.sizes.find(
+              (item) => item.id == basketItem.sizeId,
+            );
+            if (!size) continue;
+            setBasketCartItems((p) => [...(p ?? []), basket]);
+            newBasketCart.push(basketItem);
+          }
+          clearBasketCart();
+          updateBasketCart(newBasketCart);
+        } catch (e) {
+          // clearBasketCart();
+          console.log(e);
         }
-        clearBasketCart();
-        updateBasketCart(newBasketCart);
       })();
 
-    // fetch and verify each productCart item
-    if (productCart.length)
-      (async () => {
-        const newProductCart: ProductItem[] = [];
-        for (let productItem of productCart) {
-          const product = await getProduct(productItem.productId);
-          if (!product) continue;
-          newProductCart.push(productItem);
-          setProductCartItems((p) => [...(p ?? []), product]);
-        }
-        clearProductCart();
-        updateProductCart(newProductCart);
-      })();
+    // // fetch and verify each productCart item
+    // if (productCart.length)
+    //   (async () => {
+    //     const newProductCart: ProductItem[] = [];
+    //     for (let productItem of productCart) {
+    //       const product = await getProduct(productItem.productId);
+    //       if (!product) continue;
+    //       newProductCart.push(productItem);
+    //       setProductCartItems((p) => [...(p ?? []), product]);
+    //     }
+    //     clearProductCart();
+    //     updateProductCart(newProductCart);
+    //   })();
 
     return () => sub();
   }, []);
