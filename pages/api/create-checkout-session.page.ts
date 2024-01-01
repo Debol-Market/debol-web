@@ -7,8 +7,8 @@ import { z } from "zod";
 import { Product } from "../../utils/types";
 
 const requestSchema = z.object({
-  productCart: z.array(ProductItemSchema).min(1),
-  basketCart: z.array(BasketItemSchema).min(1),
+  productCart: z.array(ProductItemSchema).min(1).optional(),
+  basketCart: z.array(BasketItemSchema),
   name: z.string().optional(),
   phone1: z.string(),
   phone2: z.string().optional(),
@@ -55,6 +55,7 @@ export default async function handler(
   const valRes = requestSchema.safeParse(req.body);
 
   if (!valRes.success) {
+    console.log(valRes.error);
     return res.status(400).send({ error: valRes.error.message });
   }
 
@@ -68,7 +69,7 @@ export default async function handler(
   let total = 0;
 
   const basketBrought = await verifyBasketItems(basketCart);
-  const productBrought = await verifyProductItems(productCart);
+  const productBrought = await verifyProductItems(productCart ?? []);
 
   total = basketBrought.total + productBrought.total;
   const line_items = [
