@@ -43,8 +43,8 @@ export async function getBasketsByKeyword(keyword: string[]) {
   const baskets = await getDocs(
     query(
       collection(firestore, "baskets"),
-      where("keywords", "array-contains-any", keyword)
-    )
+      where("keywords", "array-contains-any", keyword),
+    ),
   );
   const basketsData = baskets.docs.map((doc) => ({
     id: doc.id,
@@ -65,7 +65,7 @@ export async function getCatagories() {
 
 export async function getBasketsByCatagory(name: string) {
   const baskets = await get(
-    dbQuery(ref(rtdb, "baskets"), orderByChild("catagory"), equalTo(name))
+    dbQuery(ref(rtdb, "baskets"), orderByChild("catagory"), equalTo(name)),
   );
 
   if (!baskets.exists() || !baskets.val()) return [];
@@ -94,7 +94,7 @@ export async function CreateCatagory(catagoryName: string) {
   const catagoryRef = push(ref(rtdb, "catagories"));
 
   await set(catagoryRef, {
-    name: catagoryName,
+    name: catagoryName.trim(),
     basketCount: 0,
     productCount: 0,
   } as Catagory);
@@ -115,8 +115,8 @@ export const createBasket = async (basket: Basket) => {
       dbQuery(
         ref(rtdb, "catagories"),
         orderByChild("name"),
-        equalTo(basket.catagory)
-      )
+        equalTo(basket.catagory),
+      ),
     );
     if (catRef.exists() && catRef.val())
       update(ref(rtdb, "catagories/" + catRef.key), {
@@ -128,7 +128,7 @@ export const createBasket = async (basket: Basket) => {
 
 export const updateCatagoryBasketCountById = async (
   id: string,
-  value: number
+  value: number,
 ) => {
   const catRef = ref(rtdb, `catagories/${id}`);
   const catData = await get(catRef);
@@ -140,7 +140,7 @@ export const updateCatagoryBasketCountById = async (
 
 export const updateCatagoryProductCountById = async (
   id: string,
-  value: number
+  value: number,
 ) => {
   const catRef = ref(rtdb, `catagories/${id}`);
   const catData = await get(catRef);
@@ -168,8 +168,8 @@ export const deleteBasket = async (basketId: string) => {
       dbQuery(
         ref(rtdb, "catagories"),
         orderByChild("name"),
-        equalTo(basket.val().catagory)
-      )
+        equalTo(basket.val().catagory),
+      ),
     );
     if (catRef.exists() && catRef.val()) {
       if (catRef.val().count)
@@ -200,8 +200,8 @@ export const deleteProduct = async (productId: string) => {
       dbQuery(
         ref(rtdb, "catagories"),
         orderByChild("name"),
-        equalTo(product.val().catagory)
-      )
+        equalTo(product.val().catagory),
+      ),
     );
     if (catRef.exists() && catRef.val()) {
       if (catRef.val().count)
