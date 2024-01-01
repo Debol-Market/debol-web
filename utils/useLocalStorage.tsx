@@ -6,7 +6,7 @@ function useLocalStorage<T>(
   initialValue: T,
   zodSchema: ZodSchema,
 ) {
-  const [value, setValue] = useState<T>(() => {
+  const [value, updateValue] = useState<T>(() => {
     if (typeof window == "undefined") return initialValue;
 
     try {
@@ -24,19 +24,11 @@ function useLocalStorage<T>(
     localStorage?.setItem(key, JSON.stringify(value));
   }, [key, value]);
 
-  const updateValue = (newValue: T) => {
-    setValue(newValue);
-  };
-
   const clearValue = () => {
-    setValue(initialValue);
+    updateValue(initialValue);
   };
 
-  return [value, updateValue, clearValue] as [
-    T,
-    (newValue: T) => void,
-    VoidFunction,
-  ];
+  return [value, updateValue, clearValue] as const;
 }
 
 export default useLocalStorage;
