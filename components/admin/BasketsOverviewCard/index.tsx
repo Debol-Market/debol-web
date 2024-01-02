@@ -5,13 +5,11 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { MdOutlineArrowBack } from "react-icons/md";
 import BasketModal from "../BasketModal";
-import CatagoryCreateModal from "../CatagoryCreateModal";
 import BasketCard from "./BasketCard";
 
 const BasketsOverviewCard = () => {
   const [baskets, setBaskets] = useState<(Basket & { id: string })[]>([]);
   const [openBasketModal, setOpenBasketModal] = useState(false);
-  const [openCatagoryModal, setOpenCatagoryModal] = useState(false);
 
   useEffect(() => {
     const sub = onValue(ref(rtdb, "baskets/"), (snap) => {
@@ -20,7 +18,7 @@ const BasketsOverviewCard = () => {
           Object.entries(snap.val()).map(([basketId, basket]) => ({
             id: basketId,
             ...(basket as Basket),
-          }))
+          })),
         );
     });
 
@@ -33,18 +31,12 @@ const BasketsOverviewCard = () => {
 
   return (
     <div className="p-3 md:p-10 shadow-lg rounded-xl bg-slate-300 flex flex-col gap-5 justify-start">
-      <Link href="/admin">
-        <div className="flex justify-start my-2">
-          <MdOutlineArrowBack size={30} />
-        </div>
-      </Link>
-      <div className="flex items-center gap-2 mb-2">
-        <button
-          className="bg-amber-500 text-black rounded-lg shadow px-4 py-2"
-          onClick={() => setOpenCatagoryModal(true)}
-        >
-          Add Catagory
-        </button>
+      <div className="flex justify-between items-center gap-2 mb-2">
+        <Link href="/admin">
+          <div className="flex justify-start my-2">
+            <MdOutlineArrowBack size={30} />
+          </div>
+        </Link>
         <button
           className="bg-amber-500 text-black rounded-lg shadow px-4 py-2"
           onClick={() => setOpenBasketModal(true)}
@@ -69,9 +61,6 @@ const BasketsOverviewCard = () => {
           onClose={() => setOpenBasketModal(false)}
         />
       ) : null}
-      {openCatagoryModal && (
-        <CatagoryCreateModal onClose={() => setOpenCatagoryModal(false)} />
-      )}
     </div>
   );
 };
