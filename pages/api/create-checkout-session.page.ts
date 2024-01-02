@@ -62,10 +62,6 @@ export default async function handler(
   const { productCart, basketCart, name, phone1, phone2, paymentMethod } =
     valRes.data;
 
-  if (paymentMethod == "chapa") {
-    return res.status(400).send({ error: "Payment method not supported" });
-  }
-
   let total = 0;
 
   const basketBrought = await verifyBasketItems(basketCart);
@@ -113,6 +109,47 @@ export default async function handler(
   });
 
   try {
+    if (paymentMethod == "chapa") {
+      var myHeaders = new Headers();
+      myHeaders.append(
+        "Authorization",
+        "Bearer CHASECK_TEST-0pFZu8WqZK9oWkOoeq0ybWHC0VpziDMb",
+      );
+      myHeaders.append("Content-Type", "application/json");
+
+      var raw = JSON.stringify({
+        amount: `${total / 100}`,
+        currency: "USD",
+        first_name: name,
+        phone_number: "0" + phone1.split(" ")[1],
+        tx_ref: orderRef.key,
+        return_url: `${process.env.HOST}/order/${orderRef.key}`,
+      });
+
+      var requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: raw,
+      };
+
+      const chapaRes = await fetch(
+        "https://api.chapa.co/v1/transaction/initialize",
+        requestOptions,
+      );
+
+      const data:
+        | { message: string; status: "success"; data: { checkout_url: string } }
+        | { message: string; status: "failed"; data: null } =
+        await chapaRes.json();
+
+      if (data.status == "success") {
+        return res.status(200).json({ url: data.data.checkout_url });
+      }
+
+      console.log(data);
+      return res.status(400).send({ error: "Payment method not supported" });
+    }
+
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       invoice_creation: {
@@ -125,6 +162,7 @@ export default async function handler(
 
     res.status(200).json({ url: session.url });
   } catch (e) {
+    console.log(e);
     res.status(500).json({ error: (e as Error).message });
   }
 }
