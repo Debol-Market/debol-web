@@ -12,16 +12,16 @@ type Props = {
 
 const CatagorySelect = ({ setCatagory, catagory }: Props) => {
   const client = useQueryClient();
-  const { data } = useQuery({
+  const { data, status } = useQuery({
     queryKey: ["catagories"],
     queryFn: async () => {
       const catRef = await get(ref(rtdb, "catagories"));
-      if (!catRef.val()) return;
+      if (!catRef.val()) return [];
       return Object.values(catRef.val()).map((i: any) => i.name) as string[];
     },
   });
 
-  if (!data) return <>Loading</>;
+  if (status != "success") return <>Loading</>;
 
   return (
     <Select
