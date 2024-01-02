@@ -77,13 +77,13 @@ const Carousel = () => {
         <div className="grow shrink-0 relative -z-10 h-full flex w-full snap-start">
           <Image src={ad4} fill alt="" className="-z-10 object-cover" />
         </div>
-        <div className="grow shrink-0 relative -z-10 h-full flex w-full snap-start">
+        {/* <div className="grow shrink-0 relative -z-10 h-full flex w-full snap-start">
           <Image src={ad5} fill alt="" className="-z-10 object-cover" />
-        </div>
+        </div> */}
       </div>
 
       <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1 -z-10">
-        {[1, 2, 3, 4].map((_, i) => (
+        {[1, 2, 3].map((_, i) => (
           <div
             className={`rounded-full h-1.5 ${
               i == index ? "w-4" : "w-1.5"
