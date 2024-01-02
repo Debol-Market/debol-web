@@ -1,5 +1,7 @@
 import { Chapa } from "chapa-nodejs";
 
 const chapa = new Chapa({
-  secretKey: "",
+  secretKey: process.env.CHAPA_SECKEY ?? "",
 });
+
+export default chapa;
