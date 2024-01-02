@@ -1,13 +1,11 @@
-import { getCatagories } from '@/services/database';
-import { getDefaultBasketImages, getImageUrl } from '@/services/storage';
-import { Catagory } from '@/utils/types';
-import { StorageReference } from 'firebase/storage';
-import { FC, useEffect, useState } from 'react';
-import { BiImageAdd } from 'react-icons/bi';
-import Btn from '../Btn';
-import CatagoryCreateModal from '../CatagoryCreateModal';
-import Input from '../Input';
-import SelectImageModal from '../basket/SelectImageModal';
+import { getDefaultBasketImages, getImageUrl } from "@/services/storage";
+import { StorageReference } from "firebase/storage";
+import { FC, useEffect, useState } from "react";
+import { BiImageAdd } from "react-icons/bi";
+import Btn from "../Btn";
+import Input from "../Input";
+import SelectImageModal from "../basket/SelectImageModal";
+import CatagorySelect from "./CatagorySelect";
 
 type props = {
   name: string;
@@ -38,13 +36,10 @@ const FirstPage: FC<props> = ({
   image,
   setImage,
 }) => {
-  const [isCatagoryModal, setIsCatagoryModal] = useState(false);
   const [selectImageModal, setSelectImageModal] = useState(false);
-  const [catagories, setCatagories] = useState<Catagory[]>([]);
   const [images, setImages] = useState<StorageReference[]>([]);
 
   useEffect(() => {
-    getCatagories().then(() => setCatagories);
     getDefaultBasketImages().then(setImages);
   }, []);
 
@@ -56,8 +51,12 @@ const FirstPage: FC<props> = ({
 
       <div className="max-w-sm flex flex-col gap-2 w-full px-4">
         <div className="flex justify-start w-full ">
-          <button className='bg-amber-500 text-emerald-50 min-w-[80px] rounded-lg shadow px-4 py-2'
-            onClick={() => setSelectImageModal(true)}><BiImageAdd size={24} /></button>
+          <button
+            className="bg-amber-500 text-emerald-50 min-w-[80px] rounded-lg shadow px-4 py-2"
+            onClick={() => setSelectImageModal(true)}
+          >
+            <BiImageAdd size={24} />
+          </button>
         </div>
         <Input
           label="Name"
@@ -66,8 +65,8 @@ const FirstPage: FC<props> = ({
           error={nameErr}
           onChange={(e) => {
             setName(e.target.value);
-            if (!e.target.value) setNameErr('required');
-            else setNameErr('');
+            if (!e.target.value) setNameErr("required");
+            else setNameErr("");
           }}
         />
         <Input
@@ -76,29 +75,8 @@ const FirstPage: FC<props> = ({
           className="w-full"
           onChange={(e) => setDesc(e.target.value)}
         />
+        <CatagorySelect catagory={catagory} setCatagory={setCatagory} />
 
-        <select
-          id="unit"
-          value={catagory}
-          className="mt-4 px-3 py-3 rounded-lg bg-amber-500 text-white"
-          onChange={(e) => {
-            const val = e.target.value;
-            if (val == 'add') return setIsCatagoryModal(true);
-            setCatagory(e.target.value);
-          }}
-        >
-          <option className="focus:bg-emerald-600" value="">
-            Select Catagory
-          </option>
-          {catagories.map((item, i) => (
-            <option className="focus:bg-emerald-600" key={i} value={item.name}>
-              {item.name}
-            </option>
-          ))}
-          <option className="focus:bg-emerald-600" value="add">
-            Add
-          </option>
-        </select>
         <Btn
           onClick={() => setPage((p) => ++p)}
           label="Next"
@@ -106,24 +84,14 @@ const FirstPage: FC<props> = ({
           className="ml-auto mt-3"
         />
       </div>
-      {isCatagoryModal && (
-        <CatagoryCreateModal
-          onClose={() => setIsCatagoryModal(false)}
-          onSubmit={(cat) => {
-            setCatagories((prev) => [...prev, cat]);
-            setCatagory(cat.name);
-          }}
-        />
-      )}
       {selectImageModal && (
         <SelectImageModal
           images={images}
           image={image}
           setImage={setImage}
-          setSelectModal={setSelectImageModal} />
-      )
-
-      }
+          setSelectModal={setSelectImageModal}
+        />
+      )}
     </>
   );
 };
@@ -133,7 +101,7 @@ const ImageCard: FC<{
   selected: boolean;
   onClick: () => void;
 }> = ({ image, selected, onClick }) => {
-  const [url, setUrl] = useState('');
+  const [url, setUrl] = useState("");
 
   useEffect(() => {
     getImageUrl(image).then(setUrl);
@@ -142,10 +110,11 @@ const ImageCard: FC<{
   if (!url) return <></>;
   return (
     <div
-      className={`w-32 h-32 overflow-hidden rounded shrink-0 ${selected
-        ? 'border-emerald-600 border-2 shadow'
-        : 'border-black/60 border'
-        }`}
+      className={`w-32 h-32 overflow-hidden rounded shrink-0 ${
+        selected
+          ? "border-emerald-600 border-2 shadow"
+          : "border-black/60 border"
+      }`}
       onClick={onClick}
     >
       <img src={url} alt="" className="w-full h-full object-cover" />
