@@ -30,7 +30,7 @@ const Page = () => {
           <h2 className="text-2xl text-gray-800 font-medium">
             Holiday Packages
           </h2>
-          <div className="gap-6 w-full p-4">
+          <div className="gap-6 w-full py-4 sm:px-4">
             {status == "success" ? (
               Array.from(groupBasetsByCatagory(data).entries()).map(
                 ([cat, bask]) => (

@@ -9,18 +9,19 @@ type props = {
 
 export default function CatagoryRow({ name, baskets }: props) {
   return (
-    <div className="">
+    <>
       <h2 className="text-lg">{name}</h2>
-      <div
-        className="grid gap-6 w-full p-4"
-        style={{
-          gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
-        }}
-      >
+      <div className="flex gap-6 overflow-auto w-full py-4 sm:px-4 no-scrollbar">
+        {baskets.map((item) => (
+          <BasketCard basket={item} id={item.id} key={item.id} />
+        ))}
+        {baskets.map((item) => (
+          <BasketCard basket={item} id={item.id} key={item.id} />
+        ))}
         {baskets.map((item) => (
           <BasketCard basket={item} id={item.id} key={item.id} />
         ))}
       </div>
-    </div>
+    </>
   );
 }

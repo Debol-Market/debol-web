@@ -17,7 +17,10 @@ const BasketCard: FC<props> = ({ id, basket }) => {
   });
 
   return (
-    <Link href={`basket/${id}`} className="w-full max-w-md h-full">
+    <Link
+      href={`basket/${id}`}
+      className="w-full max-w-md min-w-[240px] h-full snap-mandatory scroll-ml-3 snap-x snap-start"
+    >
       <div className="border shadow-lg rounded-2xl px-4 py-5 bg-white h-full">
         {status == "success" ? (
           <div className="rounded-lg overflow-hidden w-full aspect-square">
