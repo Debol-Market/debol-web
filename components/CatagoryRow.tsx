@@ -15,12 +15,6 @@ export default function CatagoryRow({ name, baskets }: props) {
         {baskets.map((item) => (
           <BasketCard basket={item} id={item.id} key={item.id} />
         ))}
-        {baskets.map((item) => (
-          <BasketCard basket={item} id={item.id} key={item.id} />
-        ))}
-        {baskets.map((item) => (
-          <BasketCard basket={item} id={item.id} key={item.id} />
-        ))}
       </div>
     </>
   );
