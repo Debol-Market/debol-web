@@ -118,10 +118,13 @@ export const createBasket = async (basket: Basket) => {
         equalTo(basket.catagory),
       ),
     );
-    if (catRef.exists() && catRef.val())
-      update(ref(rtdb, "catagories/" + catRef.key), {
-        count: (catRef.val()?.count ?? 0) + 1,
+    if (catRef.exists() && catRef.val()) {
+      const cat = Object.values(catRef.val())[0] as Catagory;
+      console.log(cat, Object.keys(catRef.val())[0]);
+      update(ref(rtdb, "catagories/" + Object.keys(catRef.val())[0]), {
+        basketCount: (cat.basketCount ?? 0) + 1,
       });
+    }
   }
   return set(basketRef, basket);
 };
