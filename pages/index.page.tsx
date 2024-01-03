@@ -22,11 +22,11 @@ const Page = () => {
         <meta name="description" content="Show your love to your family." />
       </Head>
       <Navbar />
-      <div className="flex gap-8 sm:p-8 p-5 sm:pb-8 pb-4 justify-center">
+      <div className="flex p-5  pb-4 justify-center">
         <Carousel />
       </div>
       <div className="flex justify-center w-full">
-        <div className="px-4 max-w-5xl w-full min-[480px]:mx-4">
+        <div className="px-4 max-w-3xl w-full min-[480px]:mx-4">
           <h2 className="text-2xl text-gray-800 font-medium">
             Holiday Packages
           </h2>
