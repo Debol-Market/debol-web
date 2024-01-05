@@ -82,7 +82,7 @@ export default async function handler(
       product_data: {
         name: "Distribution and Delivery Fee(20%)",
       },
-      unit_amount: total * 0.2,
+      unit_amount: Math.round(total * 0.2),
     },
     quantity: 1,
     adjustable_quantity: {
