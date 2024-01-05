@@ -5,6 +5,7 @@ import { BasketItemSchema, ProductItemSchema } from "@/utils/zodSchemas";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { z } from "zod";
 import { Product } from "../../utils/types";
+import firebaseAdmin from "@/services/firebase-admin";
 
 const requestSchema = z.object({
   productCart: z.array(ProductItemSchema).min(1).optional(),
@@ -152,6 +153,19 @@ export default async function handler(
     //   console.log(data);
     //   return res.status(400).send({ error: "Payment method not supported" });
     // }
+    // firebaseAdmin.
+    await admin
+      .database()
+      .ref("debug/" + Date.now())
+      .set({
+        mode: "payment",
+        invoice_creation: {
+          enabled: true,
+        },
+        line_items,
+        payment_intent_data: { metadata: { orderId: orderRef.key } },
+        success_url: `${process.env.HOST}/order/${orderRef.key}`,
+      });
 
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
