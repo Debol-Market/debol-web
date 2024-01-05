@@ -59,19 +59,20 @@ export default async function handler(
     return res.status(400).send({ error: valRes.error.message });
   }
 
-  const { productCart, basketCart, name, phone1, phone2, paymentMethod } =
-    valRes.data;
+  const { basketCart, name, phone1, phone2, paymentMethod } = valRes.data;
 
   let total = 0;
 
   const basketBrought = await verifyBasketItems(basketCart);
-  const productBrought = await verifyProductItems(productCart ?? []);
+  console.log(basketBrought, basketBrought.line_items[0]);
+  // const productBrought = await verifyProductItems(productCart ?? []);
 
-  total = basketBrought.total + productBrought.total;
-  const line_items = [
-    ...basketBrought.line_items,
-    ...productBrought.line_items,
-  ];
+  total = basketBrought.total;
+  const line_items = basketBrought.line_items;
+  //   [
+  //   ...basketBrought.line_items,
+  //   ...productBrought.line_items,
+  // ];
 
   // For Delivery Fee
   line_items.push({
@@ -88,6 +89,8 @@ export default async function handler(
     },
   });
 
+  console.log(line_items, basketBrought);
+
   const userData: any = {
     signinMethod: user.providerData[0].providerId,
   };
@@ -102,53 +105,53 @@ export default async function handler(
     uid,
     status: "payment pending",
     baskets: basketBrought.basketBrought,
-    products: productBrought.productBrought,
+    // products: productBrought.productBrought,
     timestamp: Date.now(),
     user: userData,
     paymentMethod,
   });
 
   try {
-    if (paymentMethod == "chapa") {
-      var myHeaders = new Headers();
-      myHeaders.append(
-        "Authorization",
-        "Bearer CHASECK_TEST-0pFZu8WqZK9oWkOoeq0ybWHC0VpziDMb",
-      );
-      myHeaders.append("Content-Type", "application/json");
-
-      var raw = JSON.stringify({
-        amount: `${total / 100}`,
-        currency: "USD",
-        first_name: name,
-        phone_number: "0" + phone1.split(" ")[1],
-        tx_ref: orderRef.key,
-        return_url: `${process.env.HOST}/order/${orderRef.key}`,
-      });
-
-      var requestOptions = {
-        method: "POST",
-        headers: myHeaders,
-        body: raw,
-      };
-
-      const chapaRes = await fetch(
-        "https://api.chapa.co/v1/transaction/initialize",
-        requestOptions,
-      );
-
-      const data:
-        | { message: string; status: "success"; data: { checkout_url: string } }
-        | { message: string; status: "failed"; data: null } =
-        await chapaRes.json();
-
-      if (data.status == "success") {
-        return res.status(200).json({ url: data.data.checkout_url });
-      }
-
-      console.log(data);
-      return res.status(400).send({ error: "Payment method not supported" });
-    }
+    // if (paymentMethod == "chapa") {
+    //   var myHeaders = new Headers();
+    //   myHeaders.append(
+    //     "Authorization",
+    //     "Bearer CHASECK_TEST-0pFZu8WqZK9oWkOoeq0ybWHC0VpziDMb",
+    //   );
+    //   myHeaders.append("Content-Type", "application/json");
+    //
+    //   var raw = JSON.stringify({
+    //     amount: `${total / 100}`,
+    //     currency: "USD",
+    //     first_name: name,
+    //     phone_number: "0" + phone1.split(" ")[1],
+    //     tx_ref: orderRef.key,
+    //     return_url: `${process.env.HOST}/order/${orderRef.key}`,
+    //   });
+    //
+    //   var requestOptions = {
+    //     method: "POST",
+    //     headers: myHeaders,
+    //     body: raw,
+    //   };
+    //
+    //   const chapaRes = await fetch(
+    //     "https://api.chapa.co/v1/transaction/initialize",
+    //     requestOptions,
+    //   );
+    //
+    //   const data:
+    //     | { message: string; status: "success"; data: { checkout_url: string } }
+    //     | { message: string; status: "failed"; data: null } =
+    //     await chapaRes.json();
+    //
+    //   if (data.status == "success") {
+    //     return res.status(200).json({ url: data.data.checkout_url });
+    //   }
+    //
+    //   console.log(data);
+    //   return res.status(400).send({ error: "Payment method not supported" });
+    // }
 
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
