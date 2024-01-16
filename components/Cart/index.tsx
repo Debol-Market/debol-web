@@ -3,18 +3,17 @@ import convertCurrency from "@/utils/convertCurrency";
 import { useEffect, useState } from "react";
 import { GrClose } from "react-icons/gr";
 import Btn from "../Btn";
-import CheckoutModal from "../CheckoutModal";
 import Overlay from "../Overlay";
 import BasketCartItem from "./BasketCartItem";
-import LoginModal from "./LoginModal";
+import { useRouter } from "next/router";
 
 type props = {
   onClose: () => void;
 };
 
 const Cart = ({ onClose }: props) => {
+  const router = useRouter();
   const { user, currencyMultiplier, currency } = useApp();
-  const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
   const {
     basketCart,
     basketCartItems,
@@ -78,15 +77,15 @@ const Cart = ({ onClose }: props) => {
           label="Checkout"
           disabled={basketCart.length == 0}
           className="m-4 mt-2"
-          onClick={() => setIsCheckoutModalOpen(true)}
+          onClick={() => {
+            if (!user)
+              router.push(
+                `/register?redirect=${encodeURIComponent("/checkout")}`,
+              );
+            else router.push("/checkout");
+          }}
         />
       </div>
-      {isCheckoutModalOpen &&
-        (user ? (
-          <CheckoutModal onClose={() => setIsCheckoutModalOpen(false)} />
-        ) : (
-          <LoginModal onClose={() => setIsCheckoutModalOpen(false)} />
-        ))}
     </Overlay>
   );
 };
