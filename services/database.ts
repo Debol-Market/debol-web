@@ -1,25 +1,25 @@
 import { generateBasketKeywords, generateProductKeywords } from "@/utils/misc";
 import { Basket, Catagory, Contacts, Product, Vendor } from "@/utils/types";
 import {
-  query as dbQuery,
-  equalTo,
-  get,
-  orderByChild,
-  push,
-  ref,
-  remove,
-  set,
-  update,
+    query as dbQuery,
+    equalTo,
+    get,
+    orderByChild,
+    push,
+    ref,
+    remove,
+    set,
+    update,
 } from "firebase/database";
 import {
-  collection,
-  deleteDoc,
-  doc,
-  getDocs,
-  query,
-  setDoc,
-  updateDoc,
-  where,
+    collection,
+    deleteDoc,
+    doc,
+    getDocs,
+    query,
+    setDoc,
+    updateDoc,
+    where,
 } from "firebase/firestore";
 import { firestore, rtdb } from "./firebase";
 
@@ -126,7 +126,8 @@ export const createBasket = async (basket: Basket) => {
       });
     }
   }
-  return set(basketRef, basket);
+  await set(basketRef, basket);
+  return basketRef
 };
 
 export const updateCatagoryBasketCountById = async (
