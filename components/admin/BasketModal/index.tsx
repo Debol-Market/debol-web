@@ -16,6 +16,8 @@ const BasketModal = ({ setOpen }: props) => {
   const [name, setName] = useState("");
   const [desc, setDesc] = useState("");
   const [image, setImage] = useState("");
+  const [imageFile, setImageFile] = useState<File>();
+  const [imageUrl, setImageUrl] = useState("");
   const [nameErr, setNameErr] = useState("");
   const [catagory, setCatagory] = useState("");
   const [sizes, setSizes] = useState<Size[]>([
@@ -47,7 +49,7 @@ const BasketModal = ({ setOpen }: props) => {
   };
 
   return (
-    <div className="min-h-screen h-full w-screen bg-slate-200 absolute top-0 left-0 z-50 py-3">
+    <div className="min-h-screen overflow-auto h-full w-screen bg-slate-200 absolute top-0 left-0 z-50 py-3">
       <button
         className="bg-transparent absolute top-0 right-0 m-2 p-3 rounded-full hover:bg-neutral-100"
         onClick={() => setOpen(false)}
@@ -72,6 +74,10 @@ const BasketModal = ({ setOpen }: props) => {
                   setNameErr,
                   page,
                   setPage,
+                  imageUrl,
+                  setImageUrl,
+                  imageFile,
+                  setImageFile,
                 }}
               />
             );
