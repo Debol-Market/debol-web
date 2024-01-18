@@ -1,8 +1,11 @@
+import useApp from "@/services/appContext";
 import { createBasket } from "@/services/database";
 import { generateID } from "@/utils/misc";
 import { Size } from "@/utils/types";
+import Compressor from "compressorjs";
 import { useState } from "react";
 import { GrClose } from "react-icons/gr";
+import { blobToWebP } from "webp-converter-browser";
 import FirstPage from "./FirstPage";
 import SecondPage from "./SecondPage";
 
@@ -12,6 +15,7 @@ type props = {
 };
 
 const BasketModal = ({ setOpen }: props) => {
+  const {user} = useApp()
   const [page, setPage] = useState(0);
   const [name, setName] = useState("");
   const [desc, setDesc] = useState("");
@@ -42,10 +46,34 @@ const BasketModal = ({ setOpen }: props) => {
       sizes,
       created_at: Date.now(),
     };
-    createBasket(basket).then(() => {
-      setLoading(false);
-      setOpen(false);
-    });
+    const basketRef = await createBasket(basket);
+
+    if (!image) {
+      new Compressor(imageFile, {
+        quality: 0.6,
+        async success(res) {
+          const file = await blobToWebP(res);
+
+    const token = await user.getIdToken(true);
+          const formData = new FormData();
+          formData.append("image", file);
+          formData.append("obj", JSON.stringify({ basketId: basketRef.key }));
+
+          try {
+            await fetch("/api/upload-basket-img", {
+              method: "POST",
+ headers: {
+          authorization: `bearer ${token}`,
+        },
+              body: formData,
+            });
+            setOpen(false);
+          } finally {
+            setLoading(false);
+          }
+        },
+      });
+    }
   };
 
   return (

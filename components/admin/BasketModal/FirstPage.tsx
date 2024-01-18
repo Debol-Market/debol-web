@@ -109,7 +109,7 @@ const FirstPage: FC<props> = ({
             </div>
           </div>
 
-          <div className="flex gap-3 shrink-0 h-full flex-col overflow-auto">
+          <div className="flex gap-3 shrink-0 h-full flex-col overflow-y-auto">
             {data?.map((img) => (
               <ImageCard
                 image={img}
