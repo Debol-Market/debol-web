@@ -71,7 +71,7 @@ export async function POST(req: NextRequest) {
     await admin
       .database()
       .ref("/baskets/" + basketId)
-      .update({ image: "/baskets/${basketId}.webp" });
+      .update({ image: `/baskets/${basketId}.webp` });
 
     return NextResponse.json({ success: true });
   } catch (e) {
