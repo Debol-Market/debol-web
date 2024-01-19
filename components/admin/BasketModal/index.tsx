@@ -48,13 +48,13 @@ const BasketModal = ({ setOpen }: props) => {
     };
     const basketRef = await createBasket(basket);
 
-    if (!image) {
+    if (imageFile) {
       new Compressor(imageFile, {
         quality: 0.6,
         async success(res) {
           const file = await blobToWebP(res);
 
-    const token = await user.getIdToken(true);
+    const token = await user!.getIdToken(true);
           const formData = new FormData();
           formData.append("image", file);
           formData.append("obj", JSON.stringify({ basketId: basketRef.key }));
