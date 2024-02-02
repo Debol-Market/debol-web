@@ -19,7 +19,7 @@ const Contacts = () => {
         })),
       );
     });
-    return sub();
+    return sub;
   }, []);
 
   return (
