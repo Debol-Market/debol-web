@@ -8,6 +8,7 @@ const nextConfig = {
       "localhost",
       "127.0.0.1",
       "0.0.0.0",
+      "storage.googleapis.com"
     ],
   },
   pageExtensions: ["page.tsx", "page.ts", "page.jsx", "page.js"],
