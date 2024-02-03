@@ -35,14 +35,10 @@ export const generateBasketKeywords = (basket: Basket) => {
           ...a,
           ...generateKeywords(s.name),
           ...generateKeywords(s.description ?? ""),
-          ...s.items.reduce(
-            (arr, i) => [...arr, ...generateKeywords(i.name)],
-            [] as string[]
-          ),
         ],
-        [] as string[]
+        [] as string[],
       ),
-    ])
+    ]),
   );
 };
 
@@ -51,6 +47,6 @@ export const generateProductKeywords = (product: Product) => {
     new Set([
       ...generateKeywords(product.name),
       ...generateKeywords(product.description),
-    ])
+    ]),
   );
 };
