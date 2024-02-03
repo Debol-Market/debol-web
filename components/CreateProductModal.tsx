@@ -15,11 +15,11 @@ import { ZodType, z } from "zod";
 import Btn from "./Btn";
 import Input from "./Input";
 import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogTitle,
-  DialogTrigger,
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogTitle,
+    DialogTrigger,
 } from "./ui/dialog";
 
 type Props = {
@@ -74,14 +74,16 @@ const CreateProductModal = ({
     if (includeImage && !imageUrl)
       return setError("image", { message: "Image is required" });
 
-    const docRef = await addDoc(collection(firestore, "products"), {
+    const product: Omit<Product, 'id'>  = {
       name: data.name,
       price: data.price * 100,
       image: selectedImage ? imageUrl : "",
       catagories: [],
-      description: data.description,
+      description: data.description ?? '',
       created_at: Date.now(),
-    });
+    }
+
+    const docRef = await addDoc(collection(firestore, "products"), product);
 
     if (!selectedImage) {
       const file = await compressImage(data.image[0]);
@@ -101,13 +103,8 @@ const CreateProductModal = ({
     if (onSave)
       onSave({
         id: docRef.id,
-        name: data.name,
-        price: data.price * 100,
-        image: selectedImage ? imageUrl : `/products/${docRef.id}.webp`,
-        catagories: [],
-        description: data.description ?? "",
-        created_at: Date.now(),
-      });
+        ...product   
+    });
     setIsOpen(false);
   };
 
