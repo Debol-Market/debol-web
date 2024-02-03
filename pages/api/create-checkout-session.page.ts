@@ -1,10 +1,9 @@
 import admin from "@/services/firebase-admin";
 import stripe from "@/services/stripe";
-import { Basket, BasketItemData, ProductItemData } from "@/utils/types";
+import { Basket, BasketItemData } from "@/utils/types";
 import { BasketItemSchema, ProductItemSchema } from "@/utils/zodSchemas";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { z } from "zod";
-import { Product } from "../../utils/types";
 import firebaseAdmin from "@/services/firebase-admin";
 
 const requestSchema = z.object({
@@ -182,57 +181,6 @@ export default async function handler(
     console.log(e);
     res.status(500).json({ error: (e as Error).message });
   }
-}
-
-async function verifyProductItems(
-  productCart: z.infer<typeof ProductItemSchema>[],
-): Promise<{
-  productBrought: ProductItemData[];
-  total: number;
-  line_items: LineItem[];
-}> {
-  let total = 0;
-  const line_items: LineItem[] = [];
-  const productBrought: ProductItemData[] = [];
-
-  for (let item of productCart) {
-    if (item.qty == 0) continue;
-    const ProductRef = await admin
-      .database()
-      .ref(`products/${item.productId}`)
-      .get();
-    if (!ProductRef.exists || !ProductRef.val()) continue;
-
-    const product = ProductRef.val() as Product;
-
-    line_items.push({
-      price_data: {
-        currency: "usd",
-        product_data: {
-          name: `${product.name} -`,
-        },
-        unit_amount: product.price,
-      },
-      quantity: item.qty,
-      adjustable_quantity: {
-        enabled: false,
-      },
-    });
-
-    productBrought.push({
-      productId: item.productId,
-      qty: item.qty,
-      product,
-    });
-
-    total += product.price * item.qty;
-  }
-
-  return {
-    productBrought,
-    total,
-    line_items,
-  };
 }
 
 async function verifyBasketItems(
