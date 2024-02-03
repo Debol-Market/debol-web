@@ -26,10 +26,7 @@ export async function POST(req: NextRequest) {
 
     const user = await admin.auth().getUser(uid);
 
-  if(!user || user.customClaims?.role != 'admin') return NextResponse.json({error: 'Not Authorized'}, {status: 403})
-
-
-    if(!user) return NextResponse.json({error: 'Not Authorized'}, {status: 403})
+    if(!user || user.customClaims?.role != 'admin') return NextResponse.json({error: 'Not Authorized'}, {status: 403})
 
     const formdata: FormData = await req.formData();
 
