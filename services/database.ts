@@ -1,25 +1,25 @@
 import { generateBasketKeywords, generateProductKeywords } from "@/utils/misc";
-import { Basket, Catagory, Contacts, Product, Vendor } from "@/utils/types";
+import { Basket, Catagory, Contacts, Product } from "@/utils/types";
 import {
-    query as dbQuery,
-    equalTo,
-    get,
-    orderByChild,
-    push,
-    ref,
-    remove,
-    set,
-    update,
+  query as dbQuery,
+  equalTo,
+  get,
+  orderByChild,
+  push,
+  ref,
+  remove,
+  set,
+  update,
 } from "firebase/database";
 import {
-    collection,
-    deleteDoc,
-    doc,
-    getDocs,
-    query,
-    setDoc,
-    updateDoc,
-    where,
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  query,
+  setDoc,
+  updateDoc,
+  where,
 } from "firebase/firestore";
 import { firestore, rtdb } from "./firebase";
 
@@ -127,7 +127,7 @@ export const createBasket = async (basket: Basket) => {
     }
   }
   await set(basketRef, basket);
-  return basketRef
+  return basketRef;
 };
 
 export const updateCatagoryBasketCountById = async (
@@ -237,20 +237,4 @@ export const createProduct = async (product: Product) => {
 
   set(productRef, product);
   return productRef;
-};
-
-export const createVendor = async (vendor: Vendor) => {
-  const vendorRef = push(ref(rtdb, "vendors"));
-  if (vendorRef.key == null) throw new Error("Could not create vendor");
-  await set(vendorRef, vendor);
-  return vendorRef;
-};
-
-export const getVendors = async () => {
-  const vendors = await get(ref(rtdb, "vendors"));
-  if (!vendors.exists() || !vendors.val()) return [];
-  return Object.entries(vendors.val()).map(([vendorId, vendor]) => ({
-    id: vendorId,
-    ...(vendor as Vendor),
-  }));
 };
