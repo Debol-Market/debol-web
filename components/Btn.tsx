@@ -17,11 +17,7 @@ const Btn = ({ label, disabled, isLoading, className, ...rest }: props) => {
         className,
       )}
     >
-      {isLoading ? (
-        <Spinner className="h-11 w-11 " />
-      ) : (
-        <p className="my-2">{label}</p>
-      )}
+      {isLoading ? <Spinner className="h-11 w-11 " /> : <p>{label}</p>}
     </button>
   );
 };
