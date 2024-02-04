@@ -24,10 +24,13 @@ export default async function handler(
   if (!ordersRef.exists() || !ordersRef.val())
     return res.status(200).send({ orders: [] });
 
-  const orders = Object.entries(ordersRef.val()).map(([k, v]) => ({
-    id: k,
-    ...(v as Order),
-  }));
+  const orders = Object.entries(ordersRef.val()).map(
+    ([k, v]) =>
+      ({
+        id: k,
+        ...(v as any),
+      }) as Order,
+  );
 
   res.status(200).send({ orders });
 }
