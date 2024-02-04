@@ -18,7 +18,7 @@ const BasketCard = ({ id, basket }: props) => {
   return (
     <Link
       href={`/basket/${id}`}
-      className="w-full max-w-[280px] h-full snap-mandatory scroll-ml-3 snap-x snap-start"
+      className="w-full max-w-[280px] shrink-0 h-full snap-mandatory scroll-ml-3 snap-x snap-start"
     >
       <div className="border shadow-lg rounded-2xl px-4 py-5 bg-white h-full">
         {status == "success" ? (
@@ -29,7 +29,9 @@ const BasketCard = ({ id, basket }: props) => {
           <Skeleton className="rounded-lg overflow-hidden w-full aspect-square" />
         )}
         <div className="flex flex-col py-1">
-          <p className="font-medium md:text-lg max-w-[200px]">{basket.name}</p>
+          <p className="font-medium md:text-lg max-w-[200px] truncate">
+            {basket.name}
+          </p>
           {basket.description && (
             <p className="text-sm text-gray-700 truncate">
               {basket.description}
