@@ -1,11 +1,17 @@
 import admin from "@/services/firebase-admin";
-import { Basket, BasketItemData } from "@/utils/types";
-import { BasketItemSchema } from "@/utils/zodSchemas";
+import {
+    Basket,
+    BasketItemData,
+    Product,
+    ProductItemData,
+} from "@/utils/types";
+import { BasketItemSchema, ProductItemSchema } from "@/utils/zodSchemas";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
 const requestSchema = z.object({
   basketCart: z.array(BasketItemSchema),
+  productCart: z.array(ProductItemSchema),
   name: z.string().optional(),
   phone1: z.string(),
   phone2: z.string().optional(),
@@ -46,13 +52,12 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { basketCart, name, phone1, phone2, bank } = valRes.data;
-
-    let total = 0;
+    const { basketCart, name, phone1, phone2, bank, productCart } = valRes.data;
 
     const basketBrought = await verifyBasketItems(basketCart);
+    const productBrought = await verifyProductItems(productCart);
 
-    total = basketBrought.total;
+    const total = basketBrought.total + productBrought.total;
 
     const userData: any = {
       signinMethod: user.providerData[0].providerId,
@@ -62,7 +67,7 @@ export async function POST(req: NextRequest) {
     const buffer = await image.arrayBuffer();
     const bf = Buffer.from(buffer);
 
-    const fileName = `/bill/${Date.now()}.png`
+    const fileName = `/bill/${Date.now()}.png`;
 
     await admin
       .storage()
@@ -81,7 +86,7 @@ export async function POST(req: NextRequest) {
       status: "pending",
       baskets: basketBrought.basketBrought,
       bill: fileName,
-      // products: productBrought.productBrought,
+      products: productBrought.productBrought,
       timestamp: Date.now(),
       user: userData,
       paymentMethod: "local",
@@ -130,6 +135,39 @@ async function verifyBasketItems(
 
   return {
     basketBrought,
+    total,
+  };
+}
+
+async function verifyProductItems(
+  productCart: z.infer<typeof ProductItemSchema>[],
+) {
+  let total = 0;
+  const productBrought: ProductItemData[] = [];
+
+  for (let item of productCart) {
+    if (item.qty == 0) continue;
+
+    const productRef = await admin
+      .firestore()
+      .collection("products")
+      .doc(item.productId)
+      .get();
+
+    if (!productRef.exists || !productRef.data()) continue;
+
+    const product = productRef.data() as Product;
+
+    productBrought.push({
+      productId: item.productId,
+      product,
+      qty: item.qty,
+    });
+    total += product.price * item.qty;
+  }
+
+  return {
+    productBrought,
     total,
   };
 }

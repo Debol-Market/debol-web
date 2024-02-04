@@ -7,7 +7,7 @@ import convertCurrency from "@/utils/convertCurrency";
 import { isPhoneValid } from "@/utils/phone";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { ChangeEvent, FormEventHandler, useRef, useState } from "react";
+import { ChangeEvent, FormEventHandler, useEffect, useRef, useState } from "react";
 import { IoCloudUploadOutline } from "react-icons/io5";
 
 export default function Component() {
@@ -94,8 +94,15 @@ const LocalTab = ({ tab }: { tab: "cbe" | "dashen" | "abysinnia" }) => {
     abysinnia: "(799) 359-72",
   };
 
-  const { user, basketCart, basketCartItems, currencyMultiplier, currency } =
-    useApp();
+  const {
+    user,
+    basketCart,
+    productCart,
+    basketCartItems,
+    productCartItems,
+    currencyMultiplier,
+    currency,
+  } = useApp();
 
   const onSubmit: FormEventHandler = async (e) => {
     e.preventDefault();
@@ -108,6 +115,7 @@ const LocalTab = ({ tab }: { tab: "cbe" | "dashen" | "abysinnia" }) => {
         "obj",
         JSON.stringify({
           basketCart,
+          productCart,
           name,
           phone1,
           phone2,
@@ -137,10 +145,22 @@ const LocalTab = ({ tab }: { tab: "cbe" | "dashen" | "abysinnia" }) => {
     setImage(selectedFile);
     setImageUrl(URL.createObjectURL(selectedFile));
   };
+  const [total, setTotal] = useState(0);
 
-  const total = Math.round(
-    basketCartItems.reduce((s, c) => s + c.sizes[0].price, 0) * 1.2,
-  );
+  useEffect(() => {
+    let total = 0;
+    basketCart.forEach((cartItem, index) => {
+      const size = basketCartItems[index].sizes.find(
+        (s) => s.id == cartItem.sizeId,
+      );
+      total += (size?.price ?? 0) * cartItem.qty;
+    });
+    productCart.forEach((cartItem, index) => {
+      const product = productCartItems.find((s) => s.id == cartItem.productId);
+      total += (product?.price ?? 0) * cartItem.qty;
+    });
+    setTotal(total);
+  }, [basketCart, basketCartItems, productCart, productCartItems]);
 
   return (
     <form
