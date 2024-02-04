@@ -47,7 +47,7 @@ export type BasketItem = {
 };
 
 export type Product = {
-  id:string;
+  id: string;
   name: string;
   description: string;
   price: number;
@@ -65,6 +65,7 @@ export type BasketItemData = BasketItem & { basket: Basket };
 export type ProductItemData = ProductItem & { product: Product };
 
 export type Order = {
+  id: string;
   uid: string;
   phone1: string;
   phone2: string;
@@ -73,6 +74,9 @@ export type Order = {
   products: ProductItemData[];
   status: "pending" | "completed" | "payment pending";
   paymentId?: string;
+  paymentMethod: string;
+  bank?: string;
+  bill?: string;
   timestamp: number;
   user?: {
     signinMethod: string;
