@@ -1,4 +1,5 @@
 import CreateProductModal from "@/components/CreateProductModal";
+import EditProductModal from "@/components/EditProductModal";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -95,15 +96,19 @@ export default function Component({
 const ProductRow = ({ product }: { product: Product }) => {
   const router = useRouter();
   const { data, status } = useQuery({
-    queryKey: ["getProductImage", product.id],
-    queryFn: () => getUrl(product.image),
+    queryKey: ["getProductImage", product.image],
+    queryFn: () => {
+      console.log("dsf", product.image);
+      return getUrl(product.image);
+    },
     enabled: !!product.image,
   });
 
   const { mutate, isLoading } = useMutation({
     mutationFn: async () => {
       await deleteDoc(doc(firestore, "products", product.id));
-      if (product.image) await deleteObject(ref(storage, product.image));
+      if (product.image && !product.image.startsWith("baskets"))
+        await deleteObject(ref(storage, product.image));
     },
     onSuccess(data, variables, context) {
       router.push(router.asPath);
@@ -130,10 +135,17 @@ const ProductRow = ({ product }: { product: Product }) => {
         className="flex items-center gap-2 flex-col sm:flex-row"
         onClick={(e) => e.stopPropagation()}
       >
-        <Button size="icon" variant="outline">
-          <PencilIcon className="h-4 w-4" />
-          <span className="sr-only">Edit</span>
-        </Button>
+        <EditProductModal
+          product={product}
+          img={data ?? ""}
+          includeImage
+          onSave={() => router.push(router.asPath)}
+        >
+          <Button size="icon" variant="outline">
+            <PencilIcon className="h-4 w-4" />
+            <span className="sr-only">Edit</span>
+          </Button>
+        </EditProductModal>
         <Dialog>
           <DialogTrigger asChild>
             <Button size="icon" variant="outline">
@@ -147,7 +159,7 @@ const ProductRow = ({ product }: { product: Product }) => {
               <DialogDescription>
                 This action cannot be undone.
               </DialogDescription>
-            </DialogHeader>{" "}
+            </DialogHeader>
             <DialogFooter>
               <DialogClose asChild>
                 <Button type="button" variant="outline">
