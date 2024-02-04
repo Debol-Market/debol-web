@@ -253,12 +253,12 @@ const IntlTab = () => {
   const isValid1 = isPhoneValid(phone1);
   const isValid2 = isPhoneValid(phone2);
   const [isLoading, setIsLoading] = useState(false);
-  const [paymentMethod, setPaymenMethod] = useState<"chapa" | "stripe">(
+  const [paymentMethod, setPaymentMethod] = useState<"chapa" | "stripe">(
     "stripe",
   );
 
   // TODO: add loading to btn
-  const { basketCart } = useApp();
+  const { basketCart, productCart } = useApp();
 
   const onSubmit: FormEventHandler = async (e) => {
     e.preventDefault();
@@ -274,6 +274,7 @@ const IntlTab = () => {
         },
         body: JSON.stringify({
           basketCart,
+          productCart,
           name,
           phone1,
           phone2,

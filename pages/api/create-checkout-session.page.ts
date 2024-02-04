@@ -1,10 +1,14 @@
 import admin from "@/services/firebase-admin";
 import stripe from "@/services/stripe";
-import { Basket, BasketItemData } from "@/utils/types";
+import {
+  Basket,
+  BasketItemData,
+  Product,
+  ProductItemData,
+} from "@/utils/types";
 import { BasketItemSchema, ProductItemSchema } from "@/utils/zodSchemas";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { z } from "zod";
-import firebaseAdmin from "@/services/firebase-admin";
 
 const requestSchema = z.object({
   productCart: z.array(ProductItemSchema).min(1).optional(),
@@ -59,20 +63,19 @@ export default async function handler(
     return res.status(400).send({ error: valRes.error.message });
   }
 
-  const { basketCart, name, phone1, phone2, paymentMethod } = valRes.data;
+  const { basketCart, name, phone1, phone2, paymentMethod, productCart } =
+    valRes.data;
 
   let total = 0;
 
   const basketBrought = await verifyBasketItems(basketCart);
-  console.log(basketBrought, basketBrought.line_items[0]);
-  // const productBrought = await verifyProductItems(productCart ?? []);
+  const productBrought = await verifyProductItems(productCart ?? []);
 
-  total = basketBrought.total;
-  const line_items = basketBrought.line_items;
-  //   [
-  //   ...basketBrought.line_items,
-  //   ...productBrought.line_items,
-  // ];
+  total = basketBrought.total + productBrought.total;
+  const line_items = [
+    ...basketBrought.line_items,
+    ...productBrought.line_items,
+  ];
 
   // For Delivery Fee
   line_items.push({
@@ -89,8 +92,6 @@ export default async function handler(
     },
   });
 
-  console.log(line_items, basketBrought);
-
   const userData: any = {
     signinMethod: user.providerData[0].providerId,
   };
@@ -105,54 +106,13 @@ export default async function handler(
     uid,
     status: "payment pending",
     baskets: basketBrought.basketBrought,
-    // products: productBrought.productBrought,
+    products: productBrought.productBrought,
     timestamp: Date.now(),
     user: userData,
     paymentMethod,
   });
 
   try {
-    // if (paymentMethod == "chapa") {
-    //   var myHeaders = new Headers();
-    //   myHeaders.append(
-    //     "Authorization",
-    //     "Bearer CHASECK_TEST-0pFZu8WqZK9oWkOoeq0ybWHC0VpziDMb",
-    //   );
-    //   myHeaders.append("Content-Type", "application/json");
-    //
-    //   var raw = JSON.stringify({
-    //     amount: `${total / 100}`,
-    //     currency: "USD",
-    //     first_name: name,
-    //     phone_number: "0" + phone1.split(" ")[1],
-    //     tx_ref: orderRef.key,
-    //     return_url: `${process.env.HOST}/order/${orderRef.key}`,
-    //   });
-    //
-    //   var requestOptions = {
-    //     method: "POST",
-    //     headers: myHeaders,
-    //     body: raw,
-    //   };
-    //
-    //   const chapaRes = await fetch(
-    //     "https://api.chapa.co/v1/transaction/initialize",
-    //     requestOptions,
-    //   );
-    //
-    //   const data:
-    //     | { message: string; status: "success"; data: { checkout_url: string } }
-    //     | { message: string; status: "failed"; data: null } =
-    //     await chapaRes.json();
-    //
-    //   if (data.status == "success") {
-    //     return res.status(200).json({ url: data.data.checkout_url });
-    //   }
-    //
-    //   console.log(data);
-    //   return res.status(400).send({ error: "Payment method not supported" });
-    // }
-    // firebaseAdmin.
     await admin
       .database()
       .ref("debug/" + Date.now())
@@ -229,6 +189,56 @@ async function verifyBasketItems(
   }
   return {
     basketBrought,
+    total,
+    line_items,
+  };
+}
+
+async function verifyProductItems(
+  productCart: z.infer<typeof ProductItemSchema>[],
+): Promise<{
+  productBrought: ProductItemData[];
+  total: number;
+  line_items: LineItem[];
+}> {
+  let total = 0;
+  const line_items: LineItem[] = [];
+  const productBrought: ProductItemData[] = [];
+
+  for (let item of productCart) {
+    if (item.qty == 0) continue;
+    const productRef = await admin
+      .firestore()
+      .collection("products")
+      .doc(item.productId)
+      .get();
+
+    if (!productRef.exists || !productRef.data()) continue;
+
+    const product = productRef.data() as Product;
+
+    line_items.push({
+      price_data: {
+        currency: "usd",
+        product_data: {
+          name: product.name,
+        },
+        unit_amount: product.price,
+      },
+      quantity: item.qty,
+      adjustable_quantity: {
+        enabled: false,
+      },
+    });
+    productBrought.push({
+      productId: item.productId,
+      product,
+      qty: item.qty,
+    });
+    total += product.price * item.qty;
+  }
+  return {
+    productBrought,
     total,
     line_items,
   };
