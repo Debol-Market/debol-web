@@ -78,7 +78,7 @@ const CreateProductModal = ({
     const product: Omit<Product, 'id'>  = {
       name: data.name,
       price: data.price * 100,
-      image: selectedImage ? imageUrl : "",
+      image: selectedImage || "",
       catagories: [],
       description: data.description ?? '',
       created_at: Date.now(),
