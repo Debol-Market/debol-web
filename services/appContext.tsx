@@ -1,8 +1,9 @@
-import { Basket, BasketItem, ProductItem } from "@/utils/types";
+import { Basket, BasketItem, Product, ProductItem } from "@/utils/types";
 import useLocalStorage from "@/utils/useLocalStorage";
 import { BasketItemSchema, ProductItemSchema } from "@/utils/zodSchemas";
 import { User, onAuthStateChanged } from "firebase/auth";
 import {
+  ReactNode,
   createContext,
   useCallback,
   useContext,
@@ -12,6 +13,7 @@ import {
 import { z } from "zod";
 import { getBasket, getCurrencyMulti } from "./database";
 import { auth } from "./firebase";
+import { fetchBasketsItems } from "./fetchCartItems";
 
 type ContextType = {
   user?: User;
@@ -31,10 +33,14 @@ type ContextType = {
   addToBasketCart: (item: BasketItem, basket: Basket) => void;
   removeFromBasketCart: (sizeId: string) => void;
   setBasketCartItemQty: (sizeId: string, qty: number) => void;
-};
 
-type props = {
-  children: JSX.Element | JSX.Element[];
+  // productCart
+  productCart: ProductItem[];
+  productCartItems: Product[];
+  clearProductCart: () => void;
+  addToProductCart: (item: ProductItem, basket: Product) => void;
+  removeFromProductCart: (sizeId: string) => void;
+  setProductCartItemQty: (sizeId: string, qty: number) => void;
 };
 
 export const appContext = createContext<ContextType>({
@@ -53,9 +59,16 @@ export const appContext = createContext<ContextType>({
   clearBasketCart: () => {},
   removeFromBasketCart: () => {},
   setBasketCartItemQty: () => {},
+
+  productCart: [],
+  productCartItems: [],
+  addToProductCart: () => {},
+  clearProductCart: () => {},
+  removeFromProductCart: () => {},
+  setProductCartItemQty: () => {},
 });
 
-export const AppContext = ({ children }: props) => {
+export const AppContext = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User>();
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -69,9 +82,15 @@ export const AppContext = ({ children }: props) => {
     BasketItem[]
   >("basketCart", [], z.array(BasketItemSchema));
 
+  const [productCart, updateProductCart, clearProductCart] = useLocalStorage<
+    ProductItem[]
+  >("productCart", [], z.array(ProductItemSchema));
+
   const [basketCartItems, setBasketCartItems] = useState<
     (Basket & { id: string })[]
   >([]);
+
+  const [productCartItems, setProductCartItems] = useState<Product[]>([]);
 
   const onAuthChange = useCallback(async (user: User | null) => {
     setUser(user ?? undefined);
@@ -94,6 +113,13 @@ export const AppContext = ({ children }: props) => {
     setBasketCartItems((p) => [...p, basket]);
   };
 
+  const addToProductCart = (item: ProductItem, product: Product) => {
+    if (basketCart.some((i) => JSON.stringify(i) == JSON.stringify(item)))
+      return;
+    updateProductCart([...productCart, item]);
+    setProductCartItems((p) => [...p, product]);
+  };
+
   const removeFromBasketCart = (sizeId: string) => {
     const itemIndex = basketCart.findIndex((item) => item.sizeId == sizeId);
     if (itemIndex == -1) return;
@@ -101,12 +127,29 @@ export const AppContext = ({ children }: props) => {
     setBasketCartItems((p) => p.filter((_, index) => index != itemIndex));
   };
 
+  const removeFromProductCart = (productId: string) => {
+    const itemIndex = productCart.findIndex(
+      (item) => item.productId == productId,
+    );
+    if (itemIndex == -1) return;
+    updateProductCart(productCart.filter((_, index) => index != itemIndex));
+    setProductCartItems((p) => p.filter((_, index) => index != itemIndex));
+  };
+
   const setBasketCartItemQty = (sizeId: string, qty: number) => {
     if (qty == 0) return removeFromBasketCart(sizeId);
-
     updateBasketCart(
       basketCart.map((item) =>
         item.sizeId == sizeId ? { ...item, qty } : item,
+      ),
+    );
+  };
+
+  const setProductCartItemQty = (productId: string, qty: number) => {
+    if (qty == 0) return removeFromProductCart(productId);
+    updateProductCart(
+      productCart.map((item) =>
+        item.productId == productId ? { ...item, qty } : item,
       ),
     );
   };
@@ -123,32 +166,21 @@ export const AppContext = ({ children }: props) => {
 
     // fetch and verify each basketCart item
     if (basketCart.length) {
-      for (let basketItem of basketCart) {
-        getBasket(basketItem.basketId)
-          .then((basket) => {
-            const size = basket.sizes.find(
-              (item) => item.id == basketItem.sizeId,
-            );
-
-            // if size doesn't exist
-            if (!size)
-              return updateBasketCart((p) =>
-                p.filter(
-                  (i) =>
-                    i.basketId != basketItem.basketId ||
-                    i.sizeId == basketItem.sizeId,
-                ),
-              );
-
-            setBasketCartItems((p) => [...(p ?? []), basket]);
-          })
-          .catch((e) => {
-            // if basket doesn't exist
-            updateBasketCart((p) =>
-              p.filter((i) => i.basketId != basketItem.basketId),
-            );
-          });
-      }
+      fetchBasketsItems(basketCart).then((items) => {
+        const newBasketCart: BasketItem[] = [];
+        const newBasketCartItems: (Basket & { id: string })[] = [];
+        for (const basketItem of basketCart) {
+          const cartItem = items.find(
+            (i) =>
+              i.id == basketItem.basketId &&
+              i.sizes.find((s) => s.id == basketItem.sizeId),
+          );
+          if (!cartItem) continue;
+          newBasketCart.push(basketItem);
+          newBasketCartItems.push(cartItem);
+        }
+        setBasketCartItems(newBasketCartItems);
+      });
     }
 
     return () => sub();
@@ -173,6 +205,14 @@ export const AppContext = ({ children }: props) => {
         clearBasketCart,
         setBasketCartItemQty,
         removeFromBasketCart,
+
+        // productCart
+        productCart,
+        productCartItems,
+        clearProductCart,
+        addToProductCart,
+        removeFromProductCart,
+        setProductCartItemQty,
       }}
     >
       {children}
