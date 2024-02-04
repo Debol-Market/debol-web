@@ -1,75 +1,166 @@
+import useApp from "@/services/appContext";
 import { getDefaultBasketImages, getImageUrl } from "@/services/storage";
+import { compressImage } from "@/utils/compressImage";
 import { Basket } from "@/utils/types";
-import { useQuery } from "@tanstack/react-query";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { StorageReference } from "firebase/storage";
 import Image from "next/image";
-import { ChangeEvent, FC, useRef, useState } from "react";
-import { IoClose, IoCloudUploadOutline } from "react-icons/io5";
-import Overlay from "../../Overlay";
-import CatagorySelect from "../BasketModal/CatagorySelect";
-import Input from "../Input";
+import React, { useEffect, useRef, useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { IoCloudUploadOutline } from "react-icons/io5";
+import { ZodType, z } from "zod";
+import Btn from "../../Btn";
+import Input from "../../Input";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "../../ui/dialog";
+import { ref, update } from "firebase/database";
+import { rtdb } from "@/services/firebase";
 
-type props = {
-  basket: Basket;
-  initialImg: string;
-  onCancel: () => void;
-  onEdit: (Basket) => void;
+type Props = {
+  basket: Basket & { id: string };
+  img: string;
+  children: React.ReactElement;
+  onSave?: (basket: Basket) => any;
+  onCancel?: VoidFunction;
 };
 
-const EditBasketModal = ({ basket, onCancel, initialImg }: props) => {
-  const [description, setDescription] = useState(basket.description);
-  const [catagory, setCatagory] = useState(basket.catagory);
-  const [name, setName] = useState(basket.name);
-  const [imageFile, setImageFile] = useState<File>();
-  const [imageUrl, setImageUrl] = useState(initialImg);
+const schema = z.object({
+  name: z.string().min(1, "Name is Required"),
+  description: z.string().optional(),
+  image: z
+    .any()
+    .refine((files: FileList) =>
+      files.length
+        ? ["image/png", "image/jpeg", "image/webp"].includes(files[0].type)
+        : true,
+    ) as ZodType<FileList>,
+});
+
+type FormType = z.infer<typeof schema>;
+
+const EditBasketModal = ({
+  basket,
+  img,
+  children,
+  onSave,
+  onCancel,
+}: Props) => {
+  const { user } = useApp();
+  const [isOpen, setIsOpen] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    setError,
+    watch,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm<FormType>({
+    defaultValues: {
+      name: basket.name,
+      description: basket.description,
+    },
+    resolver: zodResolver(schema),
+  });
+  const [imageUrl, setImageUrl] = useState("");
+  const [selectedImage, setSelectedImage] = useState("");
   const imageInput = useRef<HTMLInputElement>(null);
+  const client = useQueryClient();
   const { data } = useQuery({
     queryFn: getDefaultBasketImages,
     queryKey: ["defaultBasketImages"],
   });
 
-  const submit = () => {};
+  const onSubmit: SubmitHandler<FormType> = async (data) => {
+    if (!imageUrl) return setError("image", { message: "Image is required" });
 
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files ? e.target.files[0] : null;
-    if (!selectedFile) return;
-    setImageFile(selectedFile);
-    setImageUrl(URL.createObjectURL(selectedFile));
+    const newBasket: Partial<Basket> = {
+      name: data.name,
+      description: data.description ?? "",
+    };
+
+    if (selectedImage) newBasket.image = selectedImage;
+
+    await update(ref(rtdb, `baskets/${basket.id}`), newBasket);
+
+    if (!selectedImage && img != imageUrl) {
+      const file = await compressImage(data.image[0]);
+      const token = await user!.getIdToken(true);
+      const formData = new FormData();
+      formData.append("image", file);
+      formData.append("obj", JSON.stringify({ basketId: basket.id }));
+
+      await fetch("/api/upload-basket-img", {
+        method: "POST",
+        headers: {
+          authorization: `bearer ${token}`,
+        },
+        body: formData,
+      });
+    }
+
+    await client.invalidateQueries({
+      queryKey: ["getBasketImage", basket.image],
+    });
+
+    if (onSave)
+      onSave({
+        ...basket,
+        ...newBasket,
+      });
+    reset();
+    setIsOpen(false);
   };
 
-  return (
-    <Overlay onClick={onCancel}>
-      <div
-        className="sm:rounded-lg relative bg-white w-full md:max-w-min shadow p-3 sm:p-6 flex-grow justify-center max-h-screen overflow-auto"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <button
-          className="absolute top-3 right-3 text-gray-700"
-          onClick={onCancel}
-        >
-          <IoClose size={32} />
-        </button>
-        <h1 className="text-2xl font-bold text-slate-700">Edit Basket</h1>
-        <div className="flex flex-col sm:flex-row gap-4">
-          <div className="flex justify-between gap-3 mt-2">
-            {/* <img src={basket.image !== undefined ? `baskets/default/${basket.image}` : ''} alt='' className='w-32 h-32 overflow-hidden rounded' /> */}
-            <div className="flex justify-start w-full gap-2 h-64">
-              <input
-                type="file"
-                name="image"
-                id="image"
-                onChange={handleFileChange}
-                accept="image/png, image/jpeg"
-                className="hidden"
-                ref={imageInput}
-              />
+  useEffect(() => {
+    return watch((val) => {
+      if (val.image?.length) {
+        setSelectedImage("");
+        setImageUrl(URL.createObjectURL(val.image[0]));
+      }
+    }).unsubscribe;
+  }, [watch]);
 
+  return (
+    <Dialog
+      open={isOpen}
+      onOpenChange={(o) => {
+        setIsOpen(o);
+        setImageUrl(img);
+        setSelectedImage("");
+        if (!o && onCancel) onCancel();
+      }}
+    >
+      <DialogTrigger asChild>{children}</DialogTrigger>
+      <DialogContent className="max-h-full max-w-2xl overflow-auto px-3 sm:p-6">
+        <DialogTitle>Edit Basket</DialogTitle>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col w-full sm:w-64">
+              <div className="hidden" ref={imageInput}>
+                <input
+                  type="file"
+                  {...register("image", {})}
+                  accept="image/png, image/jpeg, image/webp,"
+                />
+              </div>
               <div
                 className={`${
-                  imageUrl != initialImg ? "bg-primary" : "bg-neutral-200"
-                } rounded-lg p-1 shadow-lg h-64 w-64 mx-auto`}
+                  imageUrl
+                    ? "bg-primary"
+                    : errors.image
+                      ? "bg-red-400"
+                      : "bg-neutral-200"
+                } rounded-lg p-1 shadow-lg h-64 w-full mx-auto shrink-0 mb-1`}
                 role="button"
-                onClick={() => imageInput.current?.click()}
+                onClick={() =>
+                  (imageInput.current?.children[0] as HTMLElement).click()
+                }
               >
                 <div className="bg-white h-full w-full flex items-center justify-center flex-col rounded-lg overflow-hidden">
                   {imageUrl ? (
@@ -94,61 +185,66 @@ const EditBasketModal = ({ basket, onCancel, initialImg }: props) => {
                   )}
                 </div>
               </div>
+              {errors.image && (
+                <p className="text-sm text-red-700">{errors.image.message}</p>
+              )}
+              <div className=" overflow-auto w-full max-w-[calc(100vw-24px)] mt-2">
+                <div className="flex gap-3 shrink-0">
+                  {data?.map((img) => (
+                    <ImageCard
+                      image={img}
+                      key={img.name}
+                      onClick={(url) => {
+                        setImageUrl(url);
+                        setSelectedImage(img.fullPath);
+                      }}
+                      selected={false}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
 
-              <div className="flex gap-3 shrink-0 h-full flex-col overflow-y-auto">
-                {data?.map((img) => (
-                  <ImageCard
-                    image={img}
-                    key={img.name}
-                    onClick={(url) => setImageUrl(url)}
-                    selected={false}
-                  />
-                ))}
+            <div className="flex gap-3 flex-col grow">
+              <Input
+                {...register("name")}
+                label="Name"
+                error={errors.name?.message}
+              />
+              <div className="group flex text-sm flex-col">
+                <label className="text-gray-700 group-focus-within:text-emerald-900 font-medium ">
+                  Description
+                </label>
+                <textarea
+                  {...register("description")}
+                  className="py-2 px-3 focus:outline-none border shadow-lg border-gray-800 group-focus-within:border-emerald-800 rounded-md w-auto min-w-0 "
+                />
+              </div>
+              <div className="flex justify-between mt-auto">
+                <DialogClose asChild>
+                  <button className="bg-gray-200 px-4 py-3 rounded-lg font-medium">
+                    Cancel
+                  </button>
+                </DialogClose>
+                <Btn label="save" isLoading={isSubmitting} type="submit" />
               </div>
             </div>
           </div>
-          <div className="flex flex-col">
-            <Input
-              label="Name"
-              defaultValue={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-            <Input
-              label="Description"
-              defaultValue={description}
-              onChange={(e) => setDescription(e.target.value)}
-            />
-
-            <CatagorySelect
-              catagory={catagory ?? ""}
-              setCatagory={setCatagory}
-            />
-            <div className="flex mt-4 flex-row justify-between">
-              <button
-                className="bg-amber-500 text-emerald-50 min-w-[80px] rounded-lg shadow px-4 py-2 "
-                onClick={onCancel}
-              >
-                Cancel
-              </button>
-              <button
-                className="bg-green-500 text-emerald-50 min-w-[80px] rounded-lg shadow px-4 py-2"
-                onClick={submit}
-              >
-                Save
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </Overlay>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 };
 
-const ImageCard: FC<{
+const ImageCard = ({
+  image,
+  selected,
+  onClick,
+}: {
   image: StorageReference;
   selected: boolean;
   onClick: (url: string) => void;
-}> = ({ image, selected, onClick }) => {
+}) => {
   const { data: url } = useQuery({
     queryFn: () => getImageUrl(image),
     queryKey: ["basketImageURL", image.name],
