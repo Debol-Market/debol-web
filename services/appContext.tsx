@@ -3,17 +3,17 @@ import useLocalStorage from "@/utils/useLocalStorage";
 import { BasketItemSchema, ProductItemSchema } from "@/utils/zodSchemas";
 import { User, onAuthStateChanged } from "firebase/auth";
 import {
-  ReactNode,
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
+    ReactNode,
+    createContext,
+    useCallback,
+    useContext,
+    useEffect,
+    useState,
 } from "react";
 import { z } from "zod";
-import { getBasket, getCurrencyMulti } from "./database";
-import { auth } from "./firebase";
+import { getCurrencyMulti } from "./database";
 import { fetchBasketsItems, fetchProductItems } from "./fetchCartItems";
+import { auth } from "./firebase";
 
 type ContextType = {
   user?: User;
@@ -28,7 +28,7 @@ type ContextType = {
 
   // basketCart
   basketCart: BasketItem[];
-  basketCartItems: Basket[];
+  basketCartItems: ( Basket & {id: string})[];
   clearBasketCart: () => void;
   addToBasketCart: (item: BasketItem, basket: Basket) => void;
   removeFromBasketCart: (sizeId: string) => void;
