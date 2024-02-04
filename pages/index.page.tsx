@@ -1,20 +1,44 @@
 import Carousel from "@/components/Carousel";
-import CatagoryRow from "@/components/CatagoryRow";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
-import { getBaskets } from "@/services/database";
-import { Basket } from "@/utils/types";
+import { Skeleton } from "@/components/ui/skeleton";
+import firebaseAdmin from "@/services/firebase-admin";
+import { getUrl } from "@/services/storage";
+import { Basket, Product } from "@/utils/types";
 import { useQuery } from "@tanstack/react-query";
+import { InferGetServerSidePropsType } from "next";
 import Head from "next/head";
-import ContentLoader from "react-content-loader";
+import Link from "next/link";
 import "swiper/css";
+import BasketCard from "../components/BasketCard";
 
-const Page = () => {
-  const { data, status } = useQuery({
-    queryKey: ["getBaskets"],
-    queryFn: getBaskets,
-  });
+export const getServerSideProps = async () => {
+  const basketsRef = await firebaseAdmin.database().ref("baskets").get();
+  const baskets = Object.entries(basketsRef.val()).map(
+    ([basketId, basket]) => ({
+      id: basketId,
+      ...(basket as Basket),
+    }),
+  );
 
+  const productsRef = await firebaseAdmin
+    .firestore()
+    .collection("products")
+    .get();
+
+  const products = productsRef.docs.map(
+    (doc) => ({ ...doc.data(), id: doc.id }) as Product,
+  );
+
+  return {
+    props: { baskets, products },
+  };
+};
+
+const Page = ({
+  baskets,
+  products,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   return (
     <>
       <Head>
@@ -26,58 +50,70 @@ const Page = () => {
         <Carousel />
       </div>
       <div className="flex justify-center w-full">
-        <div className="px-4 max-w-3xl w-full min-[480px]:mx-4">
-          <h2 className="text-2xl text-gray-800 font-medium">
-            Holiday Packages
-          </h2>
-          <div className="gap-6 w-full py-4 sm:px-4">
-            {status == "success" ? (
-              Array.from(groupBasetsByCatagory(data).entries()).map(
-                ([cat, bask]) => (
-                  <CatagoryRow name={cat} baskets={bask as any} key={cat} />
-                ),
-              )
-            ) : (
-              <div className="">
-                <ContentLoader
-                  viewBox="0 0 200 50"
-                  className="h-10 rounded-2xl"
-                >
-                  <rect x="0" y="0" rx="3" ry="3" height={50} width={200} />
-                </ContentLoader>
-                <div
-                  className="grid gap-6 w-full p-4"
-                  style={{
-                    gridTemplateColumns:
-                      "repeat(auto-fill, minmax(200px, 1fr))",
-                  }}
-                >
-                  {[1, 2, 3, 4].map((item) => (
-                    <ContentLoader
-                      viewBox="0 0 200 300"
-                      className="w-full h-full rounded-2xl"
-                      key={item}
-                    >
-                      <rect
-                        x="0"
-                        y="0"
-                        rx="3"
-                        ry="3"
-                        height={300}
-                        width={200}
-                      />
-                    </ContentLoader>
-                  ))}
-                </div>
-              </div>
-            )}
+        <div className="px-4 max-w-4xl w-full min-[480px]:mx-4">
+          <h2 className="text-2xl text-gray-800 font-medium">Packages</h2>
+          <div className="flex gap-6 overflow-auto w-full py-4 sm:px-4 no-scrollbar">
+            {baskets.map((item) => (
+              <BasketCard basket={item} id={item.id} key={item.id} />
+            ))}
           </div>
+
+          <h2 className="text-2xl text-gray-800 font-medium">Products</h2>
+          <div className="grid sm:grid-cols-[repeat(auto-fill,_minmax(200px,_1fr))] gap-x-6 gap-y-10 py-4 sm:px-4 no-scrollbar">
+            {products.map((item) => (
+              <ProductCard product={item} key={item.id} />
+            ))}
+          </div>
+          {/* {status == "success" ? ( */}
+          {/*   Array.from(groupBasetsByCatagory(data).entries()).map( */}
+          {/*     ([cat, bask]) => ( */}
+          {/*       <CatagoryRow name={cat} baskets={bask as any} key={cat} /> */}
+          {/*     ), */}
+          {/*   ) */}
+          {/* ) : ( */}
+          {/*   <div className=""> */}
+          {/*     <ContentLoader */}
+          {/*       viewBox="0 0 200 50" */}
+          {/*       className="h-10 rounded-2xl" */}
+          {/*     > */}
+          {/*       <rect x="0" y="0" rx="3" ry="3" height={50} width={200} /> */}
+          {/*     </ContentLoader> */}
+          {/*     <div */}
+          {/*       className="grid gap-6 w-full p-4" */}
+          {/*       style={{ */}
+          {/*         gridTemplateColumns: */}
+          {/*           "repeat(auto-fill, minmax(200px, 1fr))", */}
+          {/*       }} */}
+          {/*     > */}
+          {/*       {[1, 2, 3, 4].map((item) => ( */}
+          {/*         <ContentLoader */}
+          {/*           viewBox="0 0 200 300" */}
+          {/*           className="w-full h-full rounded-2xl" */}
+          {/*           key={item} */}
+          {/*         > */}
+          {/*           <rect */}
+          {/*             x="0" */}
+          {/*             y="0" */}
+          {/*             rx="3" */}
+          {/*             ry="3" */}
+          {/*             height={300} */}
+          {/*             width={200} */}
+          {/*           /> */}
+          {/*         </ContentLoader> */}
+          {/*       ))} */}
+          {/*     </div> */}
+          {/*   </div> */}
+          {/* )} */}
         </div>
       </div>
       <Footer />
     </>
   );
 };
+
+const ImgSkeleton = () => (
+  <Skeleton className="rounded-lg overflow-hidden w-full aspect-square" />
+);
 
 const groupBasetsByCatagory = (baskets: Basket[]) => {
   const catagories = new Map<string, Basket[]>();
@@ -91,6 +127,35 @@ const groupBasetsByCatagory = (baskets: Basket[]) => {
     }
   });
   return catagories;
+};
+
+const ProductCard = ({ product }: { product: Product }) => {
+  const { data, status } = useQuery({
+    queryKey: ["getProductImage", product.id],
+    queryFn: () => getUrl(product.image),
+  });
+
+  return (
+    <Link href={`/product/${product.id}`} className="w-full h-full ">
+      <div className="border shadow-lg rounded-2xl px-4 py-5 bg-white h-full">
+        {status == "success" ? (
+          <div className="rounded-lg overflow-hidden w-full aspect-square">
+            <img src={data} alt="" className="object-cover h-full w-full" />
+          </div>
+        ) : (
+          <ImgSkeleton />
+        )}
+        <div className="flex flex-col py-1">
+          <p className="font-medium md:text-lg max-w-[200px]">{product.name}</p>
+          {product.description && (
+            <p className="text-sm text-gray-700 truncate">
+              {product.description}
+            </p>
+          )}
+        </div>
+      </div>
+    </Link>
+  );
 };
 
 export default Page;
