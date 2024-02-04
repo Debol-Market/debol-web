@@ -5,9 +5,18 @@ rules_version = '2';
 //    /databases/(default)/documents/users/$(request.auth.uid)).data.isAdmin;
 service firebase.storage {
   match /b/{bucket}/o {
-    match /{allPaths=**} {
-      allow read;
-      allow write: if false;
+    match /{folder}/{allPaths=**} {
+      allow read: if ( isAuth() && isAdmin()) || folder != "bill";
+      allow write: if isAuth() && isAdmin(); 
+		}
+
+     function isAuth(){
+        return request.auth != null;
+    }
+
+    function isAdmin(){
+      return request.auth.token.role == "admin"
     }
   }
 }
+
