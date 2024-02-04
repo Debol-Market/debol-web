@@ -35,7 +35,7 @@ export const getServerSideProps = async ({
 
   const product: Product = { ...(productRef.data() as any), id: productRef.id };
 
-  const imageUrl = await getUrl(product.image);
+  const imageUrl = product.image ? await getUrl(product.image) : "";
 
   return {
     props: { product, imageUrl },
