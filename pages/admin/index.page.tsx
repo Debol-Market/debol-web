@@ -9,7 +9,7 @@ const Page = () => {
     <div className="min-h-screen">
       <Navbar name="Dashboard" />
       <div className="flex h-full">
-        <div className="p-10 grow h-full flex flex-col items-center gap-5">
+        <div className="p-10 grow h-full flex text-white flex-col items-center gap-5">
           <Link
             href="/admin/orders"
             className="min-w-[160px] text-lg bg-amber-500 rounded-lg shadow px-10 py-2"
@@ -22,12 +22,12 @@ const Page = () => {
           >
             Baskets
           </Link>
-          {/* <Link
+           <Link
             href="/admin/products"
             className="min-w-[160px] text-lg bg-amber-500 rounded-lg shadow px-10 py-2"
           >
             Products
-          </Link> */}
+          </Link>
           <Link
             href="/admin/contacts"
             className="min-w-[160px] text-lg bg-amber-500 rounded-lg shadow px-10 py-2"
