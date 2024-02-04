@@ -13,7 +13,7 @@ import {
 import { z } from "zod";
 import { getBasket, getCurrencyMulti } from "./database";
 import { auth } from "./firebase";
-import { fetchBasketsItems } from "./fetchCartItems";
+import { fetchBasketsItems, fetchProductItems } from "./fetchCartItems";
 
 type ContextType = {
   user?: User;
@@ -22,7 +22,7 @@ type ContextType = {
   currencyMultiplier: number;
   isAdmin: boolean;
   setIsAdmin: (boolean) => void;
-  setCurrency: (currency: string) => void;
+  setCurrency: (curr: string) => void;
   onAuthChange: (user: User | null) => Promise<void>;
   setCurrencyMultiplier: (multiplier: number) => void;
 
@@ -172,14 +172,31 @@ export const AppContext = ({ children }: { children: ReactNode }) => {
         for (const basketItem of basketCart) {
           const cartItem = items.find(
             (i) =>
-              i.id == basketItem.basketId &&
-              i.sizes.find((s) => s.id == basketItem.sizeId),
+              i?.id == basketItem.basketId &&
+              i?.sizes.find((s) => s.id == basketItem.sizeId),
           );
           if (!cartItem) continue;
           newBasketCart.push(basketItem);
           newBasketCartItems.push(cartItem);
         }
         setBasketCartItems(newBasketCartItems);
+        updateBasketCart(newBasketCart);
+      });
+    }
+
+    // fetch and verify each productCart item
+    if (productCart.length) {
+      fetchProductItems(productCart).then((items) => {
+        const newProductCart: ProductItem[] = [];
+        const newProductCartItems: Product[] = [];
+        for (const productItem of productCart) {
+          const cartItem = items.find((i) => i?.id == productItem.productId);
+          if (!cartItem) continue;
+          newProductCart.push(productItem);
+          newProductCartItems.push(cartItem);
+        }
+        setProductCartItems(newProductCartItems);
+        updateProductCart(newProductCart);
       });
     }
 
