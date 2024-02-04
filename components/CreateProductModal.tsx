@@ -58,6 +58,7 @@ const CreateProductModal = ({
     handleSubmit,
     setError,
     watch,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<FormType>({
     resolver: zodResolver(schema),
@@ -100,6 +101,9 @@ const CreateProductModal = ({
         body: formData,
       });
     }
+    reset()
+    setSelectedImage('')
+    setImageUrl('')
     if (onSave)
       onSave({
         id: docRef.id,
