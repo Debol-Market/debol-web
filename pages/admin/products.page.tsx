@@ -1,5 +1,14 @@
 import CreateProductModal from "@/components/CreateProductModal";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
@@ -9,11 +18,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { firestore, storage } from "@/services/firebase";
 import firebaseAdmin from "@/services/firebase-admin";
 import { getUrl } from "@/services/storage";
 import { Product } from "@/utils/types";
 import useAdmin from "@/utils/useAdmin";
-import { useQuery } from "@tanstack/react-query";
+import { DialogClose } from "@radix-ui/react-dialog";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { deleteDoc, doc } from "firebase/firestore";
+import { deleteObject, ref } from "firebase/storage";
+import { Loader2 } from "lucide-react";
 import { InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 
@@ -36,39 +50,41 @@ export default function Component({
   products,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   useAdmin();
+  const router = useRouter();
   return (
-    <div className="grid w-full overflow-hidden rounded-lg shadow-lg">
-      <div className="flex flex-col gap-4 md:gap-8">
-        <div className="grid gap-4 md:gap-8">
-          <div className="flex justify-between gap-2 mt-6 mx-6">
-            <h1 className="font-semibold text-3xl">Products</h1>
-            <CreateProductModal includeImage>
-              <Button size="sm" className="bg-primary text-gray-50">
-                Add product
-              </Button>
-            </CreateProductModal>
-          </div>
-          <div className="border shadow-sm rounded-lg mx-3 md:mx-7 overflow-auto">
-            <div className="min-w-[300px] w-full">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-[100px]">Image</TableHead>
-                    <TableHead className="max-w-[120px]">Name</TableHead>
-                    <TableHead className="w-20">Price</TableHead>
-                    <TableHead className="hidden md:table-cell">
-                      Description
-                    </TableHead>
-                    <TableHead className="w-[80px]" />
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {products.map((prod) => (
-                    <ProductRow product={prod} key={prod.id} />
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
+    <div className="flex flex-col gap-4 md:gap-8">
+      <div className="grid gap-4 md:gap-8">
+        <div className="flex justify-between gap-2 mt-6 mx-6">
+          <h1 className="font-semibold text-3xl">Products</h1>
+          <CreateProductModal
+            includeImage
+            onSave={() => router.push(router.asPath)}
+          >
+            <Button size="sm" className="bg-primary text-gray-50">
+              Add product
+            </Button>
+          </CreateProductModal>
+        </div>
+        <div className="border shadow-sm rounded-lg mx-3 md:mx-7 overflow-auto">
+          <div className="min-w-[300px] w-full">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[100px]">Image</TableHead>
+                  <TableHead className="max-w-[120px]">Name</TableHead>
+                  <TableHead className="w-20">Price</TableHead>
+                  <TableHead className="hidden md:table-cell">
+                    Description
+                  </TableHead>
+                  <TableHead className="w-[80px]" />
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {products.map((prod) => (
+                  <ProductRow product={prod} key={prod.id} />
+                ))}
+              </TableBody>
+            </Table>
           </div>
         </div>
       </div>
@@ -82,6 +98,16 @@ const ProductRow = ({ product }: { product: Product }) => {
     queryKey: ["getProductImage", product.id],
     queryFn: () => getUrl(product.image),
     enabled: !!product.image,
+  });
+
+  const { mutate, isLoading } = useMutation({
+    mutationFn: async () => {
+      await deleteDoc(doc(firestore, "products", product.id));
+      if (product.image) await deleteObject(ref(storage, product.image));
+    },
+    onSuccess(data, variables, context) {
+      router.push(router.asPath);
+    },
   });
 
   return (
@@ -100,15 +126,48 @@ const ProductRow = ({ product }: { product: Product }) => {
       <TableCell>
         <p className="text-sm text-gray-500 truncate">{product.description}</p>
       </TableCell>
-      <TableCell className="flex items-center gap-2 flex-col sm:flex-row">
+      <TableCell
+        className="flex items-center gap-2 flex-col sm:flex-row"
+        onClick={(e) => e.stopPropagation()}
+      >
         <Button size="icon" variant="outline">
           <PencilIcon className="h-4 w-4" />
           <span className="sr-only">Edit</span>
         </Button>
-        <Button size="icon" variant="outline">
-          <TrashIcon className="h-4 w-4" />
-          <span className="sr-only">Delete</span>
-        </Button>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button size="icon" variant="outline">
+              <TrashIcon className="h-4 w-4" />
+              <span className="sr-only">Delete</span>
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Are you absolutely sure?</DialogTitle>
+              <DialogDescription>
+                This action cannot be undone.
+              </DialogDescription>
+            </DialogHeader>{" "}
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button type="button" variant="outline">
+                  Cancel
+                </Button>
+              </DialogClose>
+              <Button
+                type="submit"
+                onClick={() => mutate()}
+                className="bg-red-600 text-white hover:bg-red-500"
+              >
+                {isLoading ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  "Delete"
+                )}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </TableCell>
     </TableRow>
   );
