@@ -19,7 +19,7 @@ const Page: FC<props> = ({ baskets, keyword }) => {
           <h2 className="text-2xl font-semibold">
             Search results for: {keyword}
           </h2>
-          <div className="flex gap-6 flex-col min-[480px]:flex-row min-[480px]:items-strech p-4">
+          <div className="grid sm:grid-cols-[repeat(auto-fill,_minmax(200px,_1fr))] gap-x-6 gap-y-10 py-4 sm:px-4 no-scrollbar">
             {baskets.length == 0 ? (
               <p>No results were found</p>
             ) : (
