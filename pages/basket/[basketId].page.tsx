@@ -49,9 +49,9 @@ const Page = ({ basket, basketId, imageUrl }: props) => {
             <h1 className="text-2xl sm:text-3xl font-bold ">{basket.name}</h1>
             <p className="text-lg sm:text-xl my-4">{basket.description}</p>
             <div className="font-bold text-lg my-2">Basket Sizes</div>
-            <div className="bg-mint rounded-xl md:max-w-md my-4 mb-8 pb-5 flex flex-col items-center">
-              {basket.sizes.length > 0 || basket.sizes[0].name != "" ? (
-                <div className="flex gap-2 mb-4 overflow-auto no-scrollbar px-8 shrink-0">
+            <div className="bg-mint rounded-xl md:max-w-md my-1 mb-8 pb-5 flex flex-col items-center">
+              {basket.sizes.length > 1? (
+                <div className="flex gap-2 mb-4 overflow-auto no-scrollbar w-full px-8 shrink-0">
                   {basket.sizes.map((size, index) => (
                     <button
                       key={index}
@@ -67,7 +67,7 @@ const Page = ({ basket, basketId, imageUrl }: props) => {
                   ))}
                 </div>
               ) : (
-                <></>
+                <div className="mb-4"></div>
               )}
               <div className="justify-between px-6 w-full">
                 <div className="flex gap-3 mb-2 justify-between">
