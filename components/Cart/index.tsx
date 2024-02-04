@@ -6,6 +6,7 @@ import Btn from "../Btn";
 import Overlay from "../Overlay";
 import BasketCartItem from "./BasketCartItem";
 import { useRouter } from "next/router";
+import ProductCartItem from "./ProductCartItem";
 
 type props = {
   onClose: () => void;
@@ -19,6 +20,11 @@ const Cart = ({ onClose }: props) => {
     basketCartItems,
     removeFromBasketCart,
     setBasketCartItemQty,
+
+    productCart,
+    productCartItems,
+    removeFromProductCart,
+    setProductCartItemQty,
   } = useApp();
   const [total, setTotal] = useState(0);
 
@@ -30,8 +36,12 @@ const Cart = ({ onClose }: props) => {
       );
       total += (size?.price ?? 0) * cartItem.qty;
     });
+    productCart.forEach((cartItem, index) => {
+      const product = productCartItems.find((s) => s.id == cartItem.productId);
+      total += (product?.price ?? 0) * cartItem.qty;
+    });
     setTotal(total);
-  }, [basketCart, basketCartItems]);
+  }, [basketCart, basketCartItems, productCart, productCartItems]);
 
   return (
     <Overlay onClick={onClose}>
@@ -49,23 +59,34 @@ const Cart = ({ onClose }: props) => {
           <h2 className="text-xl sm:text-2xl font-semibold">Your Cart</h2>
         </div>
         <div className="flex flex-col grow">
-          {basketCart.length ? (
-            basketCart.map((item, index) => (
-              <BasketCartItem
-                basket={basketCartItems[index]}
-                basketItem={item}
-                key={item.sizeId}
-                onChange={(qty) => setBasketCartItemQty(item.sizeId, qty)}
-                onDel={() => removeFromBasketCart(item.sizeId)}
-              />
-            ))
+          {basketCart.length + productCart.length > 0 ? (
+            <>
+              {basketCart.map((item, index) => (
+                <BasketCartItem
+                  basket={basketCartItems[index]}
+                  basketItem={item}
+                  key={item.sizeId}
+                  onChange={(qty) => setBasketCartItemQty(item.sizeId, qty)}
+                  onDel={() => removeFromBasketCart(item.sizeId)}
+                />
+              ))}
+              {productCart.map((item, index) => (
+                <ProductCartItem
+                  product={productCartItems[index]}
+                  productItem={item}
+                  key={item.productId}
+                  onChange={(qty) => setProductCartItemQty(item.productId, qty)}
+                  onDel={() => removeFromProductCart(item.productId)}
+                />
+              ))}
+            </>
           ) : (
             <p className="p-4 text-xl sm:text-2xl m-auto text-neutral-800/60">
               Your cart is empty
             </p>
           )}
         </div>
-        {basketCart.length > 0 && (
+        {basketCart.length + productCart.length > 0 && (
           <div className="flex justify-between p-2 px-4">
             <h2 className="text-lg">Total:</h2>
             <p className="font-bold text-2xl">
@@ -75,7 +96,7 @@ const Cart = ({ onClose }: props) => {
         )}
         <Btn
           label="Checkout"
-          disabled={basketCart.length == 0}
+          disabled={basketCart.length + productCart.length == 0}
           className="m-4 mt-2"
           onClick={() => {
             if (!user)
