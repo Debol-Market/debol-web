@@ -14,7 +14,7 @@ import BasketCard from "../components/BasketCard";
 
 export const getServerSideProps = async () => {
   const basketsRef = await firebaseAdmin.database().ref("baskets").get();
-  const baskets = Object.entries(basketsRef.val()).map(
+  const baskets = Object.entries(basketsRef.val() ?? {}).map(
     ([basketId, basket]) => ({
       id: basketId,
       ...(basket as Basket),
