@@ -1,13 +1,13 @@
 import { Button } from "@/components/ui/button";
 import {
-    Dialog,
-    DialogClose,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import { updateBasket } from "@/services/database";
 import { Item, Size } from "@/utils/types";
@@ -18,6 +18,7 @@ import { useState } from "react";
 import { MdOutlineAddCircleOutline } from "react-icons/md";
 import ItemModal from "../BasketModal/ItemModal";
 import EditSizeModal from "./EditSizeModal";
+import EditItemModal from "./EditItemModal";
 
 type props = {
   size: Size;
@@ -29,55 +30,54 @@ type props = {
 const SizeCard = ({ size, sizes, basketId }: props) => {
   const router = useRouter();
   const [addItemModal, setAddItemModal] = useState(false);
-  const {mutate, isLoading} = useMutation({
+  const { mutate, isLoading } = useMutation({
     mutationFn: async (item: Item) => {
-    await updateBasket(
-      {
-        // @ts-ignore
-        sizes: sizes.map((s) =>
-          s.id != size.id
-            ? s
-            : {
-                ...s,
-                items: [...s.items, item],
-              },
-        ),
-      },
-      basketId,
-    );
-  },
-    onSuccess: () =>router.push(router.asPath) 
-  })
+      await updateBasket(
+        {
+          // @ts-ignore
+          sizes: sizes.map((s) =>
+            s.id != size.id
+              ? s
+              : {
+                  ...s,
+                  items: [...s.items, item],
+                },
+          ),
+        },
+        basketId,
+      );
+    },
+    onSuccess: () => router.push(router.asPath),
+  });
 
   const delMutation = useMutation({
     mutationFn: async (i: number) => {
+      await updateBasket(
+        {
+          // @ts-ignore
+          sizes: sizes.map((s) =>
+            s.id != size.id
+              ? s
+              : {
+                  ...s,
+                  items: s.items.filter((_, ind) => ind != i),
+                },
+          ),
+        },
+        basketId,
+      );
+    },
+    onSuccess: () => router.push(router.asPath),
+  });
+  const updateItem = async (item: Item, index: number) => {
     await updateBasket(
       {
-        // @ts-ignore
         sizes: sizes.map((s) =>
           s.id != size.id
             ? s
             : {
                 ...s,
-                items: s.items.filter((_, ind) => ind != i),
-              },
-        ),
-      },
-      basketId,
-    );
-  },
-    onSuccess: () =>router.push(router.asPath) 
-  })
-  const updateItem = async (item: Item , index: number) => {
-    await updateBasket(
-      {
-        sizes: sizes.map((s) =>
-          s.id != size.id
-            ? s
-            : {
-                ...s,
-                items: s.items
-                  .map((it, i) => (i == index ? item : it))
+                items: s.items.map((it, i) => (i == index ? item : it)),
               },
         ),
       },
@@ -121,7 +121,9 @@ const SizeCard = ({ size, sizes, basketId }: props) => {
       {addItemModal && (
         <ItemModal
           items={size.items}
-          setOpen={o => {if(!isLoading) setAddItemModal(o)}}
+          setOpen={(o) => {
+            if (!isLoading) setAddItemModal(o);
+          }}
           setItems={(items: Item[]) => mutate(items.at(-1)!)}
         />
       )}
@@ -134,12 +136,12 @@ const ItemCard = ({
   length,
   updateItem,
   mutate,
-  isLoading
+  isLoading,
 }: {
   item: Item;
   length: number;
-    isLoading: boolean,
-    mutate: () => void
+  isLoading: boolean;
+  mutate: () => void;
   updateItem: (item: Item) => Promise<void>;
 }) => {
   return (
@@ -152,17 +154,23 @@ const ItemCard = ({
         </p>
       </div>
       <div className="text-3xl flex flex-col gap-2 justify-evenly ">
-        {/* <button onClick={editItem}> */}
-        {/*   <FaPen className="h-5 w-5 text-emerald-500 mb-2" /> */}
-        {/* </button> */}
-        {length > 1 && <ItemDelBtn delItem={() => mutate()} isLoading={isLoading} />}
+        <EditItemModal item={item} updateItem={updateItem} />
+        {length > 1 && (
+          <ItemDelBtn delItem={() => mutate()} isLoading={isLoading} />
+        )}
       </div>
     </div>
   );
 };
 
-const ItemDelBtn = ({ delItem,isLoading }: { delItem: () => any, isLoading: boolean }) => {
-   return (
+const ItemDelBtn = ({
+  delItem,
+  isLoading,
+}: {
+  delItem: () => any;
+  isLoading: boolean;
+}) => {
+  return (
     <Dialog>
       <DialogTrigger asChild>
         <Button size="icon" variant="outline">
