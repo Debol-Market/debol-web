@@ -154,12 +154,14 @@ export const updateCatagoryProductCountById = async (
   await update(catRef, { productCount: catData.val().productCount + value });
 };
 
-export const updateBasket = async (basket: Basket, basketId: string) => {
+export const updateBasket = async (
+  basket: Partial<Basket>,
+  basketId: string,
+) => {
   await Promise.all([
     update(ref(rtdb, "baskets/" + basketId), basket),
     updateDoc(doc(firestore, "baskets", basketId), {
       ...basket,
-      keywords: generateBasketKeywords(basket),
     }),
   ]);
 };
