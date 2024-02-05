@@ -25,19 +25,14 @@ export const generateKeywords = (str: string) => {
   return keywords;
 };
 
-export const generateBasketKeywords = (basket: Basket) => {
+export const generateBasketKeywords = (basket: {
+  name: string;
+  description: string;
+}) => {
   return Array.from(
     new Set([
       ...generateKeywords(basket.name),
       ...generateKeywords(basket.description),
-      ...basket.sizes.reduce(
-        (a, s) => [
-          ...a,
-          ...generateKeywords(s.name),
-          ...generateKeywords(s.description ?? ""),
-        ],
-        [] as string[],
-      ),
     ]),
   );
 };
