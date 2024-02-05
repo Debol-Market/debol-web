@@ -26,10 +26,10 @@ const options = [
 const animatedComp = makeAnimate();
 
 const UnitInput: FC<props> = ({
-  setUnit,
   unit,
-  containerClassName,
+  setUnit,
   labelClassName,
+  containerClassName,
 }) => {
   return (
     <div className={`group flex text-sm flex-col ${containerClassName || ""}`}>
@@ -44,13 +44,14 @@ const UnitInput: FC<props> = ({
         maxMenuHeight={200}
         options={options}
         components={animatedComp}
-        onChange={setUnit}
+        onChange={(v: { value: string }) => setUnit(v.value)}
         classNames={{
           container: () => "shadow",
           control: () =>
             "!border-gray-800 !shadow-none focus-within:!border-emerald-800",
         }}
         defaultValue={options[0]}
+        value={options.find((o) => o.value == unit)}
         styles={{
           menu: (baseStyles, _) => ({ ...baseStyles, zIndex: 10 }),
           control: (baseStyles, _) => ({
