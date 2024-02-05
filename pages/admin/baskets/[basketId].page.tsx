@@ -64,7 +64,6 @@ const Page = ({
   const router = useRouter();
   const { basketId } = router.query;
   const [addSize, setSizeAdd] = useState(false);
-  const [modalOpen, setModalOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-slate-200 py-4 px-8 md:px-12 ">
@@ -84,12 +83,16 @@ const Page = ({
             <p className="text-slate-600">Catagory: {basket.catagory}</p>
           </div>
           <div className="flex flex-row md:flex-col gap-6">
-            <EditBasketModal basket={basket} img={image}
-          onSave={() => router.push(router.asPath)}
-            ><Button size="icon" variant="outline">
-              <PencilIcon className="h-4 w-4" />
-              <span className="sr-only">Edit</span>
-            </Button></EditBasketModal>
+            <EditBasketModal
+              basket={basket}
+              img={image}
+              onSave={() => router.push(router.asPath)}
+            >
+              <Button size="icon" variant="outline">
+                <PencilIcon className="h-4 w-4" />
+                <span className="sr-only">Edit</span>
+              </Button>
+            </EditBasketModal>
             <DelBtn basketId={basketId as string} />
           </div>
         </div>
@@ -98,12 +101,10 @@ const Page = ({
         {basket.sizes.map((size) => (
           <SizeCard
             key={size.id}
+            basketId={basket.id}
             size={size}
-            onEdit={() => {
-              setModalOpen(true);
-            }}
-            length={basket.sizes.length}
-            setBasket={() => {}}
+            sizes={basket.sizes}
+            onEdit={() => {}}
           />
         ))}
         <button
@@ -117,7 +118,8 @@ const Page = ({
       </div>
       {addSize && (
         <AddSizeModal
-          setBasket={() => {}}
+          sizes={basket.sizes}
+          basketId={basket.id}
           closeModal={() => setSizeAdd(false)}
         />
       )}
@@ -130,7 +132,7 @@ const DelBtn = ({ basketId }: { basketId: string }) => {
   const { mutate, isLoading } = useMutation({
     mutationFn: async () => deleteBasket(basketId as string),
     onSuccess() {
-      router.push("/");
+      router.push("/admin");
     },
   });
   return (

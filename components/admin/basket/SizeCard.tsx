@@ -1,73 +1,45 @@
-import { Basket, Item, Size } from "@/utils/types";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { updateBasket } from "@/services/database";
+import { Size } from "@/utils/types";
+import { useMutation } from "@tanstack/react-query";
+import { Loader2, TrashIcon } from "lucide-react";
+import { useRouter } from "next/router";
 import { useState } from "react";
-import { BiSolidPencil } from "react-icons/bi";
 import { MdOutlineAddCircleOutline } from "react-icons/md";
-import { RiCloseCircleFill } from "react-icons/ri";
-import DeleteModal from "../BasketModal/DeleteModal";
 import ItemCard from "../BasketModal/ItemCard";
-import ItemModal from "../BasketModal/ItemModal";
 import EditSizeModal from "./EditSizeModal";
 
 type props = {
   size: Size;
+  sizes: Size[];
+  basketId: string;
   onEdit: () => void;
-  length: number;
-  setBasket: React.Dispatch<React.SetStateAction<Basket | undefined>>;
 };
 
-const SizeCard = ({ size, length, setBasket }: props) => {
-  const [modalOpen, setModalOpen] = useState(false);
+const SizeCard = ({ size, sizes, basketId }: props) => {
   const [selectedIndex, setSelectedIndex] = useState<number>();
-  const [deleteSizeModal, setdeleteSizeModal] = useState(false);
-  const [deleteItemModal, setdeleteItemModal] = useState(false);
-  const [editSizeModal, setEditSizeModal] = useState(false);
-  const [addItemModal, setAddItemModal] = useState(false);
-
-  const deleteItem = (index: number) => {
-    if (size.items.length == 1) {
-      setBasket((p) => {
-        if (p) return { ...p, sizes: p.sizes.filter((s) => s.id !== size.id) };
-      });
-    }
-    setBasket((prev) => {
-      if (!prev) return;
-      // filter out the item
-      const newSize = (s: Size) => ({
-        ...s,
-        items: s.items.filter((item, i) => i != index),
-      });
-
-      return {
-        ...prev,
-        sizes: prev.sizes.map((s) => (s.id == size.id ? newSize(s) : s)),
-      };
-    });
-  };
-
-  const addItems = (items: Item[]) => {
-    setBasket((prev) => {
-      if (!prev) return;
-      return {
-        ...prev,
-        sizes: prev.sizes.map((s) => (s.id == size.id ? { ...s, items } : s)),
-      };
-    });
-  };
 
   return (
     <div className="grow p-4 bg-white rounded-xl shadow max-w-sm gap-3 min-w-[260px] w-full relative">
       <div className="absolute top-4 right-4 gap-4">
-        <button onClick={() => setEditSizeModal(true)}>
-          <BiSolidPencil size={24} />
-        </button>
-        {length > 1 && (
-          <button
-            onClick={() => {
-              setdeleteSizeModal(true);
-            }}
-          >
-            <RiCloseCircleFill size={24} />
-          </button>
+        <EditSizeModal
+          size={size}
+          onCancel={() => {}}
+          basketId={basketId}
+          sizes={sizes}
+        />
+        {sizes.length > 1 && (
+          <DelBtn basketId={basketId} sizes={sizes} sizeId={size.id} />
         )}
       </div>
       <p className="text-slate-600 m-2 text-lg font-bold">Name : {size.name}</p>
@@ -78,88 +50,72 @@ const SizeCard = ({ size, length, setBasket }: props) => {
             key={item.name}
             item={item}
             editItem={() => {
-              setModalOpen(true);
               setSelectedIndex(index);
             }}
             deleteItem={() => {
               setSelectedIndex(index);
-              setdeleteItemModal(true);
             }}
             index={index}
           />
         </div>
       ))}
-      <div
-        className="flex justify-center border border-slate-400 rounded-lg px-3 py-2 opacity-50"
-        onClick={() => setAddItemModal(true)}
-      >
+      <div className="flex justify-center border border-slate-400 rounded-lg px-3 py-2 opacity-50">
         <MdOutlineAddCircleOutline size={50} />
       </div>
-      {modalOpen && (
-        <ItemModal
-          items={size.items}
-          setItems={(items: Item[]) => {
-            setBasket((prev) => {
-              if (!prev) return;
-              return {
-                ...prev,
-                sizes: prev.sizes.map((s) =>
-                  s.id == size.id ? { ...s, items } : s,
-                ),
-              };
-            });
-          }}
-          index={selectedIndex}
-          setOpen={setModalOpen}
-        />
-      )}
-      {deleteSizeModal && (
-        <DeleteModal
-          onDelete={() => {
-            setBasket((p) => {
-              if (p)
-                return { ...p, sizes: p.sizes.filter((s) => s.id !== size.id) };
-            });
-          }}
-          onCancel={() => setdeleteSizeModal(false)}
-          delName={size.name}
-        />
-      )}
-      {deleteItemModal && selectedIndex != undefined && (
-        <DeleteModal
-          onDelete={() => {
-            deleteItem(selectedIndex);
-            setdeleteItemModal(false);
-          }}
-          onCancel={() => setdeleteItemModal(false)}
-          delName={size.items[selectedIndex].name}
-        />
-      )}
-      {editSizeModal && (
-        <EditSizeModal
-          onEdit={(sz: Size) => {
-            setEditSizeModal(false);
-            setBasket((prev) => {
-              if (prev)
-                return {
-                  ...prev,
-                  sizes: prev.sizes.map((s) => (s.id == size.id ? sz : s)),
-                };
-            });
-          }}
-          size={size}
-          onCancel={() => setEditSizeModal(false)}
-        />
-      )}
-      {addItemModal && (
-        <ItemModal
-          items={size.items}
-          setOpen={setAddItemModal}
-          setItems={addItems}
-          index={undefined}
-        />
-      )}
     </div>
+  );
+};
+
+const DelBtn = ({
+  basketId,
+  sizes,
+  sizeId,
+}: {
+  basketId: string;
+  sizeId: string;
+  sizes: Size[];
+}) => {
+  const router = useRouter();
+  const { mutate, isLoading } = useMutation({
+    mutationFn: async () =>
+      updateBasket({ sizes: sizes.filter((s) => s.id != sizeId) }, basketId),
+    onSuccess() {
+      router.push(router.asPath);
+    },
+  });
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button size="icon" variant="outline">
+          <TrashIcon className="h-4 w-4" />
+          <span className="sr-only">Delete</span>
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Are you absolutely sure?</DialogTitle>
+          <DialogDescription>This action cannot be undone.</DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <DialogClose asChild>
+            <Button type="button" variant="outline">
+              Cancel
+            </Button>
+          </DialogClose>
+          <Button
+            type="submit"
+            onClick={() => mutate()}
+            className="bg-red-600 text-white hover:bg-red-500"
+          >
+            {isLoading ? (
+              <Loader2 className="h-6 w-6 animate-spin" />
+            ) : (
+              "Delete"
+            )}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 };
 
