@@ -1,4 +1,5 @@
 import useApp from "@/services/appContext";
+import { updateBasket } from "@/services/database";
 import { getDefaultBasketImages, getImageUrl } from "@/services/storage";
 import { compressImage } from "@/utils/compressImage";
 import { Basket } from "@/utils/types";
@@ -13,14 +14,12 @@ import { ZodType, z } from "zod";
 import Btn from "../../Btn";
 import Input from "../../Input";
 import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogTitle,
-  DialogTrigger,
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogTitle,
+    DialogTrigger,
 } from "../../ui/dialog";
-import { ref, update } from "firebase/database";
-import { rtdb } from "@/services/firebase";
 
 type Props = {
   basket: Basket & { id: string };
@@ -86,7 +85,7 @@ const EditBasketModal = ({
 
     if (selectedImage) newBasket.image = selectedImage;
 
-    await update(ref(rtdb, `baskets/${basket.id}`), newBasket);
+    await updateBasket(newBasket, basket.id)
 
     if (!selectedImage && img != imageUrl) {
       const file = await compressImage(data.image[0]);
