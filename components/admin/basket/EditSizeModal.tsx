@@ -1,60 +1,123 @@
-import Overlay from '@/components/Overlay';
-import { Size } from '@/utils/types';
-import { useState } from 'react';
-import Input from '../Input';
+import Btn from "@/components/Btn";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { rtdb } from "@/services/firebase";
+import { Size } from "@/utils/types";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { DialogTrigger } from "@radix-ui/react-dialog";
+import { ref, update } from "firebase/database";
+import { PencilIcon } from "lucide-react";
+import { useRouter } from "next/router";
+import { useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { z } from "zod";
+import Input from "../../Input";
 
 type props = {
+  basketId: string;
   size: Size;
-  onEdit: (Size) => void;
+  sizes: Size[];
   onCancel: () => void;
-}
+};
+const schema = z.object({
+  name: z.string().min(1, "Name is Required"),
+  description: z.string().optional(),
+  price: z.number().gt(0, "Price must be greater than 0"),
+});
 
-function EditSizeModal({ size, onEdit, onCancel }: props) {
+type FormType = z.infer<typeof schema>;
 
-  const [name, setName] = useState(size.name ?? '');
-  const [description, setDescription] = useState(size.description ?? '');
-  const [price, setPrice] = useState(size.price ?? 0);
+function EditSizeModal({ size, basketId, onCancel, sizes }: props) {
+  const router = useRouter();
+  const [isOpen, setIsOpen] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<FormType>({
+    defaultValues: {
+      name: size.name,
+      price: size.price / 100,
+      description: size.description,
+    },
+    resolver: zodResolver(schema),
+  });
 
-  const submit = () => {
-    onEdit({
-      ...size,
-      name,
-      description,
-      price
-    })
-  }
+  const onSubmit: SubmitHandler<FormType> = async ({
+    name,
+    price,
+    description,
+  }) => {
+    await update(ref(rtdb, `baskets/${basketId}`), {
+      sizes: sizes.map((s) =>
+        s.id == size.id ? { ...s, name, description, price: price * 100 } : s,
+      ),
+    });
+    setIsOpen(false);
+    router.push(router.asPath);
+  };
 
-  return (<Overlay onClick={onCancel} >
-    <div className="rounded-lg bg-white w-full max-w-sm shadow px-7 py-6 flex-grow justify-center" onClick={(e) => e.stopPropagation()}>
-      <h1 className="text-4xl font-bold text-slate-500">Edit Size</h1>
-      <div className='flex flex-col'>
-        <Input
-          label="Name"
-          defaultValue={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-        <Input
-          label="Description"
-          defaultValue={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-        <Input
-          label="Price"
-          defaultValue={price / 100}
-          type="number"
-          onChange={(e) => setPrice(isNaN(e.target.valueAsNumber) ? 0 : e.target.valueAsNumber * 100)}
-        />
-      </div>
-      <div className='flex mt-10 flex-row justify-between'>
-        <button className='bg-amber-500 text-emerald-50 min-w-[80px] rounded-lg shadow px-4 py-2 '
-          onClick={onCancel} >Cancel</button>
-        <button className='bg-green-500 text-emerald-50 min-w-[80px] rounded-lg shadow px-4 py-2'
-          onClick={submit}>Save</button>
-      </div>
-
-
-    </div>
-  </Overlay>);
+  return (
+    <Dialog
+      open={isOpen}
+      onOpenChange={(o) => {
+        setIsOpen(o);
+        if (!o && onCancel) onCancel();
+      }}
+    >
+      <DialogTrigger asChild>
+        <Button size="icon" variant="outline">
+          <PencilIcon className="h-4 w-4" />
+          <span className="sr-only">Edit</span>
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogTitle>Edit Size</DialogTitle>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="flex flex-col">
+            <div className="flex flex-col grow gap-4">
+              <Input
+                {...register("name")}
+                label="Name"
+                error={errors.name?.message}
+              />
+              <div className="group flex text-sm flex-col">
+                <label className="text-gray-700 group-focus-within:text-emerald-900 font-medium ">
+                  Description
+                </label>
+                <textarea
+                  {...register("description")}
+                  className="py-2 px-3 focus:outline-none border shadow-lg border-gray-800 group-focus-within:border-emerald-800 rounded-md w-auto min-w-0 "
+                />
+              </div>
+              <Input
+                {...register("price", {
+                  required: "Add a price",
+                  setValueAs: (v) => (v == "" ? undefined : Number(v)),
+                })}
+                label="Price"
+                type="number"
+                error={errors.price?.message}
+              />
+              <div className="flex justify-between mt-auto">
+                <DialogClose asChild>
+                  <button className="bg-gray-200 px-4 py-3 rounded-lg font-medium">
+                    Cancel
+                  </button>
+                </DialogClose>
+                <Btn label="Save" isLoading={isSubmitting} type="submit" />
+              </div>
+            </div>
+          </div>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
 }
 
 export default EditSizeModal;
