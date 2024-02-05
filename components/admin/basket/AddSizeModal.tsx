@@ -33,7 +33,10 @@ const AddSizeModal = ({ basketId, sizes, closeModal }: props) => {
 
   const { mutate, isLoading } = useMutation({
     mutationFn: async () =>
-      updateBasket({ sizes: [...sizes, { ...size, items, price: size.price * 100 }] }, basketId),
+      updateBasket(
+        { sizes: [...sizes, { ...size, items, price: size.price * 100 }] },
+        basketId,
+      ),
     onSuccess() {
       router.push(router.asPath);
       closeModal();
@@ -44,7 +47,7 @@ const AddSizeModal = ({ basketId, sizes, closeModal }: props) => {
     setItems((prev) => prev.filter((_, i) => i != index));
   };
 
-  const isNameTaken = sizes.find(s => s.name == size.name)
+  const isNameTaken = !!sizes.find((s) => s.name == size.name);
 
   return (
     <Overlay onClick={closeModal}>
