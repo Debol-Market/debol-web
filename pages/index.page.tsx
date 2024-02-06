@@ -50,16 +50,16 @@ const Page = ({
         <Carousel />
       </div>
       <div className="flex justify-center w-full">
-        <div className="px-4 max-w-4xl w-full min-[480px]:mx-4">
-          <h2 className="text-2xl text-gray-800 font-medium">Packages</h2>
-          <div className="flex gap-6 overflow-auto w-full py-4 sm:px-4 no-scrollbar">
+        <div className="max-w-4xl w-full">
+          <h2 className="text-2xl text-gray-800 font-medium mx-6">Packages</h2>
+          <div className="flex gap-6 overflow-auto w-full py-4 no-scrollbar px-10">
             {baskets.map((item) => (
               <BasketCard basket={item} id={item.id} key={item.id} />
             ))}
           </div>
 
-          <h2 className="text-2xl text-gray-800 font-medium">Products</h2>
-          <div className="grid sm:grid-cols-[repeat(auto-fill,_minmax(200px,_1fr))] gap-x-6 gap-y-10 py-4 sm:px-4 no-scrollbar">
+          <h2 className="text-2xl text-gray-800 font-medium mx-6">Products</h2>
+          <div className="grid min-[440px]:grid-cols-[repeat(auto-fill,_minmax(200px,_1fr))] gap-6 sm:gap-y-10 py-4 px-10 no-scrollbar">
             {products.map((item) => (
               <ProductCard product={item} key={item.id} />
             ))}
@@ -136,7 +136,7 @@ const ProductCard = ({ product }: { product: Product }) => {
   });
 
   return (
-    <Link href={`/product/${product.id}`} className="w-full h-full ">
+    <Link href={`/product/${product.id}`} className="w-full min-w-0 h-full ">
       <div className="border shadow-lg rounded-2xl px-4 py-5 bg-white h-full">
         {status == "success" ? (
           <div className="rounded-lg overflow-hidden w-full aspect-square">
