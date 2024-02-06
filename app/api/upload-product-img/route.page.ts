@@ -59,7 +59,7 @@ export async function POST(req: NextRequest) {
     const buffer = await image.arrayBuffer();
     const bf = Buffer.from(buffer);
 
-    const fileName = `/products/${productId}.webp`;
+    const fileName = `products/${productId}.webp`;
 
     await admin
       .storage()
@@ -71,7 +71,7 @@ export async function POST(req: NextRequest) {
       .firestore()
       .collection("products")
       .doc(productId)
-      .update({ image: `/products/${productId}.webp` });
+      .update({ image: fileName });
 
     return NextResponse.json({ success: true });
   } catch (e) {

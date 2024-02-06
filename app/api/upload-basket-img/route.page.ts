@@ -26,7 +26,8 @@ export async function POST(req: NextRequest) {
 
     const user = await admin.auth().getUser(uid);
 
-    if(!user || user.customClaims?.role != 'admin') return NextResponse.json({error: 'Not Authorized'}, {status: 403})
+    if (!user || user.customClaims?.role != "admin")
+      return NextResponse.json({ error: "Not Authorized" }, { status: 403 });
 
     const formdata: FormData = await req.formData();
 
@@ -57,7 +58,7 @@ export async function POST(req: NextRequest) {
     const buffer = await image.arrayBuffer();
     const bf = Buffer.from(buffer);
 
-    const fileName = `/baskets/${basketId}.webp`;
+    const fileName = `baskets/${basketId}.webp`;
 
     await admin
       .storage()
@@ -68,7 +69,7 @@ export async function POST(req: NextRequest) {
     await admin
       .database()
       .ref("/baskets/" + basketId)
-      .update({ image: `/baskets/${basketId}.webp` });
+      .update({ image: fileName });
 
     return NextResponse.json({ success: true });
   } catch (e) {
