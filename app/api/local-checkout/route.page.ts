@@ -1,9 +1,9 @@
 import admin from "@/services/firebase-admin";
 import {
-    Basket,
-    BasketItemData,
-    Product,
-    ProductItemData,
+  Basket,
+  BasketItemData,
+  Product,
+  ProductItemData,
 } from "@/utils/types";
 import { BasketItemSchema, ProductItemSchema } from "@/utils/zodSchemas";
 import { NextRequest, NextResponse } from "next/server";
@@ -67,7 +67,7 @@ export async function POST(req: NextRequest) {
     const buffer = await image.arrayBuffer();
     const bf = Buffer.from(buffer);
 
-    const fileName = `/bill/${Date.now()}.png`;
+    const fileName = `bill/${Date.now()}.png`;
 
     await admin
       .storage()
