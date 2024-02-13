@@ -115,7 +115,7 @@ const OrderModal = ({ order, setOpenModal }: props) => {
 
           <div>
             <p className="text-xl font-bold text-slate-600 mb-2">Baskets</p>
-            {order.baskets.length !== 0 ? (
+            {order.baskets?.length ? (
               order.baskets.map((item, i) => (
                 <div
                   className="flex justify-between items-center px-3 rounded-lg py-2 bg-slate-200 text-lg items"
@@ -134,7 +134,7 @@ const OrderModal = ({ order, setOpenModal }: props) => {
               <div></div>
             )}
             <p className="text-xl font-bold text-slate-600 mb-2">Products</p>
-            {order.products.length !== 0 ? (
+            {order.products?.length ? (
               order.products.map((item, i) => (
                 <div
                   className="flex justify-between items-center px-3 rounded-lg py-2 bg-slate-200 text-lg items"
