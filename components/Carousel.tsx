@@ -1,5 +1,6 @@
 // import ad1 from "@/assets/Group19.svg";
-import img from "@/assets/Desktop - 1.jpg";
+import img from "@/assets/new_banner.png";
+
 import ad2 from "@/assets/Group21.svg";
 import ad3 from "@/assets/Group22.svg";
 import ad4 from "@/assets/Group23.svg";
