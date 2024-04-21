@@ -1,4 +1,3 @@
-import Carousel from "@/components/Carousel";
 import img from "@/assets/new_banner.png";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
