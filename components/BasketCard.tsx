@@ -16,10 +16,7 @@ const BasketCard = ({ id, basket }: props) => {
   });
 
   return (
-    <Link
-      href={`/basket/${id}`}
-      className="w-full max-w-[280px] shrink-0 h-full snap-mandatory scroll-ml-3 snap-x snap-start"
-    >
+    <Link href={`/basket/${id}`} className="">
       <div className="border shadow-lg rounded-2xl px-4 py-5 bg-white h-full">
         {status == "success" ? (
           <div className="rounded-lg overflow-hidden w-full aspect-square">

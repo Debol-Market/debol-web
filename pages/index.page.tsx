@@ -1,5 +1,6 @@
 import img from "@/assets/new_banner.png";
 import Footer from "@/components/Footer";
+import { WheelGesturesPlugin } from "embla-carousel-wheel-gestures";
 import Navbar from "@/components/Navbar";
 import { Skeleton } from "@/components/ui/skeleton";
 import firebaseAdmin from "@/services/firebase-admin";
@@ -12,6 +13,13 @@ import Link from "next/link";
 import "swiper/css";
 import BasketCard from "../components/BasketCard";
 import Image from "next/image";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 export const getServerSideProps = async () => {
   const basketsRef = await firebaseAdmin.database().ref("baskets").get();
@@ -48,7 +56,7 @@ const Page = ({
       </Head>
       <Navbar />
       <div className="flex p-5  pb-4 justify-center">
-        <div className="overflow-hidden relative aspect-[5/3] max-w-4xl w-full sm:rounded-3xl rounded-2xl">
+        <div className="overflow-hidden relative aspect-[5/3] max-w-5xl w-full sm:rounded-3xl rounded-2xl">
           <div className="flex overflow-scroll h-full snap-mandatory snap-x no-scrollbar">
             <div className="grow shrink-0 relative -z-10 h-full flex w-full snap-start">
               <Image src={img} fill alt="" className="-z-10 object-cover" />
@@ -59,18 +67,36 @@ const Page = ({
       <div className="flex justify-center w-full">
         <div className="max-w-4xl w-full">
           <h2 className="text-2xl text-gray-800 font-medium mx-6">Packages</h2>
-          <div className="flex gap-6 overflow-auto w-full py-4 no-scrollbar px-10">
-            {baskets.map((item) => (
-              <BasketCard basket={item} id={item.id} key={item.id} />
-            ))}
+          <div className="flex gap-6 w-full py-4 no-scrollbar px-10">
+            <Carousel
+              opts={{ loop: true, containScroll: "trimSnaps", watchDrag: true }}
+              plugins={[WheelGesturesPlugin()]}
+              className="w-full"
+            >
+              <CarouselContent className="w-full">
+                {baskets.map((item) => (
+                  <CarouselItem className="w-full max-w-[280px] shrink-0 h-full snap-mandatory scroll-ml-3 snap-x snap-start">
+                    <BasketCard basket={item} id={item.id} key={item.id} />
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              {/* <CarouselPrevious /> */}
+              {/* <CarouselNext /> */}
+            </Carousel>
           </div>
 
-          <h2 className="text-2xl text-gray-800 font-medium mx-6">Products</h2>
-          <div className="grid min-[440px]:grid-cols-[repeat(auto-fill,_minmax(200px,_1fr))] gap-6 sm:gap-y-10 py-4 px-10 no-scrollbar">
-            {products.map((item) => (
-              <ProductCard product={item} key={item.id} />
-            ))}
-          </div>
+          {!!products.length && (
+            <>
+              <h2 className="text-2xl text-gray-800 font-medium mx-6">
+                Products
+              </h2>
+              <div className="grid min-[440px]:grid-cols-[repeat(auto-fill,_minmax(200px,_1fr))] gap-6 sm:gap-y-10 py-4 px-10 no-scrollbar">
+                {products.map((item) => (
+                  <ProductCard product={item} key={item.id} />
+                ))}
+              </div>
+            </>
+          )}
           {/* {status == "success" ? ( */}
           {/*   Array.from(groupBasetsByCatagory(data).entries()).map( */}
           {/*     ([cat, bask]) => ( */}
