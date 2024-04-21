@@ -1,11 +1,11 @@
 import useApp from "@/services/appContext";
 import convertCurrency from "@/utils/convertCurrency";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { GrClose } from "react-icons/gr";
 import Btn from "../Btn";
 import Overlay from "../Overlay";
 import BasketCartItem from "./BasketCartItem";
-import { useRouter } from "next/router";
 import ProductCartItem from "./ProductCartItem";
 
 type props = {
@@ -87,12 +87,20 @@ const Cart = ({ onClose }: props) => {
           )}
         </div>
         {basketCart.length + productCart.length > 0 && (
-          <div className="flex justify-between p-2 px-4">
-            <h2 className="text-lg">Total:</h2>
-            <p className="font-bold text-2xl">
-              {convertCurrency(total, currencyMultiplier, currency)}
-            </p>
-          </div>
+          <>
+            <div className="flex justify-between items-end  px-4">
+              <h2 className="">Service fee(25%):</h2>
+              <p className="font-semibold">
+                {convertCurrency(total * 0.25, currencyMultiplier, currency)}
+              </p>
+            </div>
+            <div className="flex justify-between items-end pb-2 px-4">
+              <h2 className="text-lg font-semibold">Total:</h2>
+              <p className="font-semibold text-2xl">
+                {convertCurrency(total * 1.25, currencyMultiplier, currency)}
+              </p>
+            </div>
+          </>
         )}
         <Btn
           label="Checkout"
