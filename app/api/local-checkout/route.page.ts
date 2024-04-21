@@ -9,14 +9,16 @@ import { BasketItemSchema, ProductItemSchema } from "@/utils/zodSchemas";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
-const requestSchema = z.object({
-  basketCart: z.array(BasketItemSchema),
-  productCart: z.array(ProductItemSchema),
-  name: z.string().optional(),
-  phone1: z.string(),
-  phone2: z.string().optional(),
-  bank: z.enum(["cbe", "dashen", "abysinnia"]).default("cbe"),
-});
+const requestSchema = z
+  .object({
+    productCart: z.array(ProductItemSchema).default([]),
+    basketCart: z.array(BasketItemSchema).default([]),
+    name: z.string().optional(),
+    phone1: z.string(),
+    phone2: z.string().optional(),
+    paymentMethod: z.enum(["stripe", "chapa"]).default("stripe"),
+  })
+  .refine((d) => d.productCart.length || d.basketCart.length);
 
 export async function POST(req: NextRequest) {
   try {

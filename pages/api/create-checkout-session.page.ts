@@ -10,14 +10,16 @@ import { BasketItemSchema, ProductItemSchema } from "@/utils/zodSchemas";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { z } from "zod";
 
-const requestSchema = z.object({
-  productCart: z.array(ProductItemSchema).min(1).optional(),
-  basketCart: z.array(BasketItemSchema),
-  name: z.string().optional(),
-  phone1: z.string(),
-  phone2: z.string().optional(),
-  paymentMethod: z.enum(["stripe", "chapa"]).default("stripe"),
-});
+const requestSchema = z
+  .object({
+    productCart: z.array(ProductItemSchema).default([]),
+    basketCart: z.array(BasketItemSchema).default([]),
+    name: z.string().optional(),
+    phone1: z.string(),
+    phone2: z.string().optional(),
+    paymentMethod: z.enum(["stripe", "chapa"]).default("stripe"),
+  })
+  .refine((d) => d.productCart.length || d.basketCart.length);
 
 type LineItem = {
   price_data: {
