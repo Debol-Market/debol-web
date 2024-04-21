@@ -1,4 +1,5 @@
 import Carousel from "@/components/Carousel";
+import img from "@/assets/new_banner.png";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -11,6 +12,7 @@ import Head from "next/head";
 import Link from "next/link";
 import "swiper/css";
 import BasketCard from "../components/BasketCard";
+import Image from "next/image";
 
 export const getServerSideProps = async () => {
   const basketsRef = await firebaseAdmin.database().ref("baskets").get();
@@ -47,7 +49,13 @@ const Page = ({
       </Head>
       <Navbar />
       <div className="flex p-5  pb-4 justify-center">
-        <Carousel />
+        <div className="overflow-hidden relative aspect-[5/3] max-w-4xl w-full sm:rounded-3xl rounded-2xl">
+          <div className="flex overflow-scroll h-full snap-mandatory snap-x no-scrollbar">
+            <div className="grow shrink-0 relative -z-10 h-full flex w-full snap-start">
+              <Image src={img} fill alt="" className="-z-10 object-cover" />
+            </div>
+          </div>
+        </div>
       </div>
       <div className="flex justify-center w-full">
         <div className="max-w-4xl w-full">
