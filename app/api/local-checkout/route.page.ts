@@ -16,7 +16,7 @@ const requestSchema = z
     name: z.string().optional(),
     phone1: z.string(),
     phone2: z.string().optional(),
-    paymentMethod: z.enum(["stripe", "chapa"]).default("stripe"),
+    bank: z.enum(["cbe", "dashen", "abysinnia"]).default("cbe"),
   })
   .refine((d) => d.productCart.length || d.basketCart.length);
 
