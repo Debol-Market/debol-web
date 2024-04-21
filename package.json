@@ -34,6 +34,7 @@
     "compressorjs": "^1.2.1",
     "crypto": "^1.0.1",
     "embla-carousel-react": "^8.0.2",
+    "embla-carousel-wheel-gestures": "^8.0.0-rc05",
     "eslint": "8.47.0",
     "eslint-config-next": "13.4.19",
     "firebase": "^10.3.0",
