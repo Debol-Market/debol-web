@@ -75,8 +75,11 @@ const Page = ({
             >
               <CarouselContent className="w-full">
                 {baskets.map((item) => (
-                  <CarouselItem className="w-full max-w-[280px] shrink-0 h-full snap-mandatory scroll-ml-3 snap-x snap-start">
-                    <BasketCard basket={item} id={item.id} key={item.id} />
+                  <CarouselItem
+                    key={item.id}
+                    className="w-full max-w-[280px] shrink-0 h-full snap-mandatory scroll-ml-3 snap-x snap-start"
+                  >
+                    <BasketCard basket={item} id={item.id} />
                   </CarouselItem>
                 ))}
               </CarouselContent>
