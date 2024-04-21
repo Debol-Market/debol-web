@@ -7,7 +7,13 @@ import convertCurrency from "@/utils/convertCurrency";
 import { isPhoneValid } from "@/utils/phone";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { ChangeEvent, FormEventHandler, useEffect, useRef, useState } from "react";
+import {
+  ChangeEvent,
+  FormEventHandler,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { IoCloudUploadOutline } from "react-icons/io5";
 
 export default function Component() {
@@ -159,7 +165,7 @@ const LocalTab = ({ tab }: { tab: "cbe" | "dashen" | "abysinnia" }) => {
       const product = productCartItems.find((s) => s.id == cartItem.productId);
       total += (product?.price ?? 0) * cartItem.qty;
     });
-    setTotal(total);
+    setTotal(total * 1.25);
   }, [basketCart, basketCartItems, productCart, productCartItems]);
 
   return (
