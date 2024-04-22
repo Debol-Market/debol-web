@@ -5,6 +5,7 @@ import type { AppProps } from "next/app";
 import Head from "next/head";
 import Logo from "../components/Logo";
 import useApp from "../services/appContext";
+import dynamic from "next/dynamic";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -15,6 +16,11 @@ const queryClient = new QueryClient({
     },
   },
 });
+
+const NotificationProvider = dynamic(
+  () => import("@/services/NotificationProvider"),
+  { ssr: false },
+);
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
@@ -35,7 +41,9 @@ export default function App({ Component, pageProps }: AppProps) {
       <AppContext>
         <QueryClientProvider client={queryClient}>
           <PageLoader>
-            <Component {...pageProps} />
+            <NotificationProvider>
+              <Component {...pageProps} />
+            </NotificationProvider>
           </PageLoader>
         </QueryClientProvider>
       </AppContext>
