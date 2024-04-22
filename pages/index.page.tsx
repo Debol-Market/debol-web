@@ -67,7 +67,7 @@ const Page = ({
       <div className="flex justify-center w-full">
         <div className="max-w-4xl w-full">
           <h2 className="text-2xl text-gray-800 font-medium mx-6">Packages</h2>
-          <div className="flex gap-6 w-full py-4 no-scrollbar px-10">
+          <div className="flex w-full py-4 no-scrollbar">
             <Carousel
               opts={{ loop: true, containScroll: "trimSnaps", watchDrag: true }}
               plugins={[WheelGesturesPlugin()]}
