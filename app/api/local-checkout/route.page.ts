@@ -1,4 +1,5 @@
 import admin from "@/services/firebase-admin";
+import { pusherClient } from "@/services/pusher";
 import {
   Basket,
   BasketItemData,
@@ -93,6 +94,14 @@ export async function POST(req: NextRequest) {
       user: userData,
       paymentMethod: "local",
       bank,
+    });
+
+    await pusherClient.publishToInterests(["Admin"], {
+      web: {
+        notification: {
+          title: "New Order in Debol Market",
+        },
+      },
     });
 
     return NextResponse.json({ orderId: orderRef.key });
