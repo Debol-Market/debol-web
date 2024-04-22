@@ -1,4 +1,5 @@
 import admin from "@/services/firebase-admin";
+import { pusherClient } from "@/services/pusher";
 import stripe from "@/services/stripe";
 import { buffer } from "micro";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -42,7 +43,14 @@ export default async function handler(
 
   switch (event.type) {
     case "charge.succeeded":
-      admin
+      await pusherClient.publishToInterests(["Admin"], {
+        web: {
+          notification: {
+            title: "New Order in Debol Market",
+          },
+        },
+      });
+      await admin
         .database()
         .ref(`orders/${orderId}`)
         .update({
