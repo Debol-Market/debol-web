@@ -8,10 +8,10 @@ import { Basket, Product } from "@/utils/types";
 import { useQuery } from "@tanstack/react-query";
 import { InferGetServerSidePropsType } from "next";
 import Head from "next/head";
+import Image from "next/image";
 import Link from "next/link";
 import "swiper/css";
 import BasketCard from "../components/BasketCard";
-import Image from "next/image";
 
 export const getServerSideProps = async () => {
   const basketsRef = await firebaseAdmin.database().ref("baskets").get();
@@ -48,7 +48,7 @@ const Page = ({
       </Head>
       <Navbar />
       <div className="flex p-5  pb-4 justify-center">
-        <div className="overflow-hidden relative aspect-[5/3] max-w-4xl w-full sm:rounded-3xl rounded-2xl">
+        <div className="overflow-hidden relative aspect-[5/3] max-w-7xl w-full sm:rounded-3xl rounded-2xl">
           <div className="flex overflow-scroll h-full snap-mandatory snap-x no-scrollbar">
             <div className="grow shrink-0 relative -z-10 h-full flex w-full snap-start">
               <Image src={img} fill alt="" className="-z-10 object-cover" />
@@ -59,58 +59,29 @@ const Page = ({
       <div className="flex justify-center w-full">
         <div className="max-w-4xl w-full">
           <h2 className="text-2xl text-gray-800 font-medium mx-6">Packages</h2>
-          <div className="flex gap-6 overflow-auto w-full py-4 no-scrollbar px-10">
-            {baskets.map((item) => (
-              <BasketCard basket={item} id={item.id} key={item.id} />
-            ))}
+          <div className="w-full ">
+            <div className="px-4 sm:px-10 sm:gap-6 py-4 md:no-scrollbar flex gap-4 shrink-0 overflow-auto snap-mandatory snap-x  ">
+              {baskets.map((item) => (
+                <BasketCard basket={item} id={item.id} key={item.id} />
+              ))}
+              {baskets.map((item) => (
+                <BasketCard basket={item} id={item.id} key={item.id} />
+              ))}
+              {baskets.map((item) => (
+                <BasketCard basket={item} id={item.id} key={item.id} />
+              ))}
+              {baskets.map((item) => (
+                <BasketCard basket={item} id={item.id} key={item.id} />
+              ))}
+            </div>
           </div>
 
           <h2 className="text-2xl text-gray-800 font-medium mx-6">Products</h2>
-          <div className="grid min-[440px]:grid-cols-[repeat(auto-fill,_minmax(200px,_1fr))] gap-6 sm:gap-y-10 py-4 px-10 no-scrollbar">
+          <div className="grid grid-cols-2 min-[520px]:grid-cols-[repeat(auto-fill,_minmax(200px,_1fr))] gap-x-3  min-[480px]:gap-x-6 gap-y-6 sm:gap-y-10 py-4 px-5 sm:px-10 no-scrollbar">
             {products.map((item) => (
               <ProductCard product={item} key={item.id} />
             ))}
           </div>
-          {/* {status == "success" ? ( */}
-          {/*   Array.from(groupBasetsByCatagory(data).entries()).map( */}
-          {/*     ([cat, bask]) => ( */}
-          {/*       <CatagoryRow name={cat} baskets={bask as any} key={cat} /> */}
-          {/*     ), */}
-          {/*   ) */}
-          {/* ) : ( */}
-          {/*   <div className=""> */}
-          {/*     <ContentLoader */}
-          {/*       viewBox="0 0 200 50" */}
-          {/*       className="h-10 rounded-2xl" */}
-          {/*     > */}
-          {/*       <rect x="0" y="0" rx="3" ry="3" height={50} width={200} /> */}
-          {/*     </ContentLoader> */}
-          {/*     <div */}
-          {/*       className="grid gap-6 w-full p-4" */}
-          {/*       style={{ */}
-          {/*         gridTemplateColumns: */}
-          {/*           "repeat(auto-fill, minmax(200px, 1fr))", */}
-          {/*       }} */}
-          {/*     > */}
-          {/*       {[1, 2, 3, 4].map((item) => ( */}
-          {/*         <ContentLoader */}
-          {/*           viewBox="0 0 200 300" */}
-          {/*           className="w-full h-full rounded-2xl" */}
-          {/*           key={item} */}
-          {/*         > */}
-          {/*           <rect */}
-          {/*             x="0" */}
-          {/*             y="0" */}
-          {/*             rx="3" */}
-          {/*             ry="3" */}
-          {/*             height={300} */}
-          {/*             width={200} */}
-          {/*           /> */}
-          {/*         </ContentLoader> */}
-          {/*       ))} */}
-          {/*     </div> */}
-          {/*   </div> */}
-          {/* )} */}
         </div>
       </div>
       <Footer />
@@ -144,7 +115,7 @@ const ProductCard = ({ product }: { product: Product }) => {
 
   return (
     <Link href={`/product/${product.id}`} className="w-full min-w-0 h-full ">
-      <div className="border shadow-lg rounded-2xl px-4 py-5 bg-white h-full">
+      <div className="border shadow-lg rounded-2xl p-2 sm:px-4 sm:py-5 bg-white h-full">
         {status == "success" ? (
           <div className="rounded-lg overflow-hidden w-full aspect-square">
             <img src={data} alt="" className="object-cover h-full w-full" />
