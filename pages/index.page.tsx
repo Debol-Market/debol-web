@@ -47,8 +47,8 @@ const Page = ({
         <meta name="description" content="Show your love to your family." />
       </Head>
       <Navbar />
-      <div className="flex p-5  pb-4 justify-center">
-        <div className="overflow-hidden relative aspect-[5/3] max-w-7xl w-full sm:rounded-3xl rounded-2xl">
+      <div className="flex p-3 sm:p-5  pb-4 justify-center">
+        <div className="overflow-hidden relative aspect-[5/2] max-w-7xl w-full sm:rounded-3xl rounded-2xl">
           <div className="flex overflow-scroll h-full snap-mandatory snap-x no-scrollbar">
             <div className="grow shrink-0 relative -z-10 h-full flex w-full snap-start">
               <Image src={img} fill alt="" className="-z-10 object-cover" />
@@ -61,15 +61,6 @@ const Page = ({
           <h2 className="text-2xl text-gray-800 font-medium mx-6">Packages</h2>
           <div className="w-full ">
             <div className="px-4 sm:px-10 sm:gap-6 py-4 md:no-scrollbar flex gap-4 shrink-0 overflow-auto snap-mandatory snap-x  ">
-              {baskets.map((item) => (
-                <BasketCard basket={item} id={item.id} key={item.id} />
-              ))}
-              {baskets.map((item) => (
-                <BasketCard basket={item} id={item.id} key={item.id} />
-              ))}
-              {baskets.map((item) => (
-                <BasketCard basket={item} id={item.id} key={item.id} />
-              ))}
               {baskets.map((item) => (
                 <BasketCard basket={item} id={item.id} key={item.id} />
               ))}
