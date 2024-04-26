@@ -12,8 +12,8 @@ import { z } from "zod";
 
 const requestSchema = z
   .object({
-    productCart: z.array(ProductItemSchema).default([]),
-    basketCart: z.array(BasketItemSchema).default([]),
+    productCart: z.array(ProductItemSchema),
+    basketCart: z.array(BasketItemSchema),
     name: z.string().optional(),
     phone1: z.string(),
     phone2: z.string().optional(),
@@ -119,13 +119,12 @@ export default async function handler(
       .database()
       .ref("debug/" + Date.now())
       .set({
-        mode: "payment",
-        invoice_creation: {
-          enabled: true,
+        req: valRes.data,
+        checkout: {
+          line_items,
+          payment_intent_data: { metadata: { orderId: orderRef.key } },
+          success_url: `${process.env.HOST}/order/${orderRef.key}`,
         },
-        line_items,
-        payment_intent_data: { metadata: { orderId: orderRef.key } },
-        success_url: `${process.env.HOST}/order/${orderRef.key}`,
       });
 
     const session = await stripe.checkout.sessions.create({
