@@ -50,10 +50,13 @@ export default async function handler(
           },
         },
       });
+      const order = await admin.database().ref(`orders/${orderId}`).get();
+
       await admin
         .database()
         .ref(`orders/${orderId}`)
         .update({
+          ...order.val(),
           paymentId: charge.id,
           status: "pending",
           customerInfo: {
@@ -64,11 +67,11 @@ export default async function handler(
         });
       break;
     case "charge.failed":
-      admin.database().ref(`orders/${orderId}`).remove();
+      await admin.database().ref(`orders/${orderId}`).remove();
       break;
 
     case "payment_intent.canceled":
-      admin.database().ref(`orders/${orderId}`).remove();
+      await admin.database().ref(`orders/${orderId}`).remove();
       break;
 
     default:
