@@ -4,6 +4,7 @@ import { Order } from "@/utils/types";
 import { useRouter } from "next/router";
 import { QRCodeCanvas } from "qrcode.react";
 import { useEffect, useState } from "react";
+import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 
 const Page = () => {
   const router = useRouter();
@@ -43,7 +44,7 @@ const Page = () => {
           <div>Loading...</div>
         ) : error ? (
           <div>{error.toString()}</div>
-        ) : (
+        ) : data.status == "pending" ? (
           <>
             <QRCodeCanvas
               value={JSON.stringify({ code: data.orderCode, orderId })}
@@ -55,6 +56,14 @@ const Page = () => {
               </div>
               <div className=""></div>
               <p>Show this Qr Code to the person delivering the order only.</p>
+            </div>
+          </>
+        ) : (
+          <>
+            <IoMdCheckmarkCircleOutline size={96} className="text-primary" />
+            <div className="text-center px-10">
+              <div className="font-bold text-xl">This Order is Complete</div>
+              <div className=""></div>
             </div>
           </>
         )}
