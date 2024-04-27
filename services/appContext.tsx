@@ -3,17 +3,18 @@ import useLocalStorage from "@/utils/useLocalStorage";
 import { BasketItemSchema, ProductItemSchema } from "@/utils/zodSchemas";
 import { User, onAuthStateChanged } from "firebase/auth";
 import {
-    ReactNode,
-    createContext,
-    useCallback,
-    useContext,
-    useEffect,
-    useState,
+  ReactNode,
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
 } from "react";
 import { z } from "zod";
 import { getCurrencyMulti } from "./database";
 import { fetchBasketsItems, fetchProductItems } from "./fetchCartItems";
 import { auth } from "./firebase";
+import { useSearchParams } from "next/navigation";
 
 type ContextType = {
   user?: User;
@@ -28,7 +29,7 @@ type ContextType = {
 
   // basketCart
   basketCart: BasketItem[];
-  basketCartItems: ( Basket & {id: string})[];
+  basketCartItems: (Basket & { id: string })[];
   clearBasketCart: () => void;
   addToBasketCart: (item: BasketItem, basket: Basket) => void;
   removeFromBasketCart: (sizeId: string) => void;
@@ -73,6 +74,8 @@ export const AppContext = ({ children }: { children: ReactNode }) => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [currencyMultiplier, setCurrencyMultiplier] = useState(1);
+  const params = useSearchParams();
+  const cleanCart = params?.get("cleanCart");
   const [currency, setCurrency] = useLocalStorage<string>(
     "currency",
     "USD",
@@ -202,6 +205,13 @@ export const AppContext = ({ children }: { children: ReactNode }) => {
 
     return () => sub();
   }, []);
+
+  useEffect(() => {
+    if (cleanCart) {
+      clearProductCart();
+      clearBasketCart();
+    }
+  }, [cleanCart]);
 
   return (
     <appContext.Provider
