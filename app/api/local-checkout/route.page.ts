@@ -99,7 +99,9 @@ export async function POST(req: NextRequest) {
     await pusherClient.publishToInterests(["Admin"], {
       web: {
         notification: {
-          title: "New Order in Debol Market",
+          title: "New Order",
+          body: "New Order arrived in Debol market",
+          deep_link: `${process.env.HOST}/admin/orders`,
         },
       },
     });
