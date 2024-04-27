@@ -2,6 +2,8 @@ import { Basket, BasketItem, Product, ProductItem } from "@/utils/types";
 import useLocalStorage from "@/utils/useLocalStorage";
 import { BasketItemSchema, ProductItemSchema } from "@/utils/zodSchemas";
 import { User, onAuthStateChanged } from "firebase/auth";
+import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/router";
 import {
   ReactNode,
   createContext,
@@ -14,7 +16,6 @@ import { z } from "zod";
 import { getCurrencyMulti } from "./database";
 import { fetchBasketsItems, fetchProductItems } from "./fetchCartItems";
 import { auth } from "./firebase";
-import { useSearchParams } from "next/navigation";
 
 type ContextType = {
   user?: User;
@@ -75,6 +76,7 @@ export const AppContext = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [currencyMultiplier, setCurrencyMultiplier] = useState(1);
   const params = useSearchParams();
+  const router = useRouter();
   const cleanCart = params?.get("cleanCart");
   const [currency, setCurrency] = useLocalStorage<string>(
     "currency",
@@ -210,8 +212,15 @@ export const AppContext = ({ children }: { children: ReactNode }) => {
     if (cleanCart) {
       clearProductCart();
       clearBasketCart();
+      setBasketCartItems([]);
+      setProductCartItems([]);
+      console.log(router.pathname, router.route, router);
+      const query = router.query;
+      delete query.cleanCart;
+      console.log(query);
+      router.replace({ pathname: router.pathname, query });
     }
-  }, [cleanCart]);
+  }, [cleanCart, productCart.length, basketCart.length]);
 
   return (
     <appContext.Provider
