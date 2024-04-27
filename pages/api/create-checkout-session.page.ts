@@ -134,7 +134,7 @@ export default async function handler(
       },
       line_items,
       payment_intent_data: { metadata: { orderId: orderRef.key } },
-      success_url: `${process.env.HOST}/order/${orderRef.key}`,
+      success_url: `${process.env.HOST}/order/${orderRef.key}?cleanCart=true`,
     });
 
     res.status(200).json({ url: session.url });
