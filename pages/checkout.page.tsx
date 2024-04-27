@@ -8,11 +8,11 @@ import { isPhoneValid } from "@/utils/phone";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import {
-  ChangeEvent,
-  FormEventHandler,
-  useEffect,
-  useRef,
-  useState,
+    ChangeEvent,
+    FormEventHandler,
+    useEffect,
+    useRef,
+    useState,
 } from "react";
 import { IoCloudUploadOutline } from "react-icons/io5";
 
@@ -108,6 +108,8 @@ const LocalTab = ({ tab }: { tab: "cbe" | "dashen" | "abysinnia" }) => {
     productCartItems,
     currencyMultiplier,
     currency,
+    clearBasketCart,
+    clearProductCart
   } = useApp();
 
   const onSubmit: FormEventHandler = async (e) => {
@@ -138,6 +140,8 @@ const LocalTab = ({ tab }: { tab: "cbe" | "dashen" | "abysinnia" }) => {
       });
       const { orderId } = await res.json();
       router.push("/order/" + orderId);
+      clearProductCart()
+      clearBasketCart()
       setIsLoading(false);
     } catch (error) {
       console.error(error);
