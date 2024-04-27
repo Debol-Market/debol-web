@@ -209,16 +209,17 @@ export const AppContext = ({ children }: { children: ReactNode }) => {
   }, []);
 
   useEffect(() => {
-    if (cleanCart) {
+    if (cleanCart && (productCart.length || basketCart.length)) {
       clearProductCart();
       clearBasketCart();
       setBasketCartItems([]);
       setProductCartItems([]);
-      console.log(router.pathname, router.route, router);
-      const query = router.query;
-      delete query.cleanCart;
-      console.log(query);
-      router.replace({ pathname: router.pathname, query });
+
+      setTimeout(() => {
+        const query = router.query;
+        delete query.cleanCart;
+        router.replace({ pathname: router.pathname, query });
+      }, 300);
     }
   }, [cleanCart, productCart.length, basketCart.length]);
 
