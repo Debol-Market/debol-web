@@ -57,6 +57,7 @@
     "react-content-loader": "^6.2.1",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.50.0",
+    "react-hot-toast": "^2.4.1",
     "react-icons": "^4.10.1",
     "react-international-phone": "^3.1.2",
     "react-select": "^5.7.5",
