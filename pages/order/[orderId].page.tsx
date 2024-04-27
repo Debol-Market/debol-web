@@ -45,7 +45,10 @@ const Page = () => {
           <div>{error.toString()}</div>
         ) : (
           <>
-            <QRCodeCanvas value={data.orderCode as string} size={270} />
+            <QRCodeCanvas
+              value={JSON.stringify({ code: data.orderCode, orderId })}
+              size={270}
+            />
             <div className="text-center px-10">
               <div className="font-bold text-xl">
                 Your Order was a Success!!!
