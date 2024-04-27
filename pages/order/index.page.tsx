@@ -117,7 +117,7 @@ const OrderCard: FC<{ order: Order & { id: string } }> = ({ order }) => {
           <p className="text-slate-500 ml-auto">{order.status}</p>
         </div>
         <div>
-          {order.baskets.map((item) => (
+          {order.baskets?.map((item) => (
             <div
               key={item.sizeId}
               className="flex gap-2 justify-between items-center"
@@ -131,7 +131,7 @@ const OrderCard: FC<{ order: Order & { id: string } }> = ({ order }) => {
               <p className="text-slate-900 text-xl font-bold">X {item.qty}</p>
             </div>
           ))}
-          {order.products.map((item) => (
+          {order.products?.map((item) => (
             <div
               key={item.productId}
               className="flex gap-2 justify-between items-center"
