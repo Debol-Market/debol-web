@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
 
     const orderRef = await admin
       .database()
-      .ref("order/" + orderId)
+      .ref("orders/" + orderId)
       .get();
 
     if (!orderRef.val()) {
@@ -63,7 +63,7 @@ export async function POST(req: NextRequest) {
 
     await admin
       .database()
-      .ref("order/" + orderId)
+      .ref("orders/" + orderId)
       .update({
         ...orderRef.val(),
         status: "completed",
