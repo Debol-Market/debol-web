@@ -1,17 +1,19 @@
-import Navbar from "@/components/admin/Navbar";
-import { IoMdCheckmarkCircleOutline } from "react-icons/io";
-import useAdmin from "@/utils/useAdmin";
-import Link from "next/link";
-import { Scanner } from "@yudiel/react-qr-scanner";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
 import Spinner from "@/components/Spinner";
-import { z } from "zod";
+import Navbar from "@/components/admin/Navbar";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import useApp from "@/services/appContext";
+import useAdmin from "@/utils/useAdmin";
+import { useMutation } from "@tanstack/react-query";
+import { Scanner } from "@yudiel/react-qr-scanner";
+import Link from "next/link";
+import { useState } from "react";
 import { toast } from "react-hot-toast";
+import { IoMdCheckmarkCircleOutline } from "react-icons/io";
+import { z } from "zod";
 
 const Page = () => {
   useAdmin();
+  const {user} = useApp()
   const [open, setOpen] = useState(false);
 
   const { mutate, status } = useMutation({
@@ -21,10 +23,15 @@ const Page = () => {
       const obj = JSON.parse(code);
       const validation = schema.safeParse(obj);
 
-      if (validation.success)
-        return fetch("/api/verify-order", { method: "POST", body: code }).then(
+      if (validation.success){
+        const token = await user?.getIdToken()
+      
+        return fetch("/api/verify-order", { method: "POST", body: code, headers: {
+          Authorization: `Bearer ${token}`
+        } }).then(
           (req) => req.json(),
         );
+      }
     },
     onSuccess() {
       setTimeout(() => {
@@ -67,7 +74,9 @@ const Page = () => {
           </Link>
 
           <Dialog onOpenChange={setOpen} open={open}>
-            <DialogTrigger className="p-2 active:bg-gray-200 rounded-full ">
+            <DialogTrigger
+            className="min-w-[160px] text-lg bg-amber-500 rounded-lg shadow px-10 py-2"
+            >
               Verify Order
             </DialogTrigger>
 
