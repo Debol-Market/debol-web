@@ -7,6 +7,7 @@ import {
   ProductItemData,
 } from "@/utils/types";
 import { BasketItemSchema, ProductItemSchema } from "@/utils/zodSchemas";
+import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -22,6 +23,7 @@ const requestSchema = z
   .refine((d) => d.productCart.length || d.basketCart.length);
 
 export async function POST(req: NextRequest) {
+  cookies();
   try {
     const token = req?.headers.get("authorization")?.split(" ")[1];
 

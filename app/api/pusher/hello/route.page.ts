@@ -1,12 +1,14 @@
 import { pusherClient } from "@/services/pusher";
+import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
+  cookies();
   await pusherClient.publishToInterests(["Admin"], {
     web: {
       notification: {
         title: "This is a test from Debol market",
-        body: 'Lorem ipsum dolor sit amet, qui minim labore adipisicing minim sint cillum sint consectetur cupidata',
+        body: "Lorem ipsum dolor sit amet, qui minim labore adipisicing minim sint cillum sint consectetur cupidata",
         deep_link: process.env.HOST + "/admin",
       },
     },

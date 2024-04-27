@@ -3,6 +3,7 @@ import { pusherClient } from "@/services/pusher";
 import stripe from "@/services/stripe";
 import { buffer } from "micro";
 import { NextApiRequest, NextApiResponse } from "next";
+import { cookies } from "next/headers";
 
 const webhookSecret =
   // "whsec_37f4d39c84a04f38c25bb853a26a79f846e2e59f44d4ef518e88f66053b1c185";
@@ -18,6 +19,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
+  cookies();
   if (req.method !== "POST")
     return res.status(405).send({ error: "Method not allowed" });
 
