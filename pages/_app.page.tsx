@@ -6,6 +6,7 @@ import Head from "next/head";
 import Logo from "../components/Logo";
 import useApp from "../services/appContext";
 import dynamic from "next/dynamic";
+import { Toaster } from "react-hot-toast";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -43,6 +44,7 @@ export default function App({ Component, pageProps }: AppProps) {
           <PageLoader>
             <NotificationProvider>
               <Component {...pageProps} />
+              <Toaster position="bottom-right" reverseOrder={false} />
             </NotificationProvider>
           </PageLoader>
         </QueryClientProvider>
