@@ -6,32 +6,34 @@ import useAdmin from "@/utils/useAdmin";
 import { useMutation } from "@tanstack/react-query";
 import { Scanner } from "@yudiel/react-qr-scanner";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 import { z } from "zod";
 
 const Page = () => {
   useAdmin();
-  const {user} = useApp()
+  const { user } = useApp();
   const [open, setOpen] = useState(false);
 
-  const { mutate, status } = useMutation({
+  const { mutate, status, reset } = useMutation({
     mutationFn: async (code: string) => {
       const schema = z.object({ code: z.string(), orderId: z.string() });
 
       const obj = JSON.parse(code);
-      const validation = schema.safeParse(obj);
+      schema.parse(obj);
 
-      if (validation.success){
-        const token = await user?.getIdToken()
-      
-        return fetch("/api/verify-order", { method: "POST", body: code, headers: {
-          Authorization: `Bearer ${token}`
-        } }).then(
-          (req) => req.json(),
-        );
-      }
+      const token = await user?.getIdToken();
+
+      const res = await fetch("/api/verify-order", {
+        method: "POST",
+        body: code,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) throw new Error();
     },
     onSuccess() {
       setTimeout(() => {
@@ -42,6 +44,10 @@ const Page = () => {
       toast.error("Invalid Code.");
     },
   });
+
+  useEffect(() => {
+    if (open && status == "success") reset();
+  }, [open]);
 
   return (
     <div className="min-h-screen">
@@ -74,9 +80,7 @@ const Page = () => {
           </Link>
 
           <Dialog onOpenChange={setOpen} open={open}>
-            <DialogTrigger
-            className="min-w-[160px] text-lg bg-amber-500 rounded-lg shadow px-10 py-2"
-            >
+            <DialogTrigger className="min-w-[160px] text-lg bg-amber-500 rounded-lg shadow px-10 py-2">
               Verify Order
             </DialogTrigger>
 
@@ -87,7 +91,9 @@ const Page = () => {
                     styles={{
                       container: { borderRadius: 16, overflow: "hidden" },
                     }}
-                    onResult={(text) => mutate(text)}
+                    onResult={(text) => {
+                      if (status != "loading") mutate(text);
+                    }}
                     onError={(error) => console.log(error?.message)}
                   />
                   {status == "loading" && (
