@@ -5,7 +5,7 @@ export async function GET(req: NextRequest) {
   await pusherClient.publishToInterests(["Admin"], {
     web: {
       notification: {
-        title: "New Order!",
+        title: "This is a test from Debol market",
       },
     },
   });
