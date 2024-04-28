@@ -41,6 +41,7 @@ const Page = () => {
       }, 400);
     },
     onError() {
+      reset();
       toast.error("Invalid Code.");
     },
   });
