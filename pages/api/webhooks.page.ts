@@ -20,8 +20,8 @@ export default async function handler(
   res: NextApiResponse,
 ) {
   cookies();
-  if (req.method !== "POST")
-    return res.status(405).send({ error: "Method not allowed" });
+ // if (req.method !== "POST")
+   // return res.status(405).send({ error: "Method not allowed" });
 
   const sig = req.headers["stripe-signature"];
   const buf = await buffer(req);
