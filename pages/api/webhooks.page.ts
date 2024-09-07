@@ -19,9 +19,9 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
- // cookies();
- // if (req.method !== "POST")
-   // return res.status(405).send({ error: "Method not allowed" });
+  // cookies();
+  // if (req.method !== "POST")
+  // return res.status(405).send({ error: "Method not allowed" });
 
   const sig = req.headers["stripe-signature"];
   const buf = await buffer(req);
@@ -55,20 +55,21 @@ export default async function handler(
         },
       });
       const order = await admin.database().ref(`orders/${orderId}`).get();
-
-      await admin
-        .database()
-        .ref(`orders/${orderId}`)
-        .update({
-          ...order.val(),
-          paymentId: charge.id,
-          status: "pending",
-          customerInfo: {
-            name: charge.billing_details.name,
-            email: charge.billing_details.email,
-            phone: charge.billing_details.phone,
-          },
-        });
+      if (order.exists()) {
+        await admin
+          .database()
+          .ref(`orders/${orderId}`)
+          .update({
+            ...order.val(),
+            paymentId: charge.id,
+            status: "pending",
+            customerInfo: {
+              name: charge.billing_details.name,
+              email: charge.billing_details.email,
+              phone: charge.billing_details.phone,
+            },
+          });
+      }
       break;
     case "charge.failed":
       await admin.database().ref(`orders/${orderId}`).remove();
