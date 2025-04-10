@@ -2,6 +2,26 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url("https://fonts.googleapis.com/css2?family=Mona+Sans:wght@100..900&display=swap");
+
+@font-face {
+  font-family: "Noto Sans Ethiopic";
+  font-style: normal;
+  font-weight: 100 900;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/notosansethiopic/v47/7cHAv50vjIepfJVOZZgcpQ5B9FBTH9KGNfhSTgtoow1KVnIv4gckut2Q.woff2) format("woff2");
+  unicode-range:
+    U+030E, U+1200-1399, U+2D80-2DDE, U+AB01-AB2E, U+1E7E0-1E7E6, U+1E7E8-1E7EB,
+    U+1E7ED-1E7EE, U+1E7F0-1E7FE;
+}
+
+*,
+*::before,
+*::after {
+  font-family: "Noto Sans Ethiopic", "Mona Sans", sans-serif;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -13,8 +33,8 @@
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 3.9%;
 
-    --primary: 0 0% 9%;
-    --primary-foreground: 0 0% 98%;
+    --primary: 22, 91%, 50%;
+    --primary-foreground: 0 0% 100%;
 
     --secondary: 0 0% 96.1%;
     --secondary-foreground: 0 0% 9%;
@@ -22,7 +42,7 @@
     --muted: 0 0% 96.1%;
     --muted-foreground: 0 0% 45.1%;
 
-    --accent: 244 158 11;
+    --accent: 164, 86%, 20%;
     --accent-foreground: 0 0% 9%;
 
     --destructive: 0 84.2% 60.2%;
@@ -45,7 +65,7 @@
     --popover: 0 0% 3.9%;
     --popover-foreground: 0 0% 98%;
 
-    --primary: 0 0% 98%;
+    --primary: 38 91% 50%;
     --primary-foreground: 0 0% 9%;
 
     --secondary: 0 0% 14.9%;
@@ -70,20 +90,24 @@
   * {
     @apply border-border;
   }
+
   /* body { */
   /*   @apply bg-background text-foreground; */
   /* } */
 }
 
 @layer utilities {
+
   /* Chrome, Safari and Opera */
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }
 
   .no-scrollbar {
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
   }
 }
 
@@ -91,12 +115,10 @@
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
-  --main-gradient: linear-gradient(
-    301deg,
-    #f45f0b 0%,
-    #f49e0b 47.23%,
-    #f49e0b 100%
-  );
+  --main-gradient: linear-gradient(301deg,
+      #f45f0b 0%,
+      #f49e0b 47.23%,
+      #f49e0b 100%);
 }
 
 input,
@@ -118,6 +140,7 @@ textarea {
   0% {
     transform: rotate(180deg);
   }
+
   100% {
     transform: rotate(540deg);
   }
@@ -127,6 +150,7 @@ textarea {
   0% {
     transform: rotate(180deg);
   }
+
   100% {
     transform: rotate(540deg);
   }

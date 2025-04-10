@@ -2,7 +2,7 @@ import useApp from "@/services/appContext";
 import convertCurrency from "@/utils/convertCurrency";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { GrClose } from "react-icons/gr";
+import { X } from "lucide-react";
 import Btn from "../Btn";
 import Overlay from "../Overlay";
 import BasketCartItem from "./BasketCartItem";
@@ -54,7 +54,7 @@ const Cart = ({ onClose }: props) => {
             onClick={onClose}
             className="p-2 m-2 hover:bg-slate-200/70 rounded-full shrink-0"
           >
-            <GrClose className="h-6 w-6" />
+            <X className="h-6 w-6" />
           </button>
           <h2 className="text-xl sm:text-2xl font-semibold">Your Cart</h2>
         </div>

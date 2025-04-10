@@ -11,7 +11,10 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import "swiper/css";
-import BasketCard from "../components/BasketCard";
+import { HomeBasketCard } from "@/components/HomeBasketCard";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import useApp from "@/services/appContext";
 
 export const getServerSideProps = async () => {
   const basketsRef = await firebaseAdmin.database().ref("baskets").get();
@@ -47,28 +50,31 @@ const Page = ({
         <meta name="description" content="Show your love to your family." />
       </Head>
       <Navbar />
-      <div className="flex p-3 sm:p-5  pb-4 justify-center">
-        <div className="overflow-hidden relative aspect-[5/2] max-w-7xl w-full sm:rounded-3xl rounded-2xl">
-          <div className="flex overflow-scroll h-full snap-mandatory snap-x no-scrollbar">
-            <div className="grow shrink-0 relative -z-10 h-full flex w-full snap-start">
-              <Image src={img} fill alt="" className="-z-10 object-cover" />
-            </div>
+      <div className="overflow-hidden relative h-[min(280px,30vh)] w-full ">
+        <div className="flex overflow-scroll h-full snap-mandatory snap-x no-scrollbar">
+          <div className="grow shrink-0 relative -z-10 h-full flex w-full snap-start">
+            <Image src={img} fill alt="" className="-z-10 object-cover" />
           </div>
         </div>
       </div>
-      <div className="flex justify-center w-full">
-        <div className="max-w-4xl w-full">
-          <h2 className="text-2xl text-gray-800 font-medium mx-6">Packages</h2>
-          <div className="w-full ">
-            <div className="px-4 sm:px-10 sm:gap-6 py-4 md:no-scrollbar flex gap-4 shrink-0 overflow-auto snap-mandatory snap-x  ">
-              {baskets.map((item) => (
-                <BasketCard basket={item} id={item.id} key={item.id} />
-              ))}
-            </div>
+      <div className="flex justify-center mb-12 w-full">
+        <div className="max-w-screen-xl  px-4 w-full">
+          <div className="mb-4 mt-6">
+            <h1 className="text-xl font-semibold ">Packages</h1>
+            <p className="text-muted-foreground text-sm">
+              Browse our selection of curated grocery Packages
+            </p>
           </div>
-
-          <h2 className="text-2xl text-gray-800 font-medium mx-6">Products</h2>
-          <div className="grid grid-cols-2 min-[520px]:grid-cols-[repeat(auto-fill,_minmax(200px,_1fr))] gap-x-3  min-[480px]:gap-x-6 gap-y-6 sm:gap-y-10 py-4 px-5 sm:px-10 no-scrollbar">
+          <div className="grid max-[480px]:grid-cols-1 max-md:grid-cols-2 max-lg:grid-cols-3 grid-cols-4 gap-3 shrink-0">
+            {baskets.map((item) => (
+              <HomeBasketCard basket={item} id={item.id} key={item.id} />
+            ))}
+          </div>
+          <div className="mb-4 mt-6">
+            <h1 className="text-xl font-semibold ">Products</h1>
+          </div>
+          <h1 className="text-xl font-semibold tracking-tight"></h1>
+          <div className="grid max-[480px]:grid-cols-1 max-md:grid-cols-2 max-lg:grid-cols-3 grid-cols-4 gap-3 shrink-0">
             {products.map((item) => (
               <ProductCard product={item} key={item.id} />
             ))}
@@ -81,7 +87,7 @@ const Page = ({
 };
 
 const ImgSkeleton = () => (
-  <Skeleton className="rounded-lg overflow-hidden w-full aspect-square" />
+  <Skeleton className="rounded overflow-hidden w-full aspect-square" />
 );
 
 const groupBasetsByCatagory = (baskets: Basket[]) => {
@@ -99,28 +105,72 @@ const groupBasetsByCatagory = (baskets: Basket[]) => {
 };
 
 const ProductCard = ({ product }: { product: Product }) => {
+  const { addToProductCart, productCart } = useApp(); // Add productCart here
   const { data, status } = useQuery({
     queryKey: ["getProductImage", product.id],
     queryFn: () => getUrl(product.image),
   });
 
+  const discount = 0;
+
+  const price = product.price / 100;
+
+  // Check if the product is already in the cart
+  const isInCart = !!productCart.find((item) => item.productId === product.id);
+
   return (
-    <Link href={`/product/${product.id}`} className="w-full min-w-0 h-full ">
-      <div className="border shadow-lg rounded-2xl p-2 sm:px-4 sm:py-5 bg-white h-full">
+    <Link
+      href={`/product/${product.id}`}
+      className="group flex flex-col relative overflow-hidden w-full rounded-lg shadow border bg-background"
+    >
+      {!!discount && (
+        <Badge className="absolute top-2 right-2 z-10 text-accent bg-white shadow-sm ">
+          {discount}% OFF
+        </Badge>
+      )}
+      <div className="aspect-[5/4] overflow-hidden">
         {status == "success" ? (
-          <div className="rounded-lg overflow-hidden w-full aspect-square">
+          <div className="rounded-lg overflow-hidden w-full aspect-[5/4]">
             <img src={data} alt="" className="object-cover h-full w-full" />
           </div>
         ) : (
-          <ImgSkeleton />
+          <Skeleton className="rounded-lg overflow-hidden w-full aspect-square" />
         )}
-        <div className="flex flex-col py-1">
-          <p className="font-medium md:text-lg max-w-[200px]">{product.name}</p>
-          {product.description && (
-            <p className="text-sm text-gray-700 truncate">
-              {product.description}
-            </p>
-          )}
+      </div>
+      <div className="p-3 flex-1 flex flex-col">
+        <h3 className="font-semibold line-clamp-1">{product.name}</h3>
+        <p className="text-sm mb-6 text-muted-foreground mt-1 line-clamp-2">
+          {product.description}
+        </p>
+        <div className="flex  items-center justify-between mt-auto">
+          <div className="flex items-center gap-2">
+            <span className="font-semibold text-primary ">
+              {price.toLocaleString()} birr
+            </span>
+          </div>
+          {/* Update Button based on isInCart */}
+          <Button
+            className={`text-sm ${isInCart ? "bg-index cursor-default" : "bg-accent hover:bg-accent hover:opacity-80 transition-all"}`}
+            onClick={(e) => {
+              if (isInCart) {
+                e.preventDefault(); // Prevent navigation if already in cart
+                return;
+              }
+              e.preventDefault();
+              return addToProductCart(
+                {
+                  qty: 1,
+                  productId: product.id,
+                },
+                product,
+              );
+            }}
+            size="sm"
+            disabled={isInCart} // Disable button if in cart
+          >
+            {isInCart ? "Added" : "Add to Cart"}{" "}
+            {/* Change text based on isInCart */}
+          </Button>
         </div>
       </div>
     </Link>

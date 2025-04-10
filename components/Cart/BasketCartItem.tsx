@@ -3,12 +3,10 @@ import { getUrl } from "@/services/storage";
 import convertCurrency from "@/utils/convertCurrency";
 import { Basket, BasketItem } from "@/utils/types";
 import { useQuery } from "@tanstack/react-query";
+import { Minus, Plus, Trash, X } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 import ContentLoader from "react-content-loader";
-import { AiFillMinusCircle } from "react-icons/ai";
-import { BiSolidTrashAlt } from "react-icons/bi";
-import { IoAddCircle, IoCloseCircleOutline } from "react-icons/io5";
 
 export default function BasketCartItem({
   basketItem,
@@ -65,19 +63,19 @@ export default function BasketCartItem({
           >
             <button className="" onClick={() => onChange(basketItem.qty - 1)}>
               {basketItem.qty == 1 ? (
-                <BiSolidTrashAlt className="h-6 w-6" />
+                <Trash className="h-6 w-6" />
               ) : (
-                <AiFillMinusCircle className="h-6 w-6" />
+                <Minus className="h-6 w-6" />
               )}
             </button>
             <span>{basketItem.qty}</span>
             <button onClick={() => onChange(basketItem.qty + 1)}>
-              <IoAddCircle className="h-6 w-6" />
+              <Plus className="h-6 w-6" />
             </button>
           </div>
         </div>
         <button onClick={onDel}>
-          <IoCloseCircleOutline className="h-6 w-6" />
+          <X className="h-6 w-6" />
         </button>
       </div>
       {isExpanded && (

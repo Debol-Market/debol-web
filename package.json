@@ -9,7 +9,7 @@
     "lint": "next lint",
     "test": "jest",
     "test:watch": "jest --watchAll",
-    "emulate": "cross-env FIREBASE_AUTH_EMULATOR_HOST=\"localhost:9099\" FIREBASE_DATABASE_EMULATOR_HOST=\"localhost:9000\" FIRESTORE_EMULATOR_HOST=\"localhost:8080\" FIREBASE_STORAGE_EMULATOR_HOST=\"localhost:9199\"",
+    "firebase-emulator": "firebase emulators:start --import=./.firebase-data --export-on-exit",
     "test:open": "yarn emulate cypress open --e2e -b chrome -d",
     "test:run": "yarn emulate cypress run -b chrome --e2e",
     "stripe": "stripe listen --forward-to localhost:3000/webhooks"
@@ -20,7 +20,7 @@
     "@pusher/push-notifications-server": "^1.2.6",
     "@pusher/push-notifications-web": "^1.1.0",
     "@radix-ui/react-dialog": "^1.0.5",
-    "@radix-ui/react-slot": "^1.0.2",
+    "@radix-ui/react-slot": "^1.2.0",
     "@stripe/react-stripe-js": "^2.1.2",
     "@stripe/stripe-js": "^2.1.0",
     "@tanstack/react-query": "^4.33.0",

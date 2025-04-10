@@ -1,7 +1,7 @@
 import useApp from "@/services/appContext";
 import { motion } from "framer-motion";
 import React, { FC } from "react";
-import { AiOutlineShoppingCart } from "react-icons/ai";
+import { ShoppingCart } from 'lucide-react';
 
 type Props = {
   setIsCart: React.Dispatch<React.SetStateAction<boolean>>;
@@ -21,7 +21,7 @@ const CartBtn: FC<Props> = ({ setIsCart }) => {
       onClick={() => setIsCart((p: boolean) => !p)}
       className="p-2 relative my-2 rounded-full hover:bg-slate-100 "
     >
-      <AiOutlineShoppingCart className="h-8 w-8" />
+      <ShoppingCart className="h-6 w-6" />
       {basketCart.length + productCart.length > 0 ? (
         <motion.div
           animate={{ scale: [1, 2, 1] }}

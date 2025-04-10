@@ -1,16 +1,23 @@
 import admin from "firebase-admin";
 
-const config: admin.AppOptions = {
-  credential: admin.credential.cert(
-    JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT ?? ""),
-  ),
-  databaseURL: process.env.FIREBASE_DATABASE_URL,
-  storageBucket: "debolpackages.appspot.com",
-};
+const serviceAccount = process.env.FIREBASE_SERVICE_ACCOUNT ?? "";
+
 function init() {
   try {
-    return admin.initializeApp(config);
-  } catch (any) {
+    return admin.initializeApp(
+      serviceAccount
+        ? {
+          credential: serviceAccount
+            ? admin.credential.cert(JSON.parse(serviceAccount))
+            : undefined,
+          databaseURL: process.env.FIREBASE_DATABASE_URL,
+        }
+        : {
+          databaseURL: process.env.FIREBASE_DATABASE_URL,
+        },
+    );
+  } catch (e) {
+    console.log(e);
     return admin.app();
   }
 }

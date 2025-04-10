@@ -1,16 +1,15 @@
 import useApp from "@/services/appContext";
 import { BsCurrencyExchange } from "react-icons/bs";
 import { FC, useEffect, useState } from "react";
-import { AiOutlineMenu, AiOutlineShoppingCart } from "react-icons/ai";
-import { GrClose } from "react-icons/gr";
 import Cart from "../Cart";
 import Logo from "../Logo";
-import SearchBar, { SearchSvg } from "./SearchBar";
+import SearchBar from "./SearchBar";
 import Link from "next/link";
 import CartBtn from "./CartBtn";
 import CurrencyModal from "./CurrencyModal";
 import DropdownMenu from "./DropdownMenu";
 import { useRouter } from "next/router";
+import { Menu, Search, X } from "lucide-react";
 
 const Navbar = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -40,7 +39,7 @@ const Navbar = () => {
 
   if (windowWidth < 760)
     return (
-      <div className="flex justify-center h-16 sticky top-0 border-b border-neutral-300 bg-white z-20">
+      <div className="flex justify-center sticky top-0 border-b border-neutral-300 bg-white z-20">
         <div className="flex w-full ml-4 sm:mr-4 items-center">
           <Logo />
           <div className="sm:grow flex justify-end ml-auto">
@@ -48,18 +47,14 @@ const Navbar = () => {
               onClick={() => setIsSearchOpen((p) => !p)}
               className="text-black fill-black p-2 rounded-full hover:bg-slate-100 my-3 aspect-square"
             >
-              {isSearchOpen ? (
-                <GrClose size={24} />
-              ) : (
-                <SearchSvg color="black" />
-              )}
+              {isSearchOpen ? <X size={24} /> : <Search color="black" />}
             </button>
             <CartBtn setIsCart={setIsCart} />
             <button
               className="rounded-full p-2 my-3 hover:bg-slate-100"
               onClick={() => setDropdown((p) => !p)}
             >
-              {dropdown ? <GrClose size={24} /> : <AiOutlineMenu size={24} />}
+              {dropdown ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
         </div>
@@ -85,7 +80,7 @@ const Navbar = () => {
 
   return (
     <>
-      <div className="flex justify-center h-16 sticky top-0 border-b border-neutral-300 bg-white z-20">
+      <div className="flex justify-center sticky top-0 border-b border-neutral-300 bg-white z-20">
         <div className="flex w-full ml-4 sm:mr-4 items-center">
           <Logo />
           <div className={`sm:grow flex justify-center ml-auto `}>
@@ -95,7 +90,7 @@ const Navbar = () => {
             {!user ? (
               <>
                 <button
-                  className="rounded-full p-2 text-slate-800 my-2 hover:bg-slate-200"
+                  className="rounded-full p-2 text-slate-800 my-2 hover:bg-gray-200"
                   onClick={() => setCurrencyModal((p) => !p)}
                 >
                   <BsCurrencyExchange size={24} />
@@ -105,12 +100,12 @@ const Navbar = () => {
                     router.asPath,
                   )}`}
                 >
-                  <div className="h-full px-2.5 flex items-center hover:bg-slate-100 text-lg">
+                  <div className="h-full px-2.5 flex items-center hover:bg-gray-50 text-gray-800 hover:text-black transition-all">
                     Register
                   </div>
                 </Link>
                 <Link href="/contacts">
-                  <div className="h-full px-2.5 flex items-center hover:bg-slate-100 text-lg">
+                  <div className="h-full px-2.5 flex items-center hover:bg-gray-50 text-gray-800 hover:text-black transition-all">
                     Contact Us
                   </div>
                 </Link>
@@ -123,11 +118,7 @@ const Navbar = () => {
                   className="rounded-full p-2 my-3 hover:bg-slate-100"
                   onClick={() => setDropdown((p) => !p)}
                 >
-                  {dropdown ? (
-                    <GrClose size={24} />
-                  ) : (
-                    <AiOutlineMenu size={24} />
-                  )}
+                  {dropdown ? <X size={24} /> : <Menu size={24} />}
                 </button>
               </>
             )}
