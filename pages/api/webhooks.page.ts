@@ -71,13 +71,6 @@ export default async function handler(
           });
       }
       break;
-    case "charge.failed":
-      await admin.database().ref(`orders/${orderId}`).remove();
-      break;
-
-    case "payment_intent.canceled":
-      await admin.database().ref(`orders/${orderId}`).remove();
-      break;
 
     default:
       break;
