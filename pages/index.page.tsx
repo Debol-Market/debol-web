@@ -15,6 +15,7 @@ import { HomeBasketCard } from "@/components/HomeBasketCard";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import useApp from "@/services/appContext";
+import convertCurrency from "@/utils/convertCurrency";
 
 export const getServerSideProps = async () => {
   const basketsRef = await firebaseAdmin.database().ref("baskets").get();
@@ -105,7 +106,8 @@ const groupBasetsByCatagory = (baskets: Basket[]) => {
 };
 
 const ProductCard = ({ product }: { product: Product }) => {
-  const { addToProductCart, productCart } = useApp(); // Add productCart here
+  const { addToProductCart, productCart, currencyMultiplier, currency } =
+    useApp(); // Add productCart here
   const { data, status } = useQuery({
     queryKey: ["getProductImage", product.id],
     queryFn: () => getUrl(product.image),
@@ -113,7 +115,7 @@ const ProductCard = ({ product }: { product: Product }) => {
 
   const discount = 0;
 
-  const price = product.price / 100;
+  const price = product.price;
 
   // Check if the product is already in the cart
   const isInCart = !!productCart.find((item) => item.productId === product.id);
@@ -145,7 +147,7 @@ const ProductCard = ({ product }: { product: Product }) => {
         <div className="flex  items-center justify-between mt-auto">
           <div className="flex items-center gap-2">
             <span className="font-semibold text-primary ">
-              {price.toLocaleString()} birr
+              {convertCurrency(price, currencyMultiplier, currency)}
             </span>
           </div>
           {/* Update Button based on isInCart */}

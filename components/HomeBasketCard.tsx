@@ -6,6 +6,7 @@ import { getUrl } from "@/services/storage";
 import { Skeleton } from "./ui/skeleton";
 import Link from "next/link";
 import useApp from "@/services/appContext";
+import convertCurrency from "@/utils/convertCurrency";
 
 interface Props {
   basket: Basket;
@@ -13,12 +14,13 @@ interface Props {
 }
 
 export function HomeBasketCard({ basket, id }: Props) {
-  const { addToBasketCart, basketCart } = useApp(); // Add basketCart here
+  const { addToBasketCart, basketCart, currencyMultiplier, currency } =
+    useApp(); // Add basketCart here
   const originalPrice = basket.sizes[0].items.reduce(
-    (acc, item) => acc + (item.quantity * item.pricePerUnit) / 100,
+    (acc, item) => acc + item.quantity * item.pricePerUnit,
     0,
   );
-  const price = basket.sizes[0].price / 100;
+  const price = basket.sizes[0].price;
   const discount = originalPrice
     ? Math.round(((originalPrice - price) * 100) / originalPrice)
     : null;
@@ -62,11 +64,11 @@ export function HomeBasketCard({ basket, id }: Props) {
         <div className="flex items-center justify-between mt-auto">
           <div className="flex items-center gap-2">
             <span className="font-semibold text-primary ">
-              {price.toLocaleString()} birr
+              {convertCurrency(price ?? 0, currencyMultiplier, currency)}
             </span>
-            {originalPrice && (
+            {originalPrice != price && (
               <span className="text-sm text-muted-foreground font-semibold line-through">
-                {originalPrice}
+                {originalPrice / 100}
               </span>
             )}
           </div>
