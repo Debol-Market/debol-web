@@ -8,6 +8,7 @@ import { Product } from "@/utils/types";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import { FC, useState } from "react";
+import { Check } from "lucide-react";
 
 export const getServerSideProps = async ({
   params,
@@ -51,6 +52,7 @@ const Page = ({
     useApp();
 
   if (!product)
+    
     return (
       <div className="h-screen flex flex-col">
         <Navbar />
@@ -76,9 +78,9 @@ const Page = ({
             <img src={imageUrl} alt="" className="object-cover h-full w-full" />
           </div>
           <div className="grow px-3 flex flex-col items-stretch landscape:max-w-md">
-            <h1 className="text-2xl sm:text-3xl font-bold ">{product.name}</h1>
-            <p className="text-lg sm:text-xl my-4">{product.description}</p>
-            <h3 className="text-xl font-medium">
+            <h1 className="text-sm sm:text-sm leading-none whitespace-normal text-neutral-700 my-4 text-left ">{product.name}</h1>
+            <p className="text-base sm:text-base my-4">{product.description}</p>
+            <h3 className="text-xl font-mono font-bold">
               {convertCurrency(product.price, currencyMultiplier, currency)}
             </h3>
             <div className="mb-auto mt-4"></div>
@@ -110,15 +112,16 @@ const AddToCartBtn: FC<{ onClick: VoidFunction; isInCart: boolean }> = ({
 }) => {
   if (isInCart)
     return (
-      <div className="max-w-md rounded-xl text-white font-semibold disabled:opacity-75 shadow-md disabled:shadow-none text-xl px-6 py-2 flex items-center justify-center bg-primary">
-        Added
+     <div className="max-w-md rounded-md text-white text-sm font-medium disabled:opacity-75 shadow-md disabled:shadow-none sm:text-base px-4 py-2 flex items-center justify-center bg-orange-500 transition-transform delay-300">
+       <Check className="h-4 w-4 mr-2" />
+        Added to Cart!
       </div>
     );
   return (
     <button
       onClick={onClick}
-      className={`rounded-xl text-white font-semibold disabled:opacity-75 shadow-md disabled:shadow-none text-xl px-6 py-2 flex items-center justify-center hover:brightness-110 ${
-        isInCart ? "bg-primary" : "bg-gradient"
+      className={`rounded-md text-white font-medium  text-sm disabled:opacity-75 shadow-md disabled:shadow-none sm:text-base px-4 py-2 flex items-center justify-center hover:brightness-110 ${
+        isInCart ? "bg-orange-500" : "bg-orange-500"
       }`}
       disabled={isInCart}
     >
