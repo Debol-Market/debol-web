@@ -2,7 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url("https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@100..900&display=swap");
+/* Import Instrument Sans and Grotesk Mono from Google Fonts */
+@import url("https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@100..900&family=Grotesk+Mono:wght@400;700&display=swap");
 
 @font-face {
   font-family: "Noto Sans Ethiopic";
@@ -16,10 +17,20 @@
     U+1E7ED-1E7EE, U+1E7F0-1E7FE;
 }
 
+/* Correct font-family stack:
+  1. Noto Sans Ethiopic: For Amharic characters. It has a specific unicode-range.
+  2. Instrument Sans: For English and other Latin characters.
+  3. sans-serif: Generic fallback.
+*/
 *,
 *::before,
 *::after {
-  font-family: "Instrument Sans","Noto Sans Ethiopic", sans-serif;
+  font-family: "Noto Sans Ethiopic", "Instrument Sans", sans-serif;
+}
+
+/* Add a specific rule for monospace fonts */
+code, pre, kbd, samp {
+  font-family: "Grotesk Mono", monospace;
 }
 
 @layer base {
