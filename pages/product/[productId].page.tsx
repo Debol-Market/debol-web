@@ -77,13 +77,13 @@ const Page = ({
           <div className="rounded-2xl overflow-hidden landscape:h-[80vh] max-h-[600px] landscape:max-w-[40vw] shrink-0">
             <img src={imageUrl} alt="" className="object-cover h-full w-full" />
           </div>
-          <div className="grow px-3 flex flex-col items-stretch landscape:max-w-md">
-            <h1 className="text-sm sm:text-sm leading-none whitespace-normal text-neutral-700 my-4 text-left ">{product.name}</h1>
-            <p className="text-base sm:text-base my-4">{product.description}</p>
-            <h3 className="text-xl font-mono font-bold">
+          <div className="grow px-3 flex flex-col items-stretch  landscape:max-w-md">
+            <h1 className="text-3xl  font-semibold mt-6  mb-1 ">{product.name}</h1>
+            <p className="text-sm sm:text-sm leading-none whitespace-normal text-neutral-700 my-4 text-left">{product.description}</p>
+            <h3 className="text-2xl font-mono  text-accent font-bold">
               {convertCurrency(product.price, currencyMultiplier, currency)}
             </h3>
-            <div className="mb-auto mt-4"></div>
+            <div className="mb-auto "></div>
             <AddToCartBtn
               onClick={() =>
                 addToProductCart(

@@ -146,13 +146,13 @@ const ProductCard = ({ product }: { product: Product }) => {
         </p>
         <div className="flex  items-center justify-between mt-auto">
           <div className="flex items-center gap-2">
-            <span className="font-semibold text-primary ">
+            <span className="font-semibold text-accent ">
               {convertCurrency(price, currencyMultiplier, currency)}
             </span>
           </div>
           {/* Update Button based on isInCart */}
           <Button
-            className={`text-sm ${isInCart ? "bg-index cursor-default" : "bg-accent hover:bg-accent hover:opacity-80 transition-all"}`}
+            className={`text-sm ${isInCart ? "bg-index cursor-default" : "bg-orange-500 hover:bg-orange-500 hover:opacity-80 transition-all"}`}
             onClick={(e) => {
               if (isInCart) {
                 e.preventDefault(); // Prevent navigation if already in cart

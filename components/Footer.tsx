@@ -7,14 +7,14 @@ const Footer = () => {
       <div className="flex justify-between w-full gap-4 my-6 flex-col md:flex-row">
         <div className="flex flex-col grow-[3] md:max-w-xl items-start">
           <div className="flex gap-2  justify-start">
-            <p className="text-yellow-500 italic font-bold  text-4xl items-start ">
+            <p className="text-amber-400 italic font-bold  text-4xl items-start ">
               Debol
             </p>
-            <p className="text-primary font-slight-bold text-xl italic">
+            <p className="text-accent  font-bold text-xl italic">
               Market
             </p>
           </div>
-          <p className="md:max-w-md mt-4 font-light text-white-300">
+          <p className="md:max-w-md mt-4 leading-snug font-normal  text-xs text-white-300">
             Debol is an innovative delivery platform that aims to revolutionize
             the shopping experience in Ethiopia. It collaborates with multiple
             institutions to offer a comprehensive platform for selling and
@@ -22,11 +22,11 @@ const Footer = () => {
           </p>
         </div>
 
-        <div className="flex shrink-0 flex-wrap gap-y-4">
-          <div className="flex flex-col gap-1.5 w-[10vw] min-w-[150px]">
-            <h2 className="my-3 font-medium text-lg text-white-0">General</h2>
+        <div className="flex shrink-0 flex-wrap gap-y-4 flex-auto justify-end items-start">
+          <div className="flex flex-col gap-1.5 w-[10vw] min-w-[150px] ">
+            <h2 className="my-3 font-medium text-white-0">General</h2>
             <Link href="/contact">
-              <p className="font-light text-white-300 underline decoration-black">
+              <p className="font-normal text-sm text-white-300 underline  hover:text-primary decoration-white-300">
                 Contact Us
               </p>
             </Link>
@@ -49,8 +49,8 @@ const Footer = () => {
           </div>
         </div>
       </div>
-      <span className="text-white-400/75 text-sm flex gap-2">
-        <Copyright size={15} /> 2023 - Debol Trading LLC. all right reserved
+      <span className="text-white-400/75 text-xs flex gap-2">
+        <Copyright size={12} /> 2023 - Debol Trading LLC. all right reserved
       </span>
     </div>
   );

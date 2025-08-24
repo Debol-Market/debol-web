@@ -51,7 +51,7 @@ const Page = () => {
               size={270}
             />
             <div className="text-center px-10">
-              <div className="font-bold text-xl">
+              <div className="font-bold text-accent text-xl">
                 Your Order was a Success!!!
               </div>
               <div className=""></div>
