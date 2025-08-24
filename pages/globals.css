@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url("https://fonts.googleapis.com/css2?family=Mona+Sans:wght@100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@100..900&display=swap");
 
 @font-face {
   font-family: "Noto Sans Ethiopic";
@@ -19,7 +19,7 @@
 *,
 *::before,
 *::after {
-  font-family: "Noto Sans Ethiopic", "Mona Sans", sans-serif;
+  font-family: "Instrument Sans","Noto Sans Ethiopic", sans-serif;
 }
 
 @layer base {
@@ -91,9 +91,9 @@
     @apply border-border;
   }
 
-  /* body { */
-  /*   @apply bg-background text-foreground; */
-  /* } */
+   body { 
+     @apply bg-background text-foreground; 
+   } 
 }
 
 @layer utilities {

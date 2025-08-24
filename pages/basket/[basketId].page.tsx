@@ -8,6 +8,7 @@ import { Basket } from "@/utils/types";
 import { GetServerSidePropsContext } from "next";
 import Head from "next/head";
 import { FC, useState } from "react";
+import { Check } from "lucide-react";
 
 type props = {
   basket?: Basket;
@@ -46,20 +47,20 @@ const Page = ({ basket, basketId, imageUrl }: props) => {
             <img src={imageUrl} alt="" className="object-cover h-full w-full" />
           </div>
           <div className="grow px-3 flex flex-col items-stretch landscape:max-w-md">
-            <h1 className="text-2xl sm:text-3xl font-bold ">{basket.name}</h1>
-            <p className="text-lg sm:text-xl my-4">{basket.description}</p>
-            <div className="font-bold text-lg my-2">Basket Sizes</div>
-            <div className="bg-mint rounded-xl md:max-w-md my-1 mb-8 pb-5 flex flex-col items-center">
+            <h1 className="text-3xl  font-semibold mt-6  mb-1">{basket.name}</h1>
+            <p className="text-sm sm:text-sm leading-none whitespace-normal text-neutral-700 my-4 text-left">{basket.description}</p>
+            <div className="font-medium text-base my-2">Basket Sizes</div>
+            <div className="rounded-xl md:max-w-md my-1 mb-8 pb-5 flex flex-col items-center">
               {basket.sizes.length > 1? (
-                <div className="flex gap-2 mb-4 overflow-auto no-scrollbar w-full px-8 shrink-0">
+                <div className="flex gap-2 mb-4 overflow-auto no-scrollbar w-full  shrink-0">
                   {basket.sizes.map((size, index) => (
                     <button
                       key={index}
                       onClick={() => setSizeIndex(index)}
-                      className={`rounded-full px-4 py-2 text-lg shrink-0 ${
+                      className={`rounded-md px-4 py-1 font-medium text-sm bg-neutral-100  shrink-0 ${
                         sizeIndex === index
-                          ? "bg-primary text-white"
-                          : "text-black hover:bg-primary/30"
+                          ? "text-accent border-2 spacing-3 border-accent"
+                          : "text-neutral-500  hover:border-accent hover:text-accent hover:border-2  hover:transition-colors hover:ease-in hover:delay-50"
                       }`}
                     >
                       {size.name}
@@ -69,25 +70,13 @@ const Page = ({ basket, basketId, imageUrl }: props) => {
               ) : (
                 <div className="mb-4"></div>
               )}
-              <div className="justify-between px-6 w-full">
-                <div className="flex gap-3 mb-2 justify-between">
-                  <div className="text-lg font-semibold text-neutral-600">
-                    Price:
-                  </div>
-                  <div className="my-auto font-bold text-2xl text-primary">
-                    {convertCurrency(
-                      basket.sizes[sizeIndex].price,
-                      currencyMultiplier,
-                      currency
-                    )}
-                  </div>
-                </div>
-
-                <div className="">
+              <div className="justify-between px-6 py-3 w-full bg-mint/60 border-green-100 border-2 rounded">
+                
+                <div className="text-sm">
                   {basket.sizes[sizeIndex].items.map((item, index) => {
                     return (
                       <div key={index} className="flex justify-between">
-                        <div>- {item.name}</div>
+                        <div>{item.name}</div>
                         <div>
                           {item.quantity}
                           {item.unit}
@@ -96,6 +85,19 @@ const Page = ({ basket, basketId, imageUrl }: props) => {
                     );
                   })}
                 </div>
+                <div className="flex gap-3 my-2 justify-between">
+                  <div className="text-base font-medium text-neutral-700">
+                    Price:
+                  </div>
+                  <div className="my-auto font-bold text-xl text-accent font-mono">
+                    {convertCurrency(
+                      basket.sizes[sizeIndex].price,
+                      currencyMultiplier,
+                      currency
+                    )}
+                  </div>
+                </div>
+
               </div>
             </div>
             <AddToCartBtn
@@ -131,15 +133,16 @@ const AddToCartBtn: FC<{ onClick: VoidFunction; isInCart: boolean }> = ({
 }) => {
   if (isInCart)
     return (
-      <div className="max-w-md rounded-xl text-white font-semibold disabled:opacity-75 shadow-md disabled:shadow-none text-xl px-6 py-2 flex items-center justify-center bg-primary">
-        Added
+      <div className="max-w-md rounded-md text-white text-sm font-medium disabled:opacity-75 shadow-md disabled:shadow-none sm:text-base px-4 py-2 flex items-center justify-center bg-orange-500 transition-transform delay-300">
+       <Check className="h-4 w-4 mr-2" />
+        Added to Cart!
       </div>
     );
   return (
     <button
       onClick={onClick}
-      className={`rounded-xl text-white font-semibold disabled:opacity-75 shadow-md disabled:shadow-none text-xl px-6 py-2 flex items-center justify-center hover:brightness-110 ${
-        isInCart ? "bg-primary" : "bg-gradient"
+      className={`rounded-md text-white font-medium  text-sm disabled:opacity-75 shadow-md disabled:shadow-none sm:text-base px-4 py-2 flex items-center justify-center hover:brightness-110 ${
+        isInCart ? "bg-orange-500" : "bg-orange-500"
       }`}
       disabled={isInCart}
     >
