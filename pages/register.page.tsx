@@ -70,7 +70,7 @@ function Page() {
 
   return (
     <div className="bg-slate-100 min-h-screen flex items-center justify-center">
-      <div className="flex flex-col items-center bg-white p-8 gap-3 rounded-xl shadow-lg">
+      <div className="flex flex-col items-center bg-white p-8 gap-3 rounded-xl shadow-md">
         <header className="mb-3">
           <Logo />
         </header>
@@ -82,7 +82,7 @@ function Page() {
           Sign in with Google
         </button>
         <form onSubmit={formSubmit} className="flex flex-col">
-          <p className="text-center text-neutral-500 text-lg font-bold mb-4 mt-3">
+          <p className="text-center text-neutral-500 text-base font-semibold mb-4 mt-3">
             OR
           </p>
           <PhoneField
