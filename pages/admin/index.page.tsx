@@ -126,7 +126,7 @@ const Page = () => {
 
          <Dialog onOpenChange={setOpen} open={open}>
             <DialogTrigger asChild>
-                <Button className="text-sm border border-gray-200 hover:bg-gray-50 text-black px-1 py-1 "variant="ghost">
+                <Button className="text-sm border  hover:bg-gray-50 text-black px-1 py-1 "variant="outline">
                    <CheckCircle className="h-4 w-4 text-black m-2 " />
                     Verify Order
                 </Button>

@@ -66,7 +66,7 @@ const Page = ({
   const [addSize, setSizeAdd] = useState(false);
 
   return (
-    <div className="min-h-screen bg-slate-200 py-4 px-8 md:px-12 ">
+    <div className="min-h-screen bg-neutral-100 py-4 px-8 md:px-12 ">
       <Link href="/admin/baskets">
         <div className="flex justify-start my-4">
           <MdOutlineArrowBack size={30} />

@@ -30,7 +30,7 @@ const BasketsOverviewCard = () => {
   };
 
   return (
-    <div className="p-3 md:p-10 shadow-lg rounded-xl bg-slate-300 flex flex-col gap-5 justify-start">
+    <div className="p-3 md:p-10  rounded bg-neutral-50/30 flex flex-col gap-5 justify-start">
       <div className="flex justify-between items-center gap-2 mb-2">
         <Link href="/admin">
           <div className="flex justify-start my-2">
@@ -38,7 +38,7 @@ const BasketsOverviewCard = () => {
           </div>
         </Link>
         <button
-          className="bg-amber-500 text-black rounded-lg shadow px-4 py-2"
+          className="bg-orange-500 text-white rounded  px-4 py-2"
           onClick={() => setOpenBasketModal(true)}
         >
           Add Basket
