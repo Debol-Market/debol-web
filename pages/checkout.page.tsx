@@ -188,10 +188,10 @@ const LocalTab = ({ tab }: { tab: "cbe" | "dashen" | "abysinnia" }) => {
         placeholder="John Doe"
         value={name}
         name="name"
-        className="border border-neutral-300 rounded-md p-2 px-4 w-full focus:border-green-500 shadow-sm placeholder:text-neutral-400"
+        className="border border-neutral-300 rounded-md p-2 px-4 w-full focus:border-accent shadow-sm placeholder:text-neutral-400"
         onChange={(e) => setName(e.target.value)}
       />
-      <label className="text-xs font-bold text-neutral-600 mt-2 mb-0.5">
+      <label className="text-xs font-bold focus:border-accent text-neutral-600 mt-2 mb-0.5">
         Phone Number
       </label>
       <PhoneField

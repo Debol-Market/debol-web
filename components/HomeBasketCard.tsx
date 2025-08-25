@@ -42,7 +42,7 @@ export function HomeBasketCard({ basket, id }: Props) {
       className="group flex flex-col relative overflow-hidden w-full rounded-lg shadow border bg-background"
     >
       {!!discount && (
-        <Badge className="absolute top-2 right-2 z-10 text-accent bg-white shadow-sm ">
+        <Badge className="absolute top-2 right-2 z-10 text-green-500 bg-white shadow-sm ">
           {discount}% OFF
         </Badge>
       )}
