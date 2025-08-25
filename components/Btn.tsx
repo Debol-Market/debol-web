@@ -13,7 +13,7 @@ const Btn = ({ label, disabled, isLoading, className, ...rest }: props) => {
       {...rest}
       disabled={disabled}
       className={cn(
-        `bg-gradient rounded-xl font-medium disabled:opacity-75 shadow-md disabled:shadow-none text-xl px-6 py-1 flex items-center justify-center hover:brightness-110 text-white`,
+        `bg-orange-500 rounded font-medium disabled:opacity-75 shadow-md disabled:shadow-none text-xl px-6 py-1 flex items-center justify-center hover:brightness-110 text-white`,
         className,
       )}
     >

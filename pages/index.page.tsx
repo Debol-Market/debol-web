@@ -152,7 +152,7 @@ const ProductCard = ({ product }: { product: Product }) => {
           </div>
           {/* Update Button based on isInCart */}
           <Button
-            className={`text-sm ${isInCart ? "bg-index cursor-default" : "bg-orange-500 hover:bg-orange-500 hover:opacity-80 transition-all"}`}
+            className={`text-sm ${isInCart ? "bg-index cursor-default" : "bg-orange-500 hover:bg-orange-500 hover:opacity-80 disabled:opacity-75 transition-all"}`}
             onClick={(e) => {
               if (isInCart) {
                 e.preventDefault(); // Prevent navigation if already in cart

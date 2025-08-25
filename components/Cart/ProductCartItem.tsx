@@ -6,9 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import { useState } from "react";
 import ContentLoader from "react-content-loader";
-import { AiFillMinusCircle } from "react-icons/ai";
-import { BiSolidTrashAlt } from "react-icons/bi";
-import { IoAddCircle, IoCloseCircleOutline } from "react-icons/io5";
+import { Minus, Plus, Trash, X } from "lucide-react"
 
 export default function ProductCartItem({
   productItem,
@@ -52,8 +50,8 @@ export default function ProductCartItem({
           )}
         </div>
         <div className="grow flex flex-col h-full">
-          <h3 className="text-xl">{product.name}</h3>
-          <p className="font-bold text-lg">
+          <h3 className="text-base-xl">{product.name}</h3>
+          <p className="font-semibold font-mono text-accent text-sm">
             {convertCurrency(product?.price ?? 0, currencyMultiplier, currency)}
           </p>
           <div
@@ -62,19 +60,19 @@ export default function ProductCartItem({
           >
             <button className="" onClick={() => onChange(productItem.qty - 1)}>
               {productItem.qty == 1 ? (
-                <BiSolidTrashAlt className="h-6 w-6" />
+                <Trash className="h-4 w-4" />
               ) : (
-                <AiFillMinusCircle className="h-6 w-6" />
+                <Minus className="h-4 w-4" />
               )}
             </button>
             <span>{productItem.qty}</span>
             <button onClick={() => onChange(productItem.qty + 1)}>
-              <IoAddCircle className="h-6 w-6" />
+              <Plus className="h-4 w-4" />
             </button>
           </div>
         </div>
         <button onClick={onDel}>
-          <IoCloseCircleOutline className="h-6 w-6" />
+          <X className="h-4 w-4" />
         </button>
       </div>
     </div>

@@ -88,15 +88,15 @@ const Cart = ({ onClose }: props) => {
         </div>
         {basketCart.length + productCart.length > 0 && (
           <>
-            <div className="flex justify-between items-end  px-4">
+            <div className="flex text-sm justify-between items-end  p-4 ">
               <h2 className="">Service fee(25%):</h2>
-              <p className="font-semibold">
+              <p className="font-base font-mono">
                 {convertCurrency(total * 0.25, currencyMultiplier, currency)}
               </p>
             </div>
             <div className="flex justify-between items-end pb-2 px-4">
               <h2 className="text-lg font-semibold">Total:</h2>
-              <p className="font-semibold text-2xl">
+              <p className="font-semibold text-2xl font-mono ">
                 {convertCurrency(total * 1.25, currencyMultiplier, currency)}
               </p>
             </div>

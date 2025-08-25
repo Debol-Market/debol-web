@@ -52,38 +52,39 @@ export default function BasketCartItem({
           )}
         </div>
         <div className=" grow">
-          <h3 className="text-xl">{basket.name}</h3>
-          <p className="font-bold text-lg">
+          <h3 className="text-base">{basket.name}</h3>
+          <p className="text-sm pb-1">{size?.name}</p>
+          <p className="font-semibold font-mono text-accent text-sm">
             {convertCurrency(size?.price ?? 0, currencyMultiplier, currency)}
           </p>
-          <p className="text-sm">{size?.name}</p>
+          
           <div
             className="flex gap-2 text-neutral-800"
             onClick={(e) => e.stopPropagation()}
           >
             <button className="" onClick={() => onChange(basketItem.qty - 1)}>
               {basketItem.qty == 1 ? (
-                <Trash className="h-6 w-6" />
+                <Trash className="h-4 w-4" />
               ) : (
-                <Minus className="h-6 w-6" />
+                <Minus className="h-4 w-4" />
               )}
             </button>
             <span>{basketItem.qty}</span>
             <button onClick={() => onChange(basketItem.qty + 1)}>
-              <Plus className="h-6 w-6" />
+              <Plus className="h-4 w-4" />
             </button>
           </div>
         </div>
         <button onClick={onDel}>
-          <X className="h-6 w-6" />
+          <X className="h-4 w-4" />
         </button>
       </div>
       {isExpanded && (
         <div className="pb-3 px-2">
           {size &&
             size.items.map((item) => (
-              <div className="flex gap-2 justify-between mb-1" key={item.name}>
-                <div className="w-[120px]">{item.name}</div>
+              <div className="flex gap-2 justify-between  text-sm mb-1" key={item.name}>
+                <div className="w-[120px] text-sm ">{item.name}</div>
                 <div className="">
                   {item.quantity}
                   {item.unit} x{" "}
@@ -93,7 +94,7 @@ export default function BasketCartItem({
                     currency,
                   )}
                 </div>
-                <div className="">
+                <div className="font-mono">
                   {convertCurrency(
                     item.pricePerUnit * item.quantity,
                     currencyMultiplier,
