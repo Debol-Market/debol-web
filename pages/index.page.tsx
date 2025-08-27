@@ -1,4 +1,4 @@
-import img from "@/assets/new_banner.png";
+import img from "@/assets/new_banner1.png";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -51,9 +51,9 @@ const Page = ({
         <meta name="description" content="Show your love to your family." />
       </Head>
       <Navbar />
-      <div className="overflow-hidden relative h-[min(280px,30vh)] w-full ">
+      <div className="overflow-hidden relative  sm:h-[480px] h-[min(480px,30vh)] p-6  w-full ">
         <div className="flex overflow-scroll h-full snap-mandatory snap-x no-scrollbar">
-          <div className="grow shrink-0 relative -z-10 h-full flex w-full snap-start">
+          <div className="grow shrink-0 relative -z-10 h-full flex w-full  snap-start">
             <Image src={img} fill alt="" className="-z-10 object-cover" />
           </div>
         </div>
