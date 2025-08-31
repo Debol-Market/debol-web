@@ -7,6 +7,7 @@ import Logo from "../components/Logo";
 import useApp from "../services/appContext";
 import dynamic from "next/dynamic";
 import { Toaster } from "react-hot-toast";
+import { Analytics } from "@vercel/analytics/next";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -49,6 +50,7 @@ export default function App({ Component, pageProps }: AppProps) {
           </PageLoader>
         </QueryClientProvider>
       </AppContext>
+      <Analytics />
     </>
   );
 }
